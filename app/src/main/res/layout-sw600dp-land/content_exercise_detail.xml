@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    tools:context=".ExerciseDetailActivity"
+   >
+
+    <!--TODO: include the Fragment which has the swipe view -->
+
+    
+    <!-- Phone Detail View:include the DetailView Fragment -->
+    <fragment
+        android:id="@+id/fragment_steps_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:name="com.project.capstone_stage2.ExerciseDetailFragment" />
+
+
+</FrameLayout>

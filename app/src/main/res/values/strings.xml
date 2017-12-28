@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Capstone_stage2</string>
+    <string name="title_activity_exercise_swipe_view">ExerciseSwipeViewActivity</string>
+    <string name="content_authority">com.project.capstone_stage2.app.provider</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_exercise_detail">ExerciseDetailActivity</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <!-- Error Message String -->
+    <string name="error_no_exercise">Sorry,no excercise!</string>
+    <string name="default_category_name">Category Name</string>
+    <string name="default_category_desc">Category Desc</string>
+</resources>

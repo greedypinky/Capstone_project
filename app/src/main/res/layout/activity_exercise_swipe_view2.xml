@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipe_view_coordinateLayout"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.project.capstone_stage2.ExerciseSwipeViewActivity">
+
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/swipe_view_appbarlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:elevation="4dp"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <!-- This layout does not contain the CollapsingToolBarLayout -->
+        <ImageView
+                android:id="@+id/swipe_view_category_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+
+        <!-- add Toolbar under AppBarLayout to detect the scroll event -->
+        <android.support.v7.widget.Toolbar
+                android:id="@+id/swipe_view_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:layout_collapseMode="pin" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <!-- Fragment includes the view pager widget
+    -->
+
+    <fragment
+        android:id="@+id/swipe_view_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:name="com.project.capstone_stage2.SwipeViewFragment"/>
+
+</android.support.design.widget.CoordinatorLayout>

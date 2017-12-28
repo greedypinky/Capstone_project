@@ -1,0 +1,33 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.project.capstone_stage2.FavoriteExerciseFragment">
+
+    <!-- TODO: Add Recylcer View to show the exercise in a category -->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/fav_execise_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="4dp"
+        android:scrollbars="vertical">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <!-- No Data Text -->
+    <TextView
+        android:id="@+id/fav_execise_no_data_error_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="@string/error_no_exercise"
+        android:visibility="gone"/>
+
+    <ProgressBar
+        android:id="@+id/fav_execise_loading_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:visibility="gone"/>
+
+</FrameLayout>

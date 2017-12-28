@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.project.capstone_stage2">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ExerciseSwipeViewActivity"
+            android:label="@string/title_activity_exercise_swipe_view"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+
+        <activity
+            android:name=".ExerciseDetailActivity"
+            android:label="@string/title_activity_exercise_detail"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <provider
+            android:name=".dbUtility.ExerciseContentProvider"
+            android:authorities="@string/content_authority"
+            android:exported="false"
+            android:syncable="true" />
+
+        <receiver android:name=".MyExerciseAppWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/my_exercise_app_widget_info" />
+        </receiver>
+
+        <service
+            android:name=".sync.ExerciseSyncIntentService"
+            android:exported="false"></service>
+    </application>
+
+</manifest>

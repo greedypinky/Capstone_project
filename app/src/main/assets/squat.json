@@ -1,0 +1,76 @@
+{
+  "exercises": [
+    {
+      "category": "Squat",
+      "category description": "Squat",
+      "id": 1,
+      "name": "Squat1",
+      "description": "",
+      "image": "imageurl",
+      "video": "videourl",
+      "steps": [
+        {
+          "stepDescription": "step1"
+        },
+        {
+          "stepDescription": "step2"
+        }
+      ]
+    },
+
+    {
+      "category": "Squat",
+      "category description": "Squat",
+      "id": 2,
+      "name": "Squat2",
+      "description": "",
+      "image": "imageurl",
+      "video": "videourl",
+      "steps": [
+        {
+          "stepDescription": "step1"
+        },
+        {
+          "stepDescription": "step2"
+        }
+      ]
+    },
+
+    {
+      "category": "Pull",
+      "category description": "UpperBody Pull Exercise",
+      "id": 3,
+      "name": "Pull exercise 1",
+      "description": "",
+      "image": "imageurl",
+      "video": "videourl",
+      "steps": [
+        {
+          "stepDescription": "step1"
+        },
+        {
+          "stepDescription": "step2"
+        }
+      ]
+    },
+
+    {
+      "category": "Push",
+      "category description": "UpperBody Push Exercise",
+      "id": 4,
+      "name": "Push exercise 1",
+      "description": "",
+      "image": "imageurl",
+      "video": "videourl",
+      "steps": [
+        {
+          "stepDescription": "step1"
+        },
+        {
+          "stepDescription": "step2"
+        }
+      ]
+    }
+
+  ]
+}

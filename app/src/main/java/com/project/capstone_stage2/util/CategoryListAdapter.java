@@ -1,0 +1,148 @@
+package com.project.capstone_stage2.util;
+import android.content.Context;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.project.capstone_stage2.R;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+// https://code.tutsplus.com/tutorials/getting-started-with-recyclerview-and-cardview-on-android--cms-23465
+public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapter.CategoryViewHolder> {
+
+    private static int CATEGORY_COUNT = 3;
+    private static HashMap<String,String> category = new HashMap<String,String>();
+    private static ArrayList<ExerciseCategory> catArrayList = new ArrayList<ExerciseCategory>();
+    private static CardViewOnClickListener cardViewOnClickListener;
+    private Context mContext;
+
+    // Constructor that require the listener implements the onClick callback method
+    public CategoryListAdapter(CardViewOnClickListener listener) {
+        cardViewOnClickListener = listener;
+        initData();
+    }
+
+
+    public interface CardViewOnClickListener {
+
+        public void onClickCategory(ExerciseCategory category);
+    }
+
+    private void initData() {
+        // init default Data
+        catArrayList.add(new ExerciseCategory("Squat","Squat", R.drawable.squat));
+        catArrayList.add(new ExerciseCategory("Push","UpperBody Push", R.drawable.squat));
+        catArrayList.add(new ExerciseCategory("Pull","UpperBody Pull", R.drawable.squat));
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+    }
+
+    @Override
+    public CategoryListAdapter.CategoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        mContext = parent.getContext(); // get the Context reference from parent view
+        View cardView = LayoutInflater.from(parent.getContext()).inflate(R.layout.exercise_card_view,parent,false);
+        CategoryViewHolder vh = new CategoryViewHolder(cardView);
+        return vh;
+    }
+
+    @Override
+    public void onBindViewHolder(CategoryListAdapter.CategoryViewHolder holder, int position) {
+        // TODO: bind adapter's data to the view holder's view based on the position
+        holder.title.setText(catArrayList.get(position).getCategoryName());
+        holder.desc.setText(catArrayList.get(position).getCategoryDesc());
+       // holder.image.setImageResource(catArrayList.get(position).getImage());
+        //  if(!selectedRecipe.getImage().isEmpty()) {
+        // Picasso will handle loading the images on a background thread, image decompression and caching the images.
+       Picasso.with(mContext).load(catArrayList.get(position).getImage()).into(holder.image);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return super.getItemViewType(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return super.getItemId(position);
+    }
+
+    @Override
+    public int getItemCount() {
+        if(catArrayList != null && catArrayList.size() > 0) {
+          return catArrayList.size();
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * RecyclerViewHolder
+     */
+    public static class CategoryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        CardView cv;
+        TextView title;
+        TextView desc;
+        ImageView image;
+
+        public CategoryViewHolder(View itemView) {
+            super(itemView);
+            cv = (CardView)itemView.findViewById(R.id.category_card_view);
+            cv.setOnClickListener(this); // must set the OnClickListener,otherwise it will not react to the click
+            title = (TextView) itemView.findViewById(R.id.execise_category_name);
+            desc = (TextView) itemView.findViewById(R.id.execise_category_desc);
+            image = (ImageView) itemView.findViewById(R.id.execise_category_image);
+
+        }
+
+        @Override
+        public void onClick(View view) {
+            // TODO : add back the call back to launch the Activity
+            if (cardViewOnClickListener != null) {
+                int cardIndex = getAdapterPosition();
+                ExerciseCategory category = catArrayList.get(cardIndex);
+                cardViewOnClickListener.onClickCategory(category);
+            } else {
+                throw new RuntimeException("No onClick handler for ViewHolder! Please add it back!");
+            }
+        }
+    }
+
+    // inner class for Exercise Category
+    public class ExerciseCategory {
+
+        private String categoryName = null;
+        private String categoryDesc = null;
+        private int categoryImage = -1;
+
+        public ExerciseCategory(String name, String desc, int drawableImage) {
+            categoryName = name;
+            categoryDesc = desc;
+            categoryImage = drawableImage;
+        }
+
+        public String getCategoryDesc() {
+            return categoryDesc;
+        }
+
+        public String getCategoryName() {
+            return categoryName;
+        }
+
+        public int getImage() {
+            return categoryImage;
+        }
+    }
+
+
+}
