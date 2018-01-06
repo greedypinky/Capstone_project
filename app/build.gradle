@@ -9,6 +9,8 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        // configure your app for multidex otherwise there will be error during compilation
+        multiDexEnabled true
     }
     buildTypes {
         release {

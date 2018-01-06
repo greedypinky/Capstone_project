@@ -3,6 +3,7 @@
     package="com.project.capstone_stage2">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -35,6 +36,7 @@
             android:exported="false"
             android:syncable="true" />
 
+        <!-- widget as broadcast receiver -->
         <receiver android:name=".MyExerciseAppWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -45,9 +47,19 @@
                 android:resource="@xml/my_exercise_app_widget_info" />
         </receiver>
 
+        <!-- IntentService to init the DB the first time -->
         <service
             android:name=".sync.ExerciseSyncIntentService"
             android:exported="false"></service>
+
+        <!-- Firebase Job Service to sync the data by job scheduling -->
+        <service
+            android:exported="false"
+            android:name=".sync.ExerciseFireBaseJobservice">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

@@ -46,7 +46,7 @@ import com.project.capstone_stage2.dbUtility.ExerciseContract;
 public class RemoteEndPointUtil {
 
     private static final String TAG = "RemoteEndpointUtil";
-    private static final String EXERCISES ="exercises";
+    private static final String EXERCISES ="exercises"; //exercises
     private static final String CATEGORY ="category";
     private static final String CATEGORY_DESCRIPTION ="category description";
     private static final String ID ="id";
@@ -55,7 +55,7 @@ public class RemoteEndPointUtil {
     private static final String IMAGE ="image";
     private static final String VIDEO ="video";
     private static final String STEPS ="steps";
-    private static final String STEP_DESCRIPTION ="stepDesription";
+    private static final String STEP_DESCRIPTION ="stepDescription";
 
     public static ContentValues[] fetchJSONData(String json) {
         ContentValues[] exerciseContentValues = null;
@@ -100,6 +100,20 @@ public class RemoteEndPointUtil {
                // from here how can we add the data back to the DB
                ContentValues exerciseValues = new ContentValues();
                // put the [ Column, Value ]
+               /*
+               builder2.append("CREATE TABLE IF NOT EXISTS " + FAV_TABLE)
+                       .append(" (")
+                       .append(ExerciseContract.ExerciseEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,")
+                       .append(ExerciseContract.ExerciseEntry.CATEGORY +  TEXT_NOT_NULL + ",")
+                       .append(ExerciseContract.ExerciseEntry.CATEGORY_DESC +  TEXT_NOT_NULL + ",")
+                       .append(ExerciseContract.ExerciseEntry.EXERCISE_ID + TEXT_NOT_NULL + ",")
+                       .append(ExerciseContract.ExerciseEntry.EXERCISE_NAME +  TEXT_NOT_NULL + ",")
+                       .append(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION +  TEXT_NOT_NULL + ",")
+                       .append(ExerciseContract.ExerciseEntry.EXERCISE_STEPS +  TEXT_NOT_NULL + ",")
+                       .append(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE +  TEXT_NOT_NULL + ",")
+                       .append(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO +  TEXT_NOT_NULL)
+                       .append(");");
+                       */
                exerciseValues.put(ExerciseContract.ExerciseEntry.CATEGORY, category);
                exerciseValues.put(ExerciseContract.ExerciseEntry.CATEGORY_DESC, category_description);
                exerciseValues.put(ExerciseContract.ExerciseEntry.EXERCISE_ID, id);

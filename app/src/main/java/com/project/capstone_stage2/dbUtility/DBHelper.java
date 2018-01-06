@@ -34,13 +34,14 @@ public class DBHelper extends SQLiteOpenHelper {
         // create table tablename ID INTEGER PRIMARY KEY AUTOINCREMENT (COL1, COL2, COL3);
         builder.append("CREATE TABLE IF NOT EXISTS " + ALL_TABLE)
                 .append(" (")
-                .append(ExerciseContract.ExerciseEntry.EXERCISE_ID)
-                .append("INTEGER PRIMARY KEY AUTOINCREMENT,")
+                .append(ExerciseContract.ExerciseEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,")
+                .append(ExerciseContract.ExerciseEntry.CATEGORY +  TEXT_NOT_NULL + ",")
+                .append(ExerciseContract.ExerciseEntry.CATEGORY_DESC +  TEXT_NOT_NULL + ",")
                 .append(ExerciseContract.ExerciseEntry.EXERCISE_NAME +  TEXT_NOT_NULL + ",")
                 .append(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION +  TEXT_NOT_NULL + ",")
                 .append(ExerciseContract.ExerciseEntry.EXERCISE_STEPS +  TEXT_NOT_NULL + ",")
                 .append(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE +  TEXT_NOT_NULL + ",")
-                .append(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO +  TEXT_NOT_NULL + ",")
+                .append(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO +  TEXT_NOT_NULL)
                 .append(");");
 
         final String SQL_CREATE_TABLE1 = builder.toString();
@@ -50,13 +51,15 @@ public class DBHelper extends SQLiteOpenHelper {
         // create table tablename ID INTEGER PRIMARY KEY AUTOINCREMENT (COL1, COL2, COL3);
         builder2.append("CREATE TABLE IF NOT EXISTS " + FAV_TABLE)
                 .append(" (")
-                .append(ExerciseContract.ExerciseEntry.EXERCISE_ID)
-                .append("INTEGER PRIMARY KEY AUTOINCREMENT,")
+                .append(ExerciseContract.ExerciseEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,")
+                .append(ExerciseContract.ExerciseEntry.CATEGORY +  TEXT_NOT_NULL + ",")
+                .append(ExerciseContract.ExerciseEntry.CATEGORY_DESC +  TEXT_NOT_NULL + ",")
+                .append(ExerciseContract.ExerciseEntry.EXERCISE_ID + TEXT_NOT_NULL + ",")
                 .append(ExerciseContract.ExerciseEntry.EXERCISE_NAME +  TEXT_NOT_NULL + ",")
                 .append(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION +  TEXT_NOT_NULL + ",")
                 .append(ExerciseContract.ExerciseEntry.EXERCISE_STEPS +  TEXT_NOT_NULL + ",")
                 .append(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE +  TEXT_NOT_NULL + ",")
-                .append(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO +  TEXT_NOT_NULL + ",")
+                .append(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO +  TEXT_NOT_NULL)
                 .append(");");
 
         final String SQL_CREATE_TABLE2 = builder2.toString();

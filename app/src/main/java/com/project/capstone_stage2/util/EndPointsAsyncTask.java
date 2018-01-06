@@ -6,23 +6,17 @@ import android.os.AsyncTask;
 import android.support.v4.util.Pair;
 import android.widget.Toast;
 
-import com.exercise.backend.MyEndpoint;
 import com.exercise.backend.myApi.MyApi;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
 import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
-
 import java.io.IOException;
-import com.exercise.backend.*;
-import com.google.api.server.spi.config.ApiMethod;
-
-import javax.inject.Named;
 
 public class EndPointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
     private static MyApi myApiService = null;
     private Context context;
-    private boolean runLocal = true;
+    private boolean runLocal = false;
     // class that implement GCE_EndpointsAsyncTask.AsyncResponse to get the result of the AsyncTask
     public AsyncResponse delegate = null; // activity will implement this method
 
@@ -55,15 +49,15 @@ public class EndPointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, S
             } else {
 
                 //  Go to https://console.cloud.google.com/ to check the deployed link
-//                builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
-//                        .setRootUrl("https://telljokeproject.appspot.com/_ah/api/");
+                builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
+                        .setRootUrl("https://capstoneproject-189106.appspot.com/_ah/api/");
 
             }
 
             myApiService = builder.build();
         }
 
-        context = params[0].first;
+        context = params[0].first; // The Activity or Fragment that call this task
         String name = params[0].second;
 
 //        @ApiMethod(name = "getExerciseData")
@@ -77,8 +71,7 @@ public class EndPointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, S
 
 
         try {
-           return myApiService.getExerciseData(name).execute().getData();
-
+           return myApiService.getExerciseData().execute().getData();
         } catch (IOException e) {
             return e.getMessage();
         }
@@ -88,6 +81,6 @@ public class EndPointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, S
     protected void onPostExecute(String result) {
         Toast.makeText(context, result, Toast.LENGTH_LONG).show();
         // TODO: add back passing result to the AsyncResponse (delegate)
-
+        delegate.processFinish(result);
     }
 }

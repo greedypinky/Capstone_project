@@ -172,7 +172,15 @@ public class SwipeViewFragment extends Fragment {
         // Returns the page title for the top indicator
         @Override
         public CharSequence getPageTitle(int position) {
-            return "Page " + position;
+
+            if (position == 1) {
+                return getString(R.string.all_exercise);
+            } else if (position == 2) {
+                return getString(R.string.favorite_exercise);
+            } else {
+
+                return null;
+            }
         }
     }
 }

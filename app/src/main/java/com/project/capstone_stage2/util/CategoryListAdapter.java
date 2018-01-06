@@ -59,12 +59,12 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
     @Override
     public void onBindViewHolder(CategoryListAdapter.CategoryViewHolder holder, int position) {
         // TODO: bind adapter's data to the view holder's view based on the position
-        holder.title.setText(catArrayList.get(position).getCategoryName());
-        holder.desc.setText(catArrayList.get(position).getCategoryDesc());
+        holder.mTitle.setText(catArrayList.get(position).getCategoryName());
+        holder.mDesc.setText(catArrayList.get(position).getCategoryDesc());
        // holder.image.setImageResource(catArrayList.get(position).getImage());
         //  if(!selectedRecipe.getImage().isEmpty()) {
         // Picasso will handle loading the images on a background thread, image decompression and caching the images.
-       Picasso.with(mContext).load(catArrayList.get(position).getImage()).into(holder.image);
+       Picasso.with(mContext).load(catArrayList.get(position).getImage()).into(holder.mImage);
     }
 
     @Override
@@ -74,7 +74,9 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
 
     @Override
     public long getItemId(int position) {
+
         return super.getItemId(position);
+
     }
 
     @Override
@@ -90,28 +92,29 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
      * RecyclerViewHolder
      */
     public static class CategoryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        CardView cv;
-        TextView title;
-        TextView desc;
-        ImageView image;
+        private CardView mCardView;
+        private TextView mTitle;
+        private TextView mDesc;
+        private ImageView mImage;
 
         public CategoryViewHolder(View itemView) {
             super(itemView);
-            cv = (CardView)itemView.findViewById(R.id.category_card_view);
-            cv.setOnClickListener(this); // must set the OnClickListener,otherwise it will not react to the click
-            title = (TextView) itemView.findViewById(R.id.execise_category_name);
-            desc = (TextView) itemView.findViewById(R.id.execise_category_desc);
-            image = (ImageView) itemView.findViewById(R.id.execise_category_image);
+            mCardView = (CardView)itemView.findViewById(R.id.category_card_view);
+            mCardView.setOnClickListener(this); // must set the OnClickListener,otherwise it will not react to the click
+            mTitle = (TextView) itemView.findViewById(R.id.execise_category_name);
+            mDesc = (TextView) itemView.findViewById(R.id.execise_category_desc);
+            mImage = (ImageView) itemView.findViewById(R.id.execise_category_image);
 
         }
 
         @Override
         public void onClick(View view) {
             // TODO : add back the call back to launch the Activity
+            int cardIndex = getAdapterPosition();
             if (cardViewOnClickListener != null) {
-                int cardIndex = getAdapterPosition();
+
                 ExerciseCategory category = catArrayList.get(cardIndex);
-                cardViewOnClickListener.onClickCategory(category);
+                cardViewOnClickListener.onClickCategory(category); // when click,pass the category data back to the activity
             } else {
                 throw new RuntimeException("No onClick handler for ViewHolder! Please add it back!");
             }

@@ -15,7 +15,7 @@
         android:fitsSystemWindows="true"
         android:elevation="4dp"
         android:theme="@style/AppTheme.AppBarOverlay">
-
+        <!--
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/swipe_view_collapsingtoolbarlayout"
             android:layout_width="match_parent"
@@ -24,7 +24,6 @@
             app:layout_scrollFlags="scroll"
             app:expandedTitleMarginStart="48dp"
             app:expandedTitleMarginEnd="64dp">
-            <!-- TODO: show the Exercise Category Image in the Appbar -->
 
             <ImageView
                 android:id="@+id/swipe_view_category_image"
@@ -42,18 +41,42 @@
                 app:layout_collapseMode="pin" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
+         -->
 
-
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/swipe_view_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+             />
 
     </android.support.design.widget.AppBarLayout>
 
     <!-- Fragment includes the view pager widget
-    -->
+
 
     <fragment
         android:id="@+id/swipe_view_fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:name="com.project.capstone_stage2.SwipeViewFragment"/>
+         -->
+
+
+    <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/exercise_pager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/sliding_tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top" />
+
+
+    </android.support.v4.view.ViewPager>
 
 </android.support.design.widget.CoordinatorLayout>

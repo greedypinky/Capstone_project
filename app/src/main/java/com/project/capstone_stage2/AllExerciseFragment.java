@@ -37,7 +37,7 @@ public class AllExerciseFragment extends Fragment implements LoaderManager.Loade
     private RecyclerView mRecyclerView;
     private TextView mNoDataText;
     private ProgressBar mProgressIndicator;
-    private boolean mNoData = true;
+    private boolean mHasData = false;
     private ExerciseListAdapter mAdapter;
 
     private OnFragmentInteractionListener mListener;
@@ -80,17 +80,30 @@ public class AllExerciseFragment extends Fragment implements LoaderManager.Loade
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.all_execise_recyclerview);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
         mRecyclerView.setHasFixedSize(true);
+        mAdapter = new ExerciseListAdapter();
         mRecyclerView.setAdapter(mAdapter);
         mNoDataText = (TextView) rootView.findViewById(R.id.all_execise_no_data_error_text);
         mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.all_execise_loading_indicator);
 
-        // if no data
-        if (mNoData) {
-
-            showErrorMessage();
-        }
 
         return rootView;
+    }
+
+    /**
+     * Call by SwipeView activity to update the cursor
+     * @param cursor
+     */
+    public void updateAdapterData(Cursor cursor) {
+        // TODO: update the cursor
+        // TODO: question - when do we need to close the cursor ??
+        if(cursor != null) {
+            mAdapter.setAdapterData(cursor);
+            mHasData = true;
+            hideErrorMessage();
+        } else {
+            mHasData = false;
+            showErrorMessage();
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -138,7 +151,6 @@ public class AllExerciseFragment extends Fragment implements LoaderManager.Loade
     private void showErrorMessage() {
 
         if(mNoDataText != null) {
-
             mNoDataText.setVisibility(View.VISIBLE);
         }
 

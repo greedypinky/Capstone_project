@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.firebase.jobdispatcher.Constraint;
@@ -34,18 +35,17 @@ public class ExerciseDataSyncTask  {
 
     private static boolean sInitialized = false;
     private static final String SYNC_TAG = "exercise-sync";
+    public static final String SYNC_EXERCISE_DATA = "exercise-json";
 
 
     // add Synchronized
     // synchronized public static void syncData(Context context,boolean alreadyHasData)
     synchronized public static void syncData(Context context, String exerciseJSON) {
             try {
-               // TODO: add back the logic
-               // 1. Use the EndPointSyncTask.execute to get the JSON data
+                // TODO: add back the logic
+                // 1. Use the EndPointSyncTask.execute to get the JSON data
                 // 2. Parse the JSON data and put them into ContentValues[]
                 // 3. So the bulk insert into the database
-
-                exerciseJSON = "whateverForNow";
                 ContentValues[] contentValues = RemoteEndPointUtil.fetchJSONData(exerciseJSON);
                 if (contentValues != null && contentValues.length > 0) {
 
@@ -71,7 +71,7 @@ public class ExerciseDataSyncTask  {
      * @param context Context used to create the GooglePlayDriver that powers the
      *                FirebaseJobDispatcher
      */
-    static void scheduleFirebaseJobDispatcherSync(@NonNull final Context context) {
+    static void scheduleFirebaseJobDispatcherSync(@NonNull final Context context, @NonNull final String exerciseData) {
 
         Driver driver = new GooglePlayDriver(context);
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(driver);
@@ -106,7 +106,7 @@ public class ExerciseDataSyncTask  {
      * @param context Context that will be passed to other methods and used to access the
      *                ContentResolver
      */
-    synchronized public static void initialize(@NonNull final Context context) {
+    synchronized public static void initialize(@NonNull final Context context, final String exerciseData) {
 
         /*
          * Only perform initialization once per app lifetime. If initialization has already been
@@ -120,7 +120,7 @@ public class ExerciseDataSyncTask  {
          * This method call triggers Sunshine to create its task to synchronize weather data
          * periodically.
          */
-        scheduleFirebaseJobDispatcherSync(context);
+        scheduleFirebaseJobDispatcherSync(context, exerciseData);
 
         /*
          * We need to check to see if our ContentProvider has data to display in our forecast
@@ -151,14 +151,17 @@ public class ExerciseDataSyncTask  {
                         null,
                         null,
                         null);
+
                 // if unable to get data from the existing database, sync the data immediately (not by the scheduling job)
                 if (null == cursor || cursor.getCount() == 0) {
                     // this will start the Intent Service to sync the data the first time
-                    startImmediateSync(context);
+                    startImmediateSync(context, exerciseData);
+                } else {
+                    // close the Cursor to avoid memory leaks!
+                    cursor.close();
                 }
 
-                // close the Cursor to avoid memory leaks!
-                cursor.close();
+
             }
         });
 
@@ -172,14 +175,14 @@ public class ExerciseDataSyncTask  {
      *
      * @param context The Context used to start the IntentService for the sync.
      */
-    public static void startImmediateSync(@NonNull final Context context) {
+    public static void startImmediateSync(@NonNull final Context context, @NonNull final String exerciseData) {
         Intent intentToSyncByIntentService = new Intent(context, ExerciseSyncIntentService.class);
+        // TODO: Add the intent to pass the ExerciseData
+        Bundle extras = new Bundle();
+        extras.putString(SYNC_EXERCISE_DATA, exerciseData);
+        intentToSyncByIntentService.putExtras(extras);
+        intentToSyncByIntentService.setAction(ExerciseSyncIntentService.ACTION_SYNC);
         context.startService(intentToSyncByIntentService);
     }
 
-    // implements the Callback method of the EndPointsAsyncTask's AsyncResponse
-//    @Override
-//    public void processFinish(String result) {
-//        //
-//    }
 }

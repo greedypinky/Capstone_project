@@ -30,10 +30,10 @@ public class MyEndpoint {
      * A simple endpoint method that takes a name and says Hi back
      */
     @ApiMethod(name = "getExerciseData")
-    public ExerciseData getExerciseData(@Named("categoryName") String categoryName) {
+    public ExerciseData getExerciseData() {
         ExerciseData response = new ExerciseData();
         // TODO: get the Data and set it into the Response
-        response.setData(categoryName);
+        response.setData();
 
         return response;
     }

@@ -7,61 +7,13 @@ import android.content.Context;
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread.
- * <p>
- * TODO: Customize class - update intent actions, extra parameters and static
- * helper methods.
  */
 public class ExerciseSyncIntentService extends IntentService {
-    // TODO: Rename actions, choose action names that describe tasks that this
-    // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
-    private static final String ACTION_SYNC = "com.project.capstone_stage2.sync.action.SYNC_DATA";
-    private static final String ACTION_FOO = "com.project.capstone_stage2.sync.action.FOO";
-    private static final String ACTION_BAZ = "com.project.capstone_stage2.sync.action.BAZ";
 
-    // TODO: Rename parameters
-    private static final String EXTRA_PARAM1 = "com.project.capstone_stage2.sync.extra.PARAM1";
-    private static final String EXTRA_PARAM2 = "com.project.capstone_stage2.sync.extra.PARAM2";
-
+    // IntentService can perform ACTION_SYNC action to sync data to the DB
+    public static final String ACTION_SYNC = "com.project.capstone_stage2.sync.action.SYNC_DATA";
     public ExerciseSyncIntentService() {
         super("ExerciseSyncIntentService");
-    }
-
-
-    public static void startActionSyncData(Context context) {
-        Intent intent = new Intent(context, ExerciseSyncIntentService.class);
-        intent.setAction(ExerciseSyncIntentService.ACTION_SYNC);
-        // TODO: add back any parameter passing
-        context.startService(intent);
-    }
-
-    /**
-     * Starts this service to perform action Foo with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    // TODO: Customize helper method
-    public static void startActionFoo(Context context, String param1, String param2) {
-        Intent intent = new Intent(context, ExerciseSyncIntentService.class);
-        intent.setAction(ACTION_FOO);
-        intent.putExtra(EXTRA_PARAM1, param1);
-        intent.putExtra(EXTRA_PARAM2, param2);
-        context.startService(intent);
-    }
-
-    /**
-     * Starts this service to perform action Baz with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    // TODO: Customize helper method
-    public static void startActionBaz(Context context, String param1, String param2) {
-        Intent intent = new Intent(context, ExerciseSyncIntentService.class);
-        intent.setAction(ACTION_BAZ);
-        intent.putExtra(EXTRA_PARAM1, param1);
-        intent.putExtra(EXTRA_PARAM2, param2);
-        context.startService(intent);
     }
 
     @Override
@@ -70,26 +22,29 @@ public class ExerciseSyncIntentService extends IntentService {
             final String action = intent.getAction();
             if (ACTION_SYNC.equals(action)) {
                 // call the ExerciseDataSyncTask's method
-                ExerciseDataSyncTask.syncData(this);
+                // need to get the exercise json from the intent by the right key!
+                String exerciseJSON = intent.getStringExtra(ExerciseDataSyncTask.SYNC_EXERCISE_DATA);
+                // call the actual syncData task to help sync up data to the Exercise Table
+                ExerciseDataSyncTask.syncData(this, exerciseJSON);
             }
         }
     }
 
-    /**
-     * Handle action Foo in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionFoo(String param1, String param2) {
-        // TODO: Handle action Foo
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
-    /**
-     * Handle action Baz in the provided background thread with the provided
-     * parameters.
-     */
-    private void handleActionBaz(String param1, String param2) {
-        // TODO: Handle action Baz
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
+//    /**
+//     * Handle action Foo in the provided background thread with the provided
+//     * parameters.
+//     */
+//    private void handleActionFoo(String param1, String param2) {
+//        // TODO: Handle action Foo
+//        throw new UnsupportedOperationException("Not yet implemented");
+//    }
+//
+//    /**
+//     * Handle action Baz in the provided background thread with the provided
+//     * parameters.
+//     */
+//    private void handleActionBaz(String param1, String param2) {
+//        // TODO: Handle action Baz
+//        throw new UnsupportedOperationException("Not yet implemented");
+//    }
 }

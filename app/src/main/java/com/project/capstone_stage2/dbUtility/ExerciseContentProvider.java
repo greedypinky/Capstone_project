@@ -11,9 +11,12 @@ import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 
 public class ExerciseContentProvider extends ContentProvider {
+
+    private String TAG = ExerciseContentProvider.class.getSimpleName();
 
     // UriMatcher Code
     private static final int FAV_EXERCISE = 1;
@@ -30,10 +33,12 @@ public class ExerciseContentProvider extends ContentProvider {
 
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         String authority = ExerciseContract.CONTENT_AUTHORITY;
-        String tableName = ExerciseContract.ExerciseEntry.TABLE_EXERCISE;
-        matcher.addURI(authority, tableName, FAV_EXERCISE);
-        matcher.addURI(authority,tableName + "/#", FAV_EXERCISE_WITH_ID);
-        return null;
+        // String tableName = ExerciseContract.ExerciseEntry.TABLE_EXERCISE;
+        matcher.addURI(authority, ExerciseContract.ExerciseEntry.TABLE_ALL, ALL_EXERCISE);
+        matcher.addURI(authority, ExerciseContract.ExerciseEntry.TABLE_ALL + "/#", ALL_EXERCISE_WITH_ID);
+        matcher.addURI(authority, ExerciseContract.ExerciseEntry.TABLE_EXERCISE, FAV_EXERCISE);
+        matcher.addURI(authority, ExerciseContract.ExerciseEntry.TABLE_EXERCISE + "/#", FAV_EXERCISE_WITH_ID);
+        return matcher;
 
     }
 
@@ -62,14 +67,20 @@ public class ExerciseContentProvider extends ContentProvider {
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
-
       int type =  uriMatcher.match(uri);
       switch(type) {
+
           case FAV_EXERCISE:
               return ExerciseContract.ExerciseEntry.CONTENT_DIR_FAV;
 
           case FAV_EXERCISE_WITH_ID:
               return ExerciseContract.ExerciseEntry.CONTENT_ITEM_FAV;
+
+          case ALL_EXERCISE:
+              return ExerciseContract.ExerciseEntry.CONTENT_DIR_ALL;
+
+          case ALL_EXERCISE_WITH_ID:
+              return ExerciseContract.ExerciseEntry.CONTENT_ITEM_ALL;
 
           default:
               throw new UnsupportedOperationException("Unable to get type because of unknown uri:" + uri);
@@ -84,6 +95,10 @@ public class ExerciseContentProvider extends ContentProvider {
         Uri insertUri = null;
         final SQLiteDatabase db = dbHelper.getWritableDatabase();
         final int match = uriMatcher.match(uri);
+
+        Log.d(TAG,"insert by uri: " + uri);
+        Log.d(TAG,"matcher: " + match);
+
         switch (match) {
 
            case FAV_EXERCISE:
@@ -111,10 +126,72 @@ public class ExerciseContentProvider extends ContentProvider {
 
     }
 
+    /*
+    1-06 13:18:49.261 2545-3779/com.project.capstone_stage2 E/SQLiteDatabase: Error inserting name=Squat1 categoryDesc=Squat steps=step1step2 description= category=Squat exerciseID=1 image= video=
+    android.database.sqlite.SQLiteException: table AllExercise has no column named categoryDesc (code 1): , while compiling:
+    INSERT INTO AllExercise(name,categoryDesc,steps,description,category,exerciseID,image,video)
+    VALUES (?,?,?,?,?,?,?,?)
+   */
     @Override
     public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
-
         // TODO: Add back bulkInsert implementation
+        Uri insertUri = null;
+        final SQLiteDatabase db = dbHelper.getWritableDatabase();
+        final int match = uriMatcher.match(uri);
+        Log.d(TAG,"insert by uri: " + uri);
+        Log.d(TAG,"matcher: " + match);
+        int rowsInserted = 0;
+
+        db.beginTransaction();
+        switch (match) {
+            case FAV_EXERCISE:
+
+                try {
+                    for (ContentValues value : values) {
+                        // insert a row and return the id of the row
+
+                        long _id = db.insert(ExerciseContract.ExerciseEntry.TABLE_ALL, null, value);
+                        if (_id != -1) {
+                            rowsInserted++;
+                        }
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+
+                if (rowsInserted > 0) {
+                    getContext().getContentResolver().notifyChange(uri, null);
+                }
+
+                return rowsInserted;
+
+            case ALL_EXERCISE:
+
+                try {
+                    for (ContentValues value : values) {
+                        long _id = db.insert(ExerciseContract.ExerciseEntry.TABLE_ALL, null, value);
+                        if (_id != -1) {
+                            rowsInserted++;
+                        }
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+
+                if (rowsInserted > 0) {
+                    getContext().getContentResolver().notifyChange(uri, null);
+                }
+
+                return rowsInserted;
+
+            default:
+                //throw new UnsupportedOperationException("Unable to delete table by uri:" + uri);
+                return super.bulkInsert(uri, values);
+        }
+
+       // return deleteRowsNum ;
 /*
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
@@ -153,7 +230,7 @@ public class ExerciseContentProvider extends ContentProvider {
 
         */
 
-        return super.bulkInsert(uri, values);
+
     }
 
     @Override
@@ -161,6 +238,9 @@ public class ExerciseContentProvider extends ContentProvider {
         final SQLiteDatabase db = dbHelper.getReadableDatabase();
         int match = uriMatcher.match(uri);
         int deleteRowsNum = 0;
+
+        Log.d(TAG,"delete by uri: " + uri);
+        Log.d(TAG,"matcher: " + match);
 
         switch (match) {
             case FAV_EXERCISE:

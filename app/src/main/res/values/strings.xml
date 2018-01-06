@@ -12,4 +12,6 @@
     <string name="error_no_exercise">Sorry,no excercise!</string>
     <string name="default_category_name">Category Name</string>
     <string name="default_category_desc">Category Desc</string>
+    <string name="all_exercise">All</string>
+    <string name="favorite_exercise">Favorite</string>
 </resources>

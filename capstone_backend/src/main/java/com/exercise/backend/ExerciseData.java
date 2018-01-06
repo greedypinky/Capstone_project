@@ -13,9 +13,9 @@ public class ExerciseData {
         return exerciseByCategoryJSON;
     }
 
-    public void setData(String categoryName)
+    public void setData()
     {
-        exerciseByCategoryJSON = Category.getHashMap().get(categoryName);
+        exerciseByCategoryJSON = Category.getAllExerciseJSON();
 
     }
 }

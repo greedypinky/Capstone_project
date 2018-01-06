@@ -1,6 +1,7 @@
 package com.project.capstone_stage2;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -74,6 +75,7 @@ public class FavoriteExerciseFragment extends Fragment {
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.fav_execise_recyclerview);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
         mRecyclerView.setHasFixedSize(true);
+        mAdapter = new ExerciseListAdapter();
         mRecyclerView.setAdapter(mAdapter);
         mNoDataText = (TextView) rootView.findViewById(R.id.fav_execise_no_data_error_text);
         mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.fav_execise_loading_indicator);
@@ -85,6 +87,16 @@ public class FavoriteExerciseFragment extends Fragment {
         }
 
         return rootView;
+    }
+
+    /**
+     * Call by SwipeView activity to update the cursor
+     * @param cursor
+     */
+    public void updateAdapterData(Cursor cursor) {
+        // TODO: update the cursor
+        // TODO: question - when do we need to close the cursor ??
+        mAdapter.setAdapterData(cursor);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

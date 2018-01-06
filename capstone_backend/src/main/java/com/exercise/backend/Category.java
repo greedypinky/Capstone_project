@@ -5,76 +5,90 @@ import java.util.Hashtable;
 
 public class Category {
 
-    public static final String CATEGORY_1 = "Squat";
-    public static final String CATEGORY_2 = "Pull";
-    public static final String CATEGORY_3 = "Push";
+    public static final String CATEGORY_SQUAT = "Squat";
+    public static final String CATEGORY_PULL = "Pull";
+    public static final String CATEGORY_PUSH = "Push";
 
-    public static String SQUAT_EXERCISES = "{\n" +
-            "    \"category\": \"Squat\",\n" +
-            "    \"description\":\"Squat Exercises\",\n" +
-            "    \"exercises\": [\n" +
-            "      {\n" +
-            "        \"id\": 1,\n" +
-            "        \"name\": \"Situp\",\n" +
-            "        \"description\": \"\",\n" +
-            "        \"image\": \"imageurl\",\n" +
-            "        \"video\": \"videourl\",\n" +
-            "        \"steps\": [\n" +
-            "          {\n" +
-            "            \"action\": \"step1\",\n" +
-            "            \"times\": \"\"\n" +
-            "          },\n" +
-            "          {\n" +
-            "            \"action\": \"step1\",\n" +
-            "            \"times\": \"\"\n" +
-            "          }\n" +
-            "        ]\n" +
-            "      },\n" +
-            "      {\n" +
-            "        \"id\": 2,\n" +
-            "        \"name\": \"Situp\",\n" +
-            "        \"description\": \"\",\n" +
-            "        \"image\": \"imageurl\",\n" +
-            "        \"video\": \"videourl\",\n" +
-            "        \"steps\": [\n" +
-            "          {\n" +
-            "            \"action\": \"step1\",\n" +
-            "            \"times\": \"\"\n" +
-            "          },\n" +
-            "          {\n" +
-            "            \"action\": \"step1\",\n" +
-            "            \"times\": \"\"\n" +
-            "          }\n" +
-            "        ]\n" +
-            "      }\n" +
-            "    ]\n" +
-            "  }";
+    public static final String ALL_CATEGORY_JSON = "{\n" +
+            "  \"exercises\": [\n" +
+            "    {\n" +
+            "      \"category\": \"Squat\",\n" +
+            "      \"category description\": \"Squat\",\n" +
+            "      \"id\": 1,\n" +
+            "      \"name\": \"Squat1\",\n" +
+            "      \"description\": \"\",\n" +
+            "      \"image\": \"imageurl\",\n" +
+            "      \"video\": \"videourl\",\n" +
+            "      \"steps\": [\n" +
+            "        {\n" +
+            "          \"stepDescription\": \"step1\"\n" +
+            "        },\n" +
+            "        {\n" +
+            "          \"stepDescription\": \"step2\"\n" +
+            "        }\n" +
+            "      ]\n" +
+            "    },\n" +
+            "\n" +
+            "    {\n" +
+            "      \"category\": \"Squat\",\n" +
+            "      \"category description\": \"Squat\",\n" +
+            "      \"id\": 2,\n" +
+            "      \"name\": \"Squat2\",\n" +
+            "      \"description\": \"\",\n" +
+            "      \"image\": \"imageurl\",\n" +
+            "      \"video\": \"videourl\",\n" +
+            "      \"steps\": [\n" +
+            "        {\n" +
+            "          \"stepDescription\": \"step1\"\n" +
+            "        },\n" +
+            "        {\n" +
+            "          \"stepDescription\": \"step2\"\n" +
+            "        }\n" +
+            "      ]\n" +
+            "    },\n" +
+            "\n" +
+            "    {\n" +
+            "      \"category\": \"Pull\",\n" +
+            "      \"category description\": \"UpperBody Pull Exercise\",\n" +
+            "      \"id\": 3,\n" +
+            "      \"name\": \"Pull exercise 1\",\n" +
+            "      \"description\": \"\",\n" +
+            "      \"image\": \"imageurl\",\n" +
+            "      \"video\": \"videourl\",\n" +
+            "      \"steps\": [\n" +
+            "        {\n" +
+            "          \"stepDescription\": \"step1\"\n" +
+            "        },\n" +
+            "        {\n" +
+            "          \"stepDescription\": \"step2\"\n" +
+            "        }\n" +
+            "      ]\n" +
+            "    },\n" +
+            "\n" +
+            "    {\n" +
+            "      \"category\": \"Push\",\n" +
+            "      \"category description\": \"UpperBody Push Exercise\",\n" +
+            "      \"id\": 4,\n" +
+            "      \"name\": \"Push exercise 1\",\n" +
+            "      \"description\": \"\",\n" +
+            "      \"image\": \"imageurl\",\n" +
+            "      \"video\": \"videourl\",\n" +
+            "      \"steps\": [\n" +
+            "        {\n" +
+            "          \"stepDescription\": \"step1\"\n" +
+            "        },\n" +
+            "        {\n" +
+            "          \"stepDescription\": \"step2\"\n" +
+            "        }\n" +
+            "      ]\n" +
+            "    }\n" +
+            "\n" +
+            "  ]\n" +
+            "} ";
 
-    public static String PULL_EXERCISES = "";
 
-    public static String PUSH_EXERCISES = "";
-
-
-    private static HashMap<String,String> categoriesHashMap = new HashMap<String,String>();
-
-    // initialize the Exercise Category list
-    static {
-        categoriesHashMap.put(CATEGORY_1,SQUAT_EXERCISES);
-        categoriesHashMap.put(CATEGORY_2,PULL_EXERCISES);
-        categoriesHashMap.put(CATEGORY_3,PUSH_EXERCISES);
-    }
-
-
-    public static void addCategory(String categoryName, String categoryJSONStr) {
-
-    }
-
-    public static void updateCategory(String categoryName, String categoryJSONStr) {
-
-    }
-
-    public static HashMap<String,String> getHashMap() {
-        return categoriesHashMap;
+    public static String getAllExerciseJSON () {
+            return ALL_CATEGORY_JSON;
     }
 
 }

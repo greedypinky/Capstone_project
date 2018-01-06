@@ -13,8 +13,8 @@ public class ExerciseContract {
 
     public static final class ExerciseEntry implements BaseColumns {
 
-        public static final String TABLE_ALL = "allExercise";
-        public static final String TABLE_EXERCISE = "favExercise";
+        public static final String TABLE_ALL = "AllExercise";
+        public static final String TABLE_EXERCISE = "FavoriteExercise";
         // declare the columns of the table
         public static final String EXERCISE_ID = "exerciseID"; // unique exercise id
         public static final String CATEGORY = "category";
@@ -37,8 +37,10 @@ public class ExerciseContract {
         public static final String CONTENT_ITEM_FAV = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + TABLE_EXERCISE;
 
         // define the type of the All Exercise table URI : dir
+        // vnd.android.cursor.dir/<Content authority>/<tablename>
         public static final String CONTENT_DIR_ALL = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + TABLE_ALL;
         // define the type of the All Exercise table URI : by item
+        // vnd.android.cursor.item/<Content authority>/<tablename>
         public static final String CONTENT_ITEM_ALL = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + TABLE_ALL;
 
 
