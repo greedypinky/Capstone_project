@@ -444,15 +444,15 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
             // TODO: add back how to get the Page's fragment by position
             switch (position) {
                 case 0: // Fragment # 0 - This will show FirstFragment
-                    AllExerciseFragment fragment1 = AllExerciseFragment.newInstance(0, "All Exercise Page # 1");
+                     mFragment1 = AllExerciseFragment.newInstance(0, "All Exercise Page # 1");
                     // TODO : assign the result to mDataCursor
                     //fragment1.updateAdapterData(mDataCursor);
-                    return fragment1;
+                    return mFragment1;
                 case 1: // Fragment # 0 - This will show FirstFragment different title
-                    FavoriteExerciseFragment fragment2 = FavoriteExerciseFragment.newInstance(1, "Favorite Exercise Page # 2");
+                    mFragment2 = FavoriteExerciseFragment.newInstance(1, "Favorite Exercise Page # 2");
                     // TODO : assign the result to mDataCursor
                     //fragment2.updateAdapterData(mDataCursor);
-                    return fragment2;
+                    return mFragment2;
 
                 default:
                     return null;

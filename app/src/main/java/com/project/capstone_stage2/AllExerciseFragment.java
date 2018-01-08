@@ -40,6 +40,7 @@ public class AllExerciseFragment extends Fragment implements LoaderManager.Loade
     private boolean mHasData = false;
     private ExerciseListAdapter mAdapter;
 
+
     private OnFragmentInteractionListener mListener;
 
     public AllExerciseFragment() {
@@ -85,7 +86,11 @@ public class AllExerciseFragment extends Fragment implements LoaderManager.Loade
         mNoDataText = (TextView) rootView.findViewById(R.id.all_execise_no_data_error_text);
         mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.all_execise_loading_indicator);
 
+        // if no data
+        if (!mHasData) {
 
+            showErrorMessage();
+        }
         return rootView;
     }
 
@@ -149,26 +154,13 @@ public class AllExerciseFragment extends Fragment implements LoaderManager.Loade
     }
 
     private void showErrorMessage() {
-
-        if(mNoDataText != null) {
-            mNoDataText.setVisibility(View.VISIBLE);
-        }
-
-        if(mRecyclerView != null) {
-            mRecyclerView.setVisibility(View.INVISIBLE);
-        }
+        mNoDataText.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.INVISIBLE);
     }
 
     private void hideErrorMessage() {
-
-        if(mNoDataText != null) {
-
-            mNoDataText.setVisibility(View.GONE);
-        }
-
-        if(mRecyclerView != null) {
-            mRecyclerView.setVisibility(View.VISIBLE);
-        }
+        mNoDataText.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.VISIBLE);
     }
 
     // LoaderManager's Callback methods

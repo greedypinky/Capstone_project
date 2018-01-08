@@ -35,7 +35,7 @@ public class FavoriteExerciseFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private TextView mNoDataText;
     private ProgressBar mProgressIndicator;
-    private boolean mNoData = true;
+    private boolean mHasData = false;
     private ExerciseListAdapter mAdapter;
 
 
@@ -81,7 +81,7 @@ public class FavoriteExerciseFragment extends Fragment {
         mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.fav_execise_loading_indicator);
 
         // if no data
-        if (mNoData) {
+        if (!mHasData) {
 
             showErrorMessage();
         }
@@ -96,7 +96,17 @@ public class FavoriteExerciseFragment extends Fragment {
     public void updateAdapterData(Cursor cursor) {
         // TODO: update the cursor
         // TODO: question - when do we need to close the cursor ??
-        mAdapter.setAdapterData(cursor);
+       // mAdapter.setAdapterData(cursor);
+        // TODO: update the cursor
+        // TODO: question - when do we need to close the cursor ??
+        if(cursor != null) {
+            mAdapter.setAdapterData(cursor);
+            hideErrorMessage();
+            mHasData = true;
+        } else {
+            showErrorMessage();
+            mHasData = false;
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -141,25 +151,14 @@ public class FavoriteExerciseFragment extends Fragment {
 
     private void showErrorMessage(){
 
-        if(mNoDataText != null) {
+        mNoDataText.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.GONE);
 
-            mNoDataText.setVisibility(View.VISIBLE);
-        }
-
-        if(mRecyclerView != null) {
-            mRecyclerView.setVisibility(View.INVISIBLE);
-        }
     }
 
     private void hideErrorMessage(){
 
-        if(mNoDataText != null) {
-
-            mNoDataText.setVisibility(View.GONE);
-        }
-
-        if(mRecyclerView != null) {
-            mRecyclerView.setVisibility(View.VISIBLE);
-        }
+        mNoDataText.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.VISIBLE);
     }
 }
