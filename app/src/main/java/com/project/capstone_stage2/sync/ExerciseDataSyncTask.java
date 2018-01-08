@@ -71,7 +71,7 @@ public class ExerciseDataSyncTask  {
      * @param context Context used to create the GooglePlayDriver that powers the
      *                FirebaseJobDispatcher
      */
-    static void scheduleFirebaseJobDispatcherSync(@NonNull final Context context, @NonNull final String exerciseData) {
+    synchronized public static void scheduleFirebaseJobDispatcherSync(@NonNull final Context context) {
 
         Driver driver = new GooglePlayDriver(context);
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(driver);
@@ -120,7 +120,7 @@ public class ExerciseDataSyncTask  {
          * This method call triggers Sunshine to create its task to synchronize weather data
          * periodically.
          */
-        scheduleFirebaseJobDispatcherSync(context, exerciseData);
+        scheduleFirebaseJobDispatcherSync(context);
 
         /*
          * We need to check to see if our ContentProvider has data to display in our forecast
