@@ -101,27 +101,17 @@ public class RemoteEndPointUtil {
                ContentValues exerciseValues = new ContentValues();
                // put the [ Column, Value ]
                /*
-               builder2.append("CREATE TABLE IF NOT EXISTS " + FAV_TABLE)
-                       .append(" (")
-                       .append(ExerciseContract.ExerciseEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,")
-                       .append(ExerciseContract.ExerciseEntry.CATEGORY +  TEXT_NOT_NULL + ",")
-                       .append(ExerciseContract.ExerciseEntry.CATEGORY_DESC +  TEXT_NOT_NULL + ",")
-                       .append(ExerciseContract.ExerciseEntry.EXERCISE_ID + TEXT_NOT_NULL + ",")
-                       .append(ExerciseContract.ExerciseEntry.EXERCISE_NAME +  TEXT_NOT_NULL + ",")
-                       .append(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION +  TEXT_NOT_NULL + ",")
-                       .append(ExerciseContract.ExerciseEntry.EXERCISE_STEPS +  TEXT_NOT_NULL + ",")
-                       .append(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE +  TEXT_NOT_NULL + ",")
-                       .append(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO +  TEXT_NOT_NULL)
-                       .append(");");
+
                        */
+
                exerciseValues.put(ExerciseContract.ExerciseEntry.CATEGORY, category);
                exerciseValues.put(ExerciseContract.ExerciseEntry.CATEGORY_DESC, category_description);
                exerciseValues.put(ExerciseContract.ExerciseEntry.EXERCISE_ID, id);
                exerciseValues.put(ExerciseContract.ExerciseEntry.EXERCISE_NAME, name);
                exerciseValues.put(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION, description);
                exerciseValues.put(ExerciseContract.ExerciseEntry.EXERCISE_STEPS, stepDesc);
-               exerciseValues.put(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE, "");
-               exerciseValues.put(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO, "");
+               exerciseValues.put(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE, image);
+               exerciseValues.put(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO, video);
 
                // add into the ContentValues array
                exerciseContentValues[i] = exerciseValues;

@@ -142,15 +142,31 @@ public class ExerciseContentProvider extends ContentProvider {
         Log.d(TAG,"matcher: " + match);
         int rowsInserted = 0;
 
-        db.beginTransaction();
+        // db.query("")
+
         switch (match) {
             case FAV_EXERCISE:
-
+                db.beginTransaction();
                 try {
                     for (ContentValues value : values) {
                         // insert a row and return the id of the row
+                        /*
+                        builder.append("CREATE TABLE IF NOT EXISTS " + ALL_TABLE)
+                                .append(" (")
+                                .append(ExerciseContract.ExerciseEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,")
+                                .append(ExerciseContract.ExerciseEntry.CATEGORY +  TEXT_NOT_NULL + ",")
+                                .append(ExerciseContract.ExerciseEntry.CATEGORY_DESC +  TEXT_NOT_NULL + ",")
+                                .append(ExerciseContract.ExerciseEntry.EXERCISE_ID + TEXT_NOT_NULL + ",")
+                                .append(ExerciseContract.ExerciseEntry.EXERCISE_NAME +  TEXT_NOT_NULL + ",")
+                                .append(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION +  TEXT_NOT_NULL + ",")
+                                .append(ExerciseContract.ExerciseEntry.EXERCISE_STEPS +  TEXT_NOT_NULL + ",")
+                                .append(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE +  TEXT_NOT_NULL + ",")
+                                .append(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO +  TEXT_NOT_NULL)
+                                .append(");");
+                                */
 
-                        long _id = db.insert(ExerciseContract.ExerciseEntry.TABLE_ALL, null, value);
+                        long _id = db.insert(ExerciseContract.ExerciseEntry.TABLE_ALL,null,
+                            value);
                         if (_id != -1) {
                             rowsInserted++;
                         }
@@ -161,13 +177,15 @@ public class ExerciseContentProvider extends ContentProvider {
                 }
 
                 if (rowsInserted > 0) {
+                    // need to notify the data change is happnened to URI uri
                     getContext().getContentResolver().notifyChange(uri, null);
                 }
 
-                return rowsInserted;
+                Log.d(TAG,"bulk insert:" + rowsInserted);
+                return rowsInserted; // need to return the number of rows that have been inserted
 
             case ALL_EXERCISE:
-
+                db.beginTransaction();
                 try {
                     for (ContentValues value : values) {
                         long _id = db.insert(ExerciseContract.ExerciseEntry.TABLE_ALL, null, value);

@@ -176,6 +176,8 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                  mExceriseCategoryName = bundle.getString("name");
                  mExceriseCategoryDesc = bundle.getString("desc");
                  mExceriseCategoryImage = bundle.getInt("image");
+                 Log.d(TAG,String.format("Category name:%s CategoryDesc:%s CategoryImage:%s",
+                         mExceriseCategoryName,mExceriseCategoryDesc,mExceriseCategoryImage));
             }
 
         }
@@ -246,9 +248,9 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
     // Loader's Callback method
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
-
+        CursorLoader loader = null;
+        Log.d(TAG,"onCreateLoader:-" + loaderId);
         switch (loaderId) {
-
             case ALL_EXERCISE_DB_DATA_LOADER_ID:
                 /* URI for all rows of all exercise data in table */
                 Uri forecastQueryUri = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
@@ -264,13 +266,21 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                 // SQL's where clause - where category = SQUAT or PULL or PUSH
                 String selectionByCategoryName = ExerciseContract.ExerciseEntry.CATEGORY + "=?";
 
-                return new CursorLoader(this,
+//                loader = new CursorLoader(this,
+//                        forecastQueryUri,
+//                        EXERCISE_PROJECTION,
+//                        selectionByCategoryName,
+//                        new String[] {mExceriseCategoryName},
+//                        sortOrder);
+
+                loader = new CursorLoader(this,
                         forecastQueryUri,
                         EXERCISE_PROJECTION,
-                        selectionByCategoryName,
-                        new String[] {mExceriseCategoryName},
+                        null,
+                        null,
                         sortOrder);
-
+                Log.d(TAG,"loader:-" + loader);
+                return loader;
             default:
                 throw new RuntimeException("Loader Not Implemented: " + loaderId);
         }
@@ -278,33 +288,49 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
     // Loader's Callback method
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
+        int loaderID = loader.getId();
+        Log.d(TAG,"onLoadFinished by loader ID:-" + loaderID);
         if (data != null) {
-            int loaderID = loader.getId();
-            Log.d(TAG,"onLoadFinished by loader ID:-" + loaderID);
+            Log.e(TAG,"onLoadFinished - I got the data!");
             mDataCursor = data;
+            mDataCursor.moveToFirst();
             if (loaderID == ALL_EXERCISE_DB_DATA_LOADER_ID) {
-                mFragment1.updateAdapterData(data);
+                Log.d(TAG,"Update Adapter for All Fragment");
+                mFragment1.updateAdapterData(mDataCursor);
             } else {
-                mFragment2.updateAdapterData(data);
+                Log.d(TAG,"Update Adapter for Favorite Fragment");
+                mFragment2.updateAdapterData(mDataCursor);
             }
 
 //            mForecastAdapter.swapCursor(data);
 //            if (mPosition == RecyclerView.NO_POSITION) mPosition = 0;
 //            mRecyclerView.smoothScrollToPosition(mPosition);
 //            if (data.getCount() != 0) showWeatherDataView();
+        } else {
+            Log.e(TAG,"onLoadFinished - No Data!!");
         }
 
     }
     // Loader's Callback method
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
- /*
+        /*
          * Since this Loader's data is now invalid, we need to clear the Adapter that is
          * displaying the data.
          */
-        // mForecastAdapter.swapCursor(null);
+
         mDataCursor = null;
+        int loaderID = loader.getId();
+        Log.d(TAG, "onLoadFinished by loader ID:-" + loaderID);
+
+        if (loaderID == ALL_EXERCISE_DB_DATA_LOADER_ID) {
+            Log.d(TAG, "Update Adapter for All Fragment");
+            mFragment1.updateAdapterData(null);
+        } else {
+            Log.d(TAG, "Update Adapter for Favorite Fragment");
+            mFragment2.updateAdapterData(null);
+        }
+
     }
 
     /**
