@@ -13,9 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import com.project.capstone_stage2.util.ExerciseListAdapter;
-
+import com.project.capstone_stage2.util.FavExerciseListAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,7 +23,7 @@ import com.project.capstone_stage2.util.ExerciseListAdapter;
  * Use the {@link FavoriteExerciseFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FavoriteExerciseFragment extends Fragment {
+public class FavoriteExerciseFragment extends Fragment implements FavExerciseListAdapter.ExerciseItemOnClickHandler {
     // TODO: Rename parameter arguments, choose names that match
     private static final String ARG_PAGE = "page";
     private static final String ARG_TITLE = "page_title";
@@ -36,7 +34,7 @@ public class FavoriteExerciseFragment extends Fragment {
     private TextView mNoDataText;
     private ProgressBar mProgressIndicator;
     private boolean mHasData = false;
-    private ExerciseListAdapter mAdapter;
+    private FavExerciseListAdapter mAdapter;
 
 
     private OnFragmentInteractionListener mListener;
@@ -75,7 +73,8 @@ public class FavoriteExerciseFragment extends Fragment {
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.fav_execise_recyclerview);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
         mRecyclerView.setHasFixedSize(true);
-        mAdapter = new ExerciseListAdapter();
+        // fixed the nullpointerException by pass in context from constructor
+        mAdapter = new FavExerciseListAdapter(getContext(),this);
         mRecyclerView.setAdapter(mAdapter);
         mNoDataText = (TextView) rootView.findViewById(R.id.fav_execise_no_data_error_text);
         mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.fav_execise_loading_indicator);
@@ -132,6 +131,12 @@ public class FavoriteExerciseFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    // This is a callback method of ExerciseListAdapter
+    @Override
+    public void onClickExercise() {
+        // TODO: implement how to handle when the Exercise Item is selected!
     }
 
     /**

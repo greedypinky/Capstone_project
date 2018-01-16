@@ -6,11 +6,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    tools:context="com.project.capstone_stage2.MainActivity">
+    tools:context="com.project.capstone_stage2.MainActivity"
+    android:orientation="vertical">
 
     <android.support.v7.widget.CardView
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/category_card_view"
+        android:id="@+id/exercise_card_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         card_view:cardCornerRadius="4dp"
@@ -20,12 +21,13 @@
         >
 
         <LinearLayout
+            android:id="@+id/card_view_top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/execise_category_name"
+                android:id="@+id/execise_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/holo_orange_light"
@@ -37,7 +39,7 @@
                 />
 
             <TextView
-                android:id="@+id/execise_category_desc"
+                android:id="@+id/execise_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/holo_green_light"
@@ -48,29 +50,49 @@
                 android:padding="16dp"
                 />
 
-            <!-- TODO:Add back the proper image view -->
+            <!-- TODO:Add back the proper image view png, vector? -->
 
             <ImageView
-                android:id="@+id/execise_category_image"
+                android:id="@+id/execise_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:scaleType="centerCrop"
                 />
 
-
         </LinearLayout>
 
-
-
-
     </android.support.v7.widget.CardView>
-    <!--
-        <ProgressBar
-            android:id="@+id/loading_indicator"
+
+    <LinearLayout
+        android:id="@+id/execise_category_card_options"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/card_view_top"
+        >
+
+        <Button
+            android:id="@+id/share_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:visibility="invisible"/>
-            -->
+            android:text="@string/btn_share"
+            android:textSize="@dimen/btn_text_size"
+            android:textColor="@color/colorPrimaryDark"/>
+        <Button
+            android:id="@+id/add_fav_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_addFavorite"
+            android:textSize="@dimen/btn_text_size"
+            android:textColor="@color/colorPrimaryDark"/>
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/exercise_loading_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:visibility="gone"/>
 
 </LinearLayout>

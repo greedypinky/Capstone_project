@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.project.capstone_stage2.ExerciseSwipeViewActivity;
 import com.project.capstone_stage2.R;
 import com.project.capstone_stage2.dbUtility.ExerciseContract;
 import com.squareup.picasso.Picasso;
@@ -26,7 +24,7 @@ import java.util.List;
 //        GridLayoutManager shows items in a grid.
 //        StaggeredGridLayoutManager shows items in a staggered grid.
 
-public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapter.ExerciseViewHolder> {
+public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseListAdapter.ExerciseViewHolder> {
 
     protected boolean mDataValid;
     protected int mRowID;
@@ -39,17 +37,17 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
         // callback to handle when VH is clicked
         public void onClickExercise();
 
-        public void onShareClick();
+        //public void onShareClick();
 
-        public void onAddFavClick();
+        //public void onAddFavClick();
     }
 
     // Default Constructor
-    public ExerciseListAdapter() {
+    public FavExerciseListAdapter() {
 
     }
 
-    public ExerciseListAdapter(Context context, ExerciseItemOnClickHandler onClickHandler) {
+    public FavExerciseListAdapter(Context context, ExerciseItemOnClickHandler onClickHandler) {
         // implemented by the Activity
         exerciseItemOnClickHandler = onClickHandler;
         // assign the parent's activity
@@ -58,7 +56,7 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
     }
 
     @Override
-    public void onBindViewHolder(ExerciseListAdapter.ExerciseViewHolder holder, int position, List payloads) {
+    public void onBindViewHolder(FavExerciseListAdapter.ExerciseViewHolder holder, int position, List payloads) {
         // TODO: bind the data
         mCursor.moveToPosition(position);
         // get data by index
@@ -67,7 +65,7 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
     }
 
     @Override
-    public ExerciseListAdapter.ExerciseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public FavExerciseListAdapter.ExerciseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Init the layout of the ViewHolder
         // TODO : why on a null reference?
         View execiseCardView = LayoutInflater.from(mContext).inflate(R.layout.exercise_items, parent, false);
@@ -195,26 +193,6 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
             mAddFavButton = (Button) itemView.findViewById(R.id.add_fav_btn);
 
             // TODO: add onClickListener to the Fav Button to trigger the callback?
-
-            mShareButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    if(exerciseItemOnClickHandler!=null) {
-                        exerciseItemOnClickHandler.onShareClick();
-                    }
-                }
-            });
-
-            mAddFavButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    if(exerciseItemOnClickHandler!=null){
-                        exerciseItemOnClickHandler.onAddFavClick();
-                    }
-                }
-            });
 
         }
 

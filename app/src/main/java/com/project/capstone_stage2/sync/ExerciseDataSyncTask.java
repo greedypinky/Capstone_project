@@ -52,9 +52,9 @@ public class ExerciseDataSyncTask  {
                     // Then we update the database
                     ContentResolver contentResolver = context.getContentResolver();
                     // delete all the old data in DB first
-                    contentResolver.delete(ExerciseContract.ExerciseEntry.CONTENT_URI_ALL, null,null);
+                    //contentResolver.delete(ExerciseContract.ExerciseEntry.CONTENT_URI_ALL, null,null);
                     // bulk insert again with the latest data from server
-                    contentResolver.bulkInsert(ExerciseContract.ExerciseEntry.CONTENT_URI_ALL,contentValues);
+                    contentResolver.bulkInsert(ExerciseContract.ExerciseEntry.CONTENT_URI_ALL, contentValues);
 
                 }
 

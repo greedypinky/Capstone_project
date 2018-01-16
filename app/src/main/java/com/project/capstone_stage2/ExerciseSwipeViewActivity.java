@@ -199,14 +199,15 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
         //ExerciseDataSyncTask.initialize(this);
 
         // TODO: 1) call the EndPoint to get back the JSON String!
-        getResponseFromEndPoint(true);
+        // getResponseFromEndPoint(true);
 
         // String response = "";
         // Log.d(TAG,"Google Endpoint API response:-" + response);
 
         // TODO: get the JSON data, then starts the Sync task
-
-
+        loaderCallbacks =  ExerciseSwipeViewActivity.this;                                            
+        Log.d(TAG,"initLoader to get the DB Cursor for all exercises");                               
+        getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);  
     }
 
     private void getResponseFromEndPoint(boolean useEndPoint) {
@@ -247,7 +248,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
 
     // Loader's Callback method
     @Override
-    public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
+    public CursorLoader onCreateLoader(int loaderId, Bundle args) {
         CursorLoader loader = null;
         Log.d(TAG,"onCreateLoader:-" + loaderId);
         switch (loaderId) {
@@ -272,6 +273,9 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
 //                        selectionByCategoryName,
 //                        new String[] {mExceriseCategoryName},
 //                        sortOrder);
+                
+                // Get the data from here instead of the onCreate method
+                // getResponseFromEndPoint(true);
 
                 loader = new CursorLoader(this,
                         forecastQueryUri,
@@ -296,6 +300,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
             mDataCursor.moveToFirst();
             if (loaderID == ALL_EXERCISE_DB_DATA_LOADER_ID) {
                 Log.d(TAG,"Update Adapter for All Fragment");
+                // TODO: FIX the issue why Fragment is null ?? when clicking back
                 mFragment1.updateAdapterData(mDataCursor);
             } else {
                 Log.d(TAG,"Update Adapter for Favorite Fragment");
@@ -396,9 +401,10 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
 
         // TODO: 3) Call the loader manager to load the cursor and pass the cursor to view pager ??
         // mViewPager.getAdapter().
-        loaderCallbacks =  ExerciseSwipeViewActivity.this;
-        Log.d(TAG,"initLoader to get the DB Cursor for all exercises");
-        getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
+//        loaderCallbacks =  ExerciseSwipeViewActivity.this;
+//        Log.d(TAG,"initLoader to get the DB Cursor for all exercises");
+//        getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
+
     }
 
     // swipe across a collection of Fragment objects

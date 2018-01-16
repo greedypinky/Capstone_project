@@ -55,7 +55,38 @@ public class ExerciseContentProvider extends ContentProvider {
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
 
-        return null;
+        // TODO: reason why we cannot query the data from loadermanager because we forgot to implement the QUERY Method !!
+
+        final SQLiteDatabase db = dbHelper.getReadableDatabase();
+        int match = uriMatcher.match(uri);
+        Cursor cursor = null;
+
+        switch (match) {
+            case FAV_EXERCISE:
+                // where exercise_id = ?
+                // pass in selection Args {1}
+
+                cursor = db.query(ExerciseContract.ExerciseEntry.TABLE_EXERCISE ,projection, selection, selectionArgs,null,null,sortOrder);
+
+            case FAV_EXERCISE_WITH_ID:
+
+                cursor = db.query(ExerciseContract.ExerciseEntry.TABLE_EXERCISE ,projection, selection, selectionArgs,null,null,sortOrder);
+
+            case ALL_EXERCISE:
+
+                cursor = db.query(ExerciseContract.ExerciseEntry.TABLE_ALL,projection, selection, selectionArgs,null,null,sortOrder);
+
+
+            case ALL_EXERCISE_WITH_ID:
+
+                break;
+            default:
+                throw new UnsupportedOperationException("Unable to update table by uri:" + uri);
+
+        }
+
+        return cursor;
+
     }
 
     @Nullable
@@ -167,8 +198,11 @@ public class ExerciseContentProvider extends ContentProvider {
 
                         long _id = db.insert(ExerciseContract.ExerciseEntry.TABLE_ALL,null,
                             value);
+
+                        Log.d(TAG, "bulk insert ContentValues:" + _id);
                         if (_id != -1) {
                             rowsInserted++;
+                            Log.d(TAG, "total bulk insert num:" + rowsInserted);
                         }
                     }
                     db.setTransactionSuccessful();

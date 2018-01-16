@@ -14,4 +14,6 @@
     <string name="default_category_desc">Category Desc</string>
     <string name="all_exercise">All</string>
     <string name="favorite_exercise">Favorite</string>
+    <string name="btn_share">Share</string>
+    <string name="btn_addFavorite">Add to favorite</string>
 </resources>

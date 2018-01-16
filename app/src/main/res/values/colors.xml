@@ -6,4 +6,5 @@
     <color name="title_text_color">#06187e</color>
     <color name="subtitle_text_color">#161313</color>
     <color name="content_text_color">#161313</color>
+    <color name="btn_text_color">#161313</color>
 </resources>

@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.project.capstone_stage2.util.ExerciseListAdapter;
 
@@ -26,7 +27,7 @@ import com.project.capstone_stage2.util.ExerciseListAdapter;
  * Use the {@link AllExerciseFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AllExerciseFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class AllExerciseFragment extends Fragment implements ExerciseListAdapter.ExerciseItemOnClickHandler, LoaderManager.LoaderCallbacks<Cursor> {
     // TODO: Rename parameter arguments, choose names that match
     private static final String ARG_PAGE = "page";
     private static final String ARG_TITLE = "page_title";
@@ -81,7 +82,7 @@ public class AllExerciseFragment extends Fragment implements LoaderManager.Loade
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.all_execise_recyclerview);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
         mRecyclerView.setHasFixedSize(true);
-        mAdapter = new ExerciseListAdapter();
+        mAdapter = new ExerciseListAdapter(getContext(),this);
         mRecyclerView.setAdapter(mAdapter);
         mNoDataText = (TextView) rootView.findViewById(R.id.all_execise_no_data_error_text);
         mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.all_execise_loading_indicator);
@@ -135,6 +136,24 @@ public class AllExerciseFragment extends Fragment implements LoaderManager.Loade
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    // This is a callback method of ExerciseListAdapter
+    @Override
+    public void onClickExercise() {
+        // TODO: implement how to handle when the Exercise Item is selected!
+        Toast.makeText(getContext(),"navigate to Detail view", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onShareClick() {
+        Toast.makeText(getContext(),"share content!", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onAddFavClick() {
+        Toast.makeText(getContext(),"add favorite!", Toast.LENGTH_LONG).show();
+
     }
 
 
