@@ -41,7 +41,8 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
 
         public void onShareClick();
 
-        public void onAddFavClick();
+        // pass in selected Row ID
+        public void onAddFavClick(Cursor cursor);
     }
 
     // Default Constructor
@@ -211,7 +212,15 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
                 public void onClick(View view) {
 
                     if(exerciseItemOnClickHandler!=null){
-                        exerciseItemOnClickHandler.onAddFavClick();
+
+                        int adapterPosition = getAdapterPosition();
+                        mCursor.moveToPosition(adapterPosition);
+                        //int id_index = mCursor.getColumnIndex(ExerciseContract.ExerciseEntry._ID)
+                        //int _id = mCursor.getInt(id_index);
+                        //long dateInMillis = mCursor.getLong(MainActivity.INDEX_WEATHER_DATE);
+                        //mClickHandler.onClick(dateInMillis);
+
+                        exerciseItemOnClickHandler.onAddFavClick(mCursor);
                     }
                 }
             });

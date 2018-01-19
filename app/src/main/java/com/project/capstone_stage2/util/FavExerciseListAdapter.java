@@ -68,7 +68,7 @@ public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseList
     public FavExerciseListAdapter.ExerciseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Init the layout of the ViewHolder
         // TODO : why on a null reference?
-        View execiseCardView = LayoutInflater.from(mContext).inflate(R.layout.exercise_items, parent, false);
+        View execiseCardView = LayoutInflater.from(mContext).inflate(R.layout.fav_exercise_items, parent, false);
         ExerciseViewHolder viewHolder = new ExerciseViewHolder(execiseCardView);
         return viewHolder;
     }
@@ -179,7 +179,7 @@ public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseList
         // Share button
         public Button mShareButton;
         // Add Favorite button
-        public Button mAddFavButton;
+        public Button mRemoveFavButton;
 
         public ExerciseViewHolder(View itemView) {
             // initialize the views inside the view holder
@@ -190,7 +190,7 @@ public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseList
             mExerciseDesc = (TextView) itemView.findViewById(R.id.execise_desc);
             mExerciseImage = (ImageView) itemView.findViewById(R.id.execise_image);
             mShareButton = (Button) itemView.findViewById(R.id.share_btn);
-            mAddFavButton = (Button) itemView.findViewById(R.id.add_fav_btn);
+            mRemoveFavButton = (Button) itemView.findViewById(R.id.remove_fav_btn);
 
             // TODO: add onClickListener to the Fav Button to trigger the callback?
 

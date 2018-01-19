@@ -1,5 +1,6 @@
 package com.project.capstone_stage2;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.project.capstone_stage2.dbUtility.ExerciseContract;
 import com.project.capstone_stage2.util.ExerciseListAdapter;
 
 
@@ -29,6 +32,7 @@ import com.project.capstone_stage2.util.ExerciseListAdapter;
  */
 public class AllExerciseFragment extends Fragment implements ExerciseListAdapter.ExerciseItemOnClickHandler, LoaderManager.LoaderCallbacks<Cursor> {
     // TODO: Rename parameter arguments, choose names that match
+    private static final String TAG = AllExerciseFragment.class.getSimpleName();
     private static final String ARG_PAGE = "page";
     private static final String ARG_TITLE = "page_title";
 
@@ -151,9 +155,32 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     }
 
     @Override
-    public void onAddFavClick() {
-        Toast.makeText(getContext(),"add favorite!", Toast.LENGTH_LONG).show();
+    public void onAddFavClick(Cursor cursor) {
 
+        // https://developer.android.com/guide/topics/providers/content-provider-basics.html
+        // select the row from All Exercise and add the parameter to Favorite Exercise
+        int id_index = cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID);
+        int name_index = cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME);
+        String exeID = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID));
+        String exeName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
+        //long dateInMillis = mCursor.getLong(MainActivity.INDEX_WEATHER_DATE);
+
+        Toast.makeText(getContext(),"add favorite:- " + exeID + ":" + exeName, Toast.LENGTH_LONG).show();
+        // Defines an object to contain the new values to insert
+          ContentValues mNewValues = new ContentValues();
+        mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_ID,cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID)));
+        mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_NAME,cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID)));
+        mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION,cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID)));
+        mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_STEPS,cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID)));
+        mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE,cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID)));
+        mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO,cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID)));
+        mNewValues.put(ExerciseContract.ExerciseEntry.CATEGORY,cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.CATEGORY)));
+        mNewValues.put(ExerciseContract.ExerciseEntry.CATEGORY_DESC,cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.CATEGORY_DESC)));
+
+        Uri insertUri =  getActivity().getContentResolver()
+                     .insert(ExerciseContract.ExerciseEntry.CONTENT_URI_FAV, mNewValues);
+
+        Log.d(TAG,"insert favorite exercise result uri: " + insertUri);
     }
 
 

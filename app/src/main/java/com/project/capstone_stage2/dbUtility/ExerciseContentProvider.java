@@ -65,7 +65,7 @@ public class ExerciseContentProvider extends ContentProvider {
             case FAV_EXERCISE:
                 // where exercise_id = ?
                 // pass in selection Args {1}
-
+                Log.d(TAG,"Query from " + ExerciseContract.ExerciseEntry.TABLE_EXERCISE);
                 cursor = db.query(ExerciseContract.ExerciseEntry.TABLE_EXERCISE ,projection, selection, selectionArgs,null,null,sortOrder);
 
             case FAV_EXERCISE_WITH_ID:
@@ -73,7 +73,7 @@ public class ExerciseContentProvider extends ContentProvider {
                 cursor = db.query(ExerciseContract.ExerciseEntry.TABLE_EXERCISE ,projection, selection, selectionArgs,null,null,sortOrder);
 
             case ALL_EXERCISE:
-
+                Log.d(TAG,"Query from " + ExerciseContract.ExerciseEntry.TABLE_ALL);
                 cursor = db.query(ExerciseContract.ExerciseEntry.TABLE_ALL,projection, selection, selectionArgs,null,null,sortOrder);
 
 
@@ -134,8 +134,7 @@ public class ExerciseContentProvider extends ContentProvider {
 
            case FAV_EXERCISE:
                // use the insert method to insert
-              long id = db.insert(ExerciseContract.ExerciseEntry.TABLE_EXERCISE,
-               null,
+              long id = db.insert(ExerciseContract.ExerciseEntry.TABLE_EXERCISE, null,
                contentValues);
                 // if id is return
                if (id > 0) {
@@ -149,7 +148,7 @@ public class ExerciseContentProvider extends ContentProvider {
                }
 
            default:
-               throw new UnsupportedOperationException("insert fail-unsupported url: + url");
+               throw new UnsupportedOperationException("insert fail-unsupported url");
 
        }
 
@@ -177,46 +176,48 @@ public class ExerciseContentProvider extends ContentProvider {
 
         switch (match) {
             case FAV_EXERCISE:
-                db.beginTransaction();
-                try {
-                    for (ContentValues value : values) {
-                        // insert a row and return the id of the row
-                        /*
-                        builder.append("CREATE TABLE IF NOT EXISTS " + ALL_TABLE)
-                                .append(" (")
-                                .append(ExerciseContract.ExerciseEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,")
-                                .append(ExerciseContract.ExerciseEntry.CATEGORY +  TEXT_NOT_NULL + ",")
-                                .append(ExerciseContract.ExerciseEntry.CATEGORY_DESC +  TEXT_NOT_NULL + ",")
-                                .append(ExerciseContract.ExerciseEntry.EXERCISE_ID + TEXT_NOT_NULL + ",")
-                                .append(ExerciseContract.ExerciseEntry.EXERCISE_NAME +  TEXT_NOT_NULL + ",")
-                                .append(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION +  TEXT_NOT_NULL + ",")
-                                .append(ExerciseContract.ExerciseEntry.EXERCISE_STEPS +  TEXT_NOT_NULL + ",")
-                                .append(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE +  TEXT_NOT_NULL + ",")
-                                .append(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO +  TEXT_NOT_NULL)
-                                .append(");");
-                                */
+//                db.beginTransaction();
+//                try {
+//                    for (ContentValues value : values) {
+//                        // insert a row and return the id of the row
+//                        /*
+//                        builder.append("CREATE TABLE IF NOT EXISTS " + ALL_TABLE)
+//                                .append(" (")
+//                                .append(ExerciseContract.ExerciseEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,")
+//                                .append(ExerciseContract.ExerciseEntry.CATEGORY +  TEXT_NOT_NULL + ",")
+//                                .append(ExerciseContract.ExerciseEntry.CATEGORY_DESC +  TEXT_NOT_NULL + ",")
+//                                .append(ExerciseContract.ExerciseEntry.EXERCISE_ID + TEXT_NOT_NULL + ",")
+//                                .append(ExerciseContract.ExerciseEntry.EXERCISE_NAME +  TEXT_NOT_NULL + ",")
+//                                .append(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION +  TEXT_NOT_NULL + ",")
+//                                .append(ExerciseContract.ExerciseEntry.EXERCISE_STEPS +  TEXT_NOT_NULL + ",")
+//                                .append(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE +  TEXT_NOT_NULL + ",")
+//                                .append(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO +  TEXT_NOT_NULL)
+//                                .append(");");
+//                                */
+//
+//                        long _id = db.insert(ExerciseContract.ExerciseEntry.TABLE_EXERCISE,null,
+//                            value);
+//
+//                        Log.d(TAG, "bulk insert ContentValues:" + _id);
+//                        if (_id != -1) {
+//                            rowsInserted++;
+//                            Log.d(TAG, "total bulk insert num:" + rowsInserted);
+//                        }
+//                    }
+//                    db.setTransactionSuccessful();
+//                } finally {
+//                    db.endTransaction();
+//                }
+//
+//                if (rowsInserted > 0) {
+//                    // need to notify the data change is happnened to URI uri
+//                    getContext().getContentResolver().notifyChange(uri, null);
+//                }
+//
+//                Log.d(TAG,"bulk insert:" + rowsInserted);
+//                return rowsInserted; // need to return the number of rows that have been inserted
 
-                        long _id = db.insert(ExerciseContract.ExerciseEntry.TABLE_ALL,null,
-                            value);
-
-                        Log.d(TAG, "bulk insert ContentValues:" + _id);
-                        if (_id != -1) {
-                            rowsInserted++;
-                            Log.d(TAG, "total bulk insert num:" + rowsInserted);
-                        }
-                    }
-                    db.setTransactionSuccessful();
-                } finally {
-                    db.endTransaction();
-                }
-
-                if (rowsInserted > 0) {
-                    // need to notify the data change is happnened to URI uri
-                    getContext().getContentResolver().notifyChange(uri, null);
-                }
-
-                Log.d(TAG,"bulk insert:" + rowsInserted);
-                return rowsInserted; // need to return the number of rows that have been inserted
+                return -1;
 
             case ALL_EXERCISE:
                 db.beginTransaction();

@@ -96,6 +96,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise_swipe_view);
 
+        loaderCallbacks =  ExerciseSwipeViewActivity.this;
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.swipe_view_coordinateLayout);
         //mToolBarImage = (ImageView) findViewById(R.id.swipe_view_category_image);
         //mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.swipe_view_collapsingtoolbarlayout);
@@ -136,6 +137,19 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                 String tabText = (String) tab.getText();
                 CharSequence debugmsg = "tab position:" + tabPosition + " tab text:" + tabText;
                 Toast.makeText(getApplicationContext(), debugmsg, Toast.LENGTH_LONG).show();
+                switch (tabPosition)
+                {
+                    case "0":
+                        getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID,null, loaderCallbacks);
+                        break;
+                    case "1":
+                        // query the favorite
+                        getSupportLoaderManager().initLoader(FAVORITE_EXERCISE_DB_DATA_LOADER_ID,null, loaderCallbacks);
+                        break;
+                    default:
+                        Log.d(TAG,"invalid tab position!");
+
+                }
             }
 
             @Override
@@ -205,9 +219,9 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
         // Log.d(TAG,"Google Endpoint API response:-" + response);
 
         // TODO: get the JSON data, then starts the Sync task
-        loaderCallbacks =  ExerciseSwipeViewActivity.this;                                            
+
         Log.d(TAG,"initLoader to get the DB Cursor for all exercises");                               
-        getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);  
+        getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
     }
 
     private void getResponseFromEndPoint(boolean useEndPoint) {
@@ -249,12 +263,13 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
     // Loader's Callback method
     @Override
     public CursorLoader onCreateLoader(int loaderId, Bundle args) {
-        CursorLoader loader = null;
+
         Log.d(TAG,"onCreateLoader:-" + loaderId);
         switch (loaderId) {
             case ALL_EXERCISE_DB_DATA_LOADER_ID:
+                CursorLoader loader = null;
                 /* URI for all rows of all exercise data in table */
-                Uri forecastQueryUri = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
+                Uri queryUri = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
                 /* Sort order: Ascending by exercise id */
                 String sortOrder = ExerciseContract.ExerciseEntry.EXERCISE_ID + " ASC";
                 /*
@@ -267,24 +282,37 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                 // SQL's where clause - where category = SQUAT or PULL or PUSH
                 String selectionByCategoryName = ExerciseContract.ExerciseEntry.CATEGORY + "=?";
 
-//                loader = new CursorLoader(this,
-//                        forecastQueryUri,
-//                        EXERCISE_PROJECTION,
-//                        selectionByCategoryName,
-//                        new String[] {mExceriseCategoryName},
-//                        sortOrder);
+                loader = new CursorLoader(this,
+                        queryUri,
+                        EXERCISE_PROJECTION,
+                        selectionByCategoryName,
+                        new String[] {mExceriseCategoryName},
+                        sortOrder);
                 
                 // Get the data from here instead of the onCreate method
                 // getResponseFromEndPoint(true);
-
-                loader = new CursorLoader(this,
-                        forecastQueryUri,
+//
+//                loader = new CursorLoader(this,
+//                        queryUri,
+//                        EXERCISE_PROJECTION,
+//                        null,
+//                        null,
+//                        sortOrder);
+                Log.d(TAG,"loader:-" + loader);
+                return loader;
+            case FAVORITE_EXERCISE_DB_DATA_LOADER_ID:
+                CursorLoader loader2 = null;
+                Uri queryUri2 = ExerciseContract.ExerciseEntry.CONTENT_URI_FAV;
+                /* Sort order: Ascending by exercise id */
+                String favSortOrder = ExerciseContract.ExerciseEntry.EXERCISE_ID + " ASC";
+                loader2 = new CursorLoader(this,
+                        queryUri2,
                         EXERCISE_PROJECTION,
                         null,
                         null,
-                        sortOrder);
-                Log.d(TAG,"loader:-" + loader);
-                return loader;
+                        favSortOrder);
+                Log.d(TAG, "loader2 Get uri:- " + loader2.getUri() );
+                return loader2;
             default:
                 throw new RuntimeException("Loader Not Implemented: " + loaderId);
         }
@@ -297,14 +325,20 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
         if (data != null) {
             Log.e(TAG,"onLoadFinished - I got the data!");
             mDataCursor = data;
+            Log.d(TAG, "onLoadFinished loader Get uri:- " + ((CursorLoader)loader).getUri() );
             mDataCursor.moveToFirst();
             if (loaderID == ALL_EXERCISE_DB_DATA_LOADER_ID) {
                 Log.d(TAG,"Update Adapter for All Fragment");
-                // TODO: FIX the issue why Fragment is null ?? when clicking back
-                mFragment1.updateAdapterData(mDataCursor);
-            } else {
+                Log.d(TAG,"All items in the cursor:" + mDataCursor.getCount());
+                data.moveToFirst();
+                //mFragment1.updateAdapterData(mDataCursor);
+                mFragment1.updateAdapterData(data);
+            } else if (loaderID == FAVORITE_EXERCISE_DB_DATA_LOADER_ID) {
                 Log.d(TAG,"Update Adapter for Favorite Fragment");
-                mFragment2.updateAdapterData(mDataCursor);
+                Log.d(TAG,"favorite items in the cursor:" + mDataCursor.getCount());
+                // mFragment2.updateAdapterData(mDataCursor);
+                data.moveToFirst();
+                mFragment2.updateAdapterData(data);
             }
 
 //            mForecastAdapter.swapCursor(data);
