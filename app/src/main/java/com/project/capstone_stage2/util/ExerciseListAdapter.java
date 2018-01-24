@@ -42,7 +42,7 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
         public void onShareClick();
 
         // pass in selected Row ID
-        public void onAddFavClick(Cursor cursor);
+        public boolean onAddFavClick(Cursor cursor);
     }
 
     // Default Constructor
@@ -61,7 +61,9 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
     @Override
     public void onBindViewHolder(ExerciseListAdapter.ExerciseViewHolder holder, int position, List payloads) {
         // TODO: bind the data
-        mCursor.moveToPosition(position);
+        if (mCursor != null && !mCursor.isClosed()) {
+            mCursor.moveToPosition(position);
+        }
         // get data by index
         //int weatherId = mCursor.getInt(MainActivity.INDEX_WEATHER_CONDITION_ID);
         super.onBindViewHolder(holder, position, payloads);
@@ -92,26 +94,28 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
     @Override
     public void onBindViewHolder(ExerciseViewHolder holder, int position) {
         // TODO: so before that we need to pass the cursor by setAdapterData
-        if (mCursor != null) {
+        if (mCursor != null && !mCursor.isClosed()) {
             mCursor.moveToPosition(position);
-        }
 
-        holder.mExerciseName.setText(mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME)));
-        // TODO: add back the Backend JSON with exercise description
-        // holder.mExerciseDesc.setText(mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION)));
-        // set the DUMMY data for now
-        holder.mExerciseDesc.setText("<exercise description here...>");
-        String imageURL = mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE));
 
-        // holder.mExerciseImage.setImageResource(mCursor.getInt(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE)));
+            // TODO: StaleException - after going back to MainActivity the cursor is destroyed!
+            holder.mExerciseName.setText(mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME)));
+            // TODO: add back the Backend JSON with exercise description
+            // holder.mExerciseDesc.setText(mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION)));
+            // set the DUMMY data for now
+            holder.mExerciseDesc.setText("<exercise description here...>");
+            String imageURL = mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE));
+
+            // holder.mExerciseImage.setImageResource(mCursor.getInt(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE)));
 //        if(!imageURL.isEmpty() && imageURL != null) {
 //            // Picasso will handle loading the images on a background thread, image decompression and caching the images.
 //            Picasso.with(mContext).load(imageURL).into(holder.mExerciseImage);
 //        }
 
-        // will use the default image for now
-        int defaultImage = R.drawable.exercise_default;
-        Picasso.with(mContext).load(defaultImage).into(holder.mExerciseImage);
+            // will use the default image for now
+            int defaultImage = R.drawable.exercise_default;
+            Picasso.with(mContext).load(defaultImage).into(holder.mExerciseImage);
+        }
     }
 
     @Override
@@ -200,7 +204,6 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
             mShareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
                     if(exerciseItemOnClickHandler!=null) {
                         exerciseItemOnClickHandler.onShareClick();
                     }
@@ -211,16 +214,19 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
                 @Override
                 public void onClick(View view) {
 
-                    if(exerciseItemOnClickHandler!=null){
+                    if (exerciseItemOnClickHandler != null){
 
                         int adapterPosition = getAdapterPosition();
-                        mCursor.moveToPosition(adapterPosition);
+                        // mCursor.moveToPosition(adapterPosition);
+                        Cursor cursor =  mCursor;
+                        cursor.moveToPosition(adapterPosition);
                         //int id_index = mCursor.getColumnIndex(ExerciseContract.ExerciseEntry._ID)
                         //int _id = mCursor.getInt(id_index);
                         //long dateInMillis = mCursor.getLong(MainActivity.INDEX_WEATHER_DATE);
                         //mClickHandler.onClick(dateInMillis);
 
-                        exerciseItemOnClickHandler.onAddFavClick(mCursor);
+                        boolean addFavorite = exerciseItemOnClickHandler.onAddFavClick(cursor);
+                        mAddFavButton.setEnabled(!addFavorite);
                     }
                 }
             });

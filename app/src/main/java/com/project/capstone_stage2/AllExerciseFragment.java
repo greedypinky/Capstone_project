@@ -24,9 +24,6 @@ import com.project.capstone_stage2.util.ExerciseListAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link AllExerciseFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
  * Use the {@link AllExerciseFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
@@ -46,7 +43,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     private ExerciseListAdapter mAdapter;
 
 
-    private OnFragmentInteractionListener mListener;
+   // private OnFragmentInteractionListener mListener;
 
     public AllExerciseFragment() {
         // Required empty public constructor
@@ -92,11 +89,27 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.all_execise_loading_indicator);
 
         // if no data
-        if (!mHasData) {
+//        if (!mHasData) {
+//
+//            showErrorMessage();
+//        }
 
-            showErrorMessage();
-        }
+        showLoading();
+
         return rootView;
+    }
+
+    private void showLoading() {
+        /* Then, hide the weather data */
+        mRecyclerView.setVisibility(View.INVISIBLE);
+        /* Finally, show the loading indicator */
+        mProgressIndicator.setVisibility(View.VISIBLE);
+    }
+
+    private void showData() {
+        mProgressIndicator.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.VISIBLE);
+
     }
 
     /**
@@ -109,7 +122,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         if(cursor != null) {
             mAdapter.setAdapterData(cursor);
             mHasData = true;
-            hideErrorMessage();
+            showData();
         } else {
             mHasData = false;
             showErrorMessage();
@@ -118,9 +131,9 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+//        if (mListener != null) {
+//            mListener.onFragmentInteraction(uri);
+//        }
     }
 
     @Override
@@ -139,7 +152,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        //mListener = null;
     }
 
     // This is a callback method of ExerciseListAdapter
@@ -154,8 +167,9 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         Toast.makeText(getContext(),"share content!", Toast.LENGTH_LONG).show();
     }
 
+    // Call back method for ExerciseListAdapter to pass in the cursor
     @Override
-    public void onAddFavClick(Cursor cursor) {
+    public boolean onAddFavClick(Cursor cursor) {
 
         // https://developer.android.com/guide/topics/providers/content-provider-basics.html
         // select the row from All Exercise and add the parameter to Favorite Exercise
@@ -165,23 +179,73 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         String exeName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
         //long dateInMillis = mCursor.getLong(MainActivity.INDEX_WEATHER_DATE);
 
-        Toast.makeText(getContext(),"add favorite:- " + exeID + ":" + exeName, Toast.LENGTH_LONG).show();
-        // Defines an object to contain the new values to insert
-          ContentValues mNewValues = new ContentValues();
-        mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_ID,cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID)));
-        mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_NAME,cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID)));
-        mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION,cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID)));
-        mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_STEPS,cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID)));
-        mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE,cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID)));
-        mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO,cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID)));
-        mNewValues.put(ExerciseContract.ExerciseEntry.CATEGORY,cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.CATEGORY)));
-        mNewValues.put(ExerciseContract.ExerciseEntry.CATEGORY_DESC,cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.CATEGORY_DESC)));
 
-        Uri insertUri =  getActivity().getContentResolver()
-                     .insert(ExerciseContract.ExerciseEntry.CONTENT_URI_FAV, mNewValues);
+//        Log.d(TAG,"insert favorite index0: " + cursor.getColumnIndex(ExerciseContract.ExerciseEntry.CATEGORY));
+//        Log.d(TAG,"insert favorite index1: " + cursor.getColumnIndex(ExerciseContract.ExerciseEntry.CATEGORY_DESC));
+//        Log.d(TAG,"insert favorite index2: " + cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID));
+//        Log.d(TAG,"insert favorite index3: " + cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
+//        Log.d(TAG,"insert favorite index4: " + cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION));
+//
+//        Log.d(TAG,"insert favorite index5: " + cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE));
+//        Log.d(TAG,"insert favorite index6: " + cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO));
+//        Log.d(TAG,"insert favorite index7: " + cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_STEPS));
 
-        Log.d(TAG,"insert favorite exercise result uri: " + insertUri);
+
+        Log.d(TAG,"insert favorite index0: " + cursor.getString(0) );
+        Log.d(TAG,"insert favorite index1: " + cursor.getString(1) );
+        Log.d(TAG,"insert favorite index2: " + cursor.getString(2) );
+        Log.d(TAG,"insert favorite index3: " + cursor.getString(3) );
+        Log.d(TAG,"insert favorite index4: " + cursor.getString(4) );
+        Log.d(TAG,"insert favorite index5: " + cursor.getString(5) );
+        Log.d(TAG,"insert favorite index6: " + cursor.getString(6) );
+        Log.d(TAG,"insert favorite index0: " + cursor.getString(7) );
+
+
+
+        Toast.makeText(getContext(), "add favorite:- " + exeID + ":" + exeName, Toast.LENGTH_LONG).show();
+        // CREATE TABLE AllExercise (_id INTEGER PRIMARY KEY AUTOINCREMENT,category TEXT NOT NULL,categoryDesc TEXT NOT NULL,exerciseID TEXT NOT NULL,name TEXT NOT NULL,description TEXT NOT NULL,steps TEXT NOT NULL,image TEXT NOT NULL,video TEXT NOT NULL);
+
+        if (cursor != null || !cursor.isClosed()) {
+            // Defines an object to contain the new values to insert
+            ContentValues mNewValues = new ContentValues();
+
+//            mNewValues.put(ExerciseContract.ExerciseEntry.CATEGORY, cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.CATEGORY)));
+//            mNewValues.put(ExerciseContract.ExerciseEntry.CATEGORY_DESC, cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.CATEGORY_DESC)));
+//            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_ID, cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID)));
+//            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_NAME, cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME)));
+//            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION, cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION)));
+//            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_STEPS, cursor.getString(5));
+//            //mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_STEPS, "no steps");
+//            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE, cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE)));
+//            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO, cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO)));
+
+/// 01-23 00:07:05.885 2637-2637/com.project.capstone_stage2 E/CursorWindow: Failed to read row 0, column 7 from a CursorWindow which has 2 rows, 7 columns.
+            mNewValues.put(ExerciseContract.ExerciseEntry.CATEGORY, cursor.getString(0));
+            mNewValues.put(ExerciseContract.ExerciseEntry.CATEGORY_DESC, cursor.getString(1));
+            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_ID, cursor.getString(2));
+            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_NAME, cursor.getString(3));
+            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION, cursor.getString(4));
+            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_STEPS, cursor.getString(5));
+            //mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_STEPS, "no steps");
+            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE, cursor.getString(6));
+            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO, cursor.getString(7));
+
+            Uri insertUri = getActivity().getContentResolver()
+                    .insert(ExerciseContract.ExerciseEntry.CONTENT_URI_FAV, mNewValues);
+            Log.d(TAG, "insert favorite exercise result uri: " + insertUri);
+        } else {
+            Toast.makeText(getContext(), "Error:Cursor is not valid!", Toast.LENGTH_LONG).show();
+        }
+
+
+        if (checkAlreadyInsertAsFavorite(exeID)) {
+            // TODO: disable the ADD Favorite button!
+            return true;
+        }
+
+        return false;
     }
+
 
 
     /**
@@ -194,19 +258,27 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
+//    public interface OnFragmentInteractionListener {
+//        // TODO: Update argument type and name
+//        void onFragmentInteraction(Uri uri);
+//    }
 
-    private void showErrorMessage() {
+    public void showErrorMessage() {
         mNoDataText.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.INVISIBLE);
     }
 
-    private void hideErrorMessage() {
+    public void hideErrorMessage() {
         mNoDataText.setVisibility(View.GONE);
         mRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+    public void showProgress(boolean showProgress) {
+        if(showProgress) {
+            mProgressIndicator.setVisibility(View.VISIBLE);
+        } else {
+            mProgressIndicator.setVisibility(View.GONE);
+        }
     }
 
     // LoaderManager's Callback methods
@@ -228,4 +300,22 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     public void onLoaderReset(Loader<Cursor> loader) {
 
     }
+
+    private boolean checkAlreadyInsertAsFavorite(String exerciseID) {
+        Uri uri = ExerciseContract.ExerciseEntry.CONTENT_URI_FAV;
+        String[] projections = {ExerciseContract.ExerciseEntry.EXERCISE_ID, ExerciseContract.ExerciseEntry.EXERCISE_NAME};
+        String selection = ExerciseContract.ExerciseEntry.EXERCISE_ID + "=?";
+        String[] selectionArgs = {exerciseID};
+        try {
+            Cursor cursor = getActivity().getContentResolver().query(uri,projections,selection,selectionArgs,null);
+            if (cursor.getCount() == 1) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "checkAlreadyInsert:Unable to query the inserted data using id:");
+        }
+        return false;
+    }
+
 }

@@ -16,7 +16,7 @@ public class Category {
             "      \"category description\": \"Squat\",\n" +
             "      \"id\": 1,\n" +
             "      \"name\": \"Squat1\",\n" +
-            "      \"description\": \"\",\n" +
+            "      \"description\": \"this is the description\",\n" +
             "      \"image\": \"imageurl\",\n" +
             "      \"video\": \"videourl\",\n" +
             "      \"steps\": [\n" +
@@ -34,7 +34,7 @@ public class Category {
             "      \"category description\": \"Squat\",\n" +
             "      \"id\": 2,\n" +
             "      \"name\": \"Squat2\",\n" +
-            "      \"description\": \"\",\n" +
+            "      \"description\": \"this is the description\",\n" +
             "      \"image\": \"imageurl\",\n" +
             "      \"video\": \"videourl\",\n" +
             "      \"steps\": [\n" +
@@ -52,7 +52,7 @@ public class Category {
             "      \"category description\": \"UpperBody Pull Exercise\",\n" +
             "      \"id\": 3,\n" +
             "      \"name\": \"Pull exercise 1\",\n" +
-            "      \"description\": \"\",\n" +
+            "      \"description\": \"this is the description\",\n" +
             "      \"image\": \"imageurl\",\n" +
             "      \"video\": \"videourl\",\n" +
             "      \"steps\": [\n" +
@@ -70,7 +70,7 @@ public class Category {
             "      \"category description\": \"UpperBody Push Exercise\",\n" +
             "      \"id\": 4,\n" +
             "      \"name\": \"Push exercise 1\",\n" +
-            "      \"description\": \"\",\n" +
+            "      \"description\": \"this is the description\",\n" +
             "      \"image\": \"imageurl\",\n" +
             "      \"video\": \"videourl\",\n" +
             "      \"steps\": [\n" +

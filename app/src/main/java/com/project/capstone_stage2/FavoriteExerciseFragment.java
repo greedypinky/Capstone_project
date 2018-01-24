@@ -154,16 +154,24 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         void onFragmentInteraction(Uri uri);
     }
 
-    private void showErrorMessage(){
+    public void showErrorMessage(){
 
         mNoDataText.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.GONE);
 
     }
 
-    private void hideErrorMessage(){
+    public void hideErrorMessage(){
 
         mNoDataText.setVisibility(View.GONE);
         mRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+    public void showProgress(boolean showProgress) {
+        if(showProgress) {
+            mProgressIndicator.setVisibility(View.VISIBLE);
+        } else {
+            mProgressIndicator.setVisibility(View.GONE);
+        }
     }
 }

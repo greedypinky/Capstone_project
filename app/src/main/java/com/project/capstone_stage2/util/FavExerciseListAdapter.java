@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import java.util.List;
 
 public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseListAdapter.ExerciseViewHolder> {
 
+    private static final String TAG = FavExerciseListAdapter.class.getSimpleName();
     protected boolean mDataValid;
     protected int mRowID;
     private static Cursor mCursor = null;
@@ -159,6 +161,8 @@ public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseList
             mDataValid = true;
             // notify the observers about the new cursor
             notifyDataSetChanged();
+            Log.d(TAG,"swapCursor: notifyDataSetChanged!");
+            Log.d(TAG,"swapCursor new Cursor count:" + newCursor.getCount());
         } else {
             mRowID = -1;
             mDataValid = false;

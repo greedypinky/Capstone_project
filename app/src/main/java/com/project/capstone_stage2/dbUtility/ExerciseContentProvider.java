@@ -66,26 +66,25 @@ public class ExerciseContentProvider extends ContentProvider {
                 // where exercise_id = ?
                 // pass in selection Args {1}
                 Log.d(TAG,"Query from " + ExerciseContract.ExerciseEntry.TABLE_EXERCISE);
-                cursor = db.query(ExerciseContract.ExerciseEntry.TABLE_EXERCISE ,projection, selection, selectionArgs,null,null,sortOrder);
-
+                cursor = db.query(ExerciseContract.ExerciseEntry.TABLE_EXERCISE ,projection, selection, selectionArgs,null,null, sortOrder);
+                return cursor;
             case FAV_EXERCISE_WITH_ID:
 
-                cursor = db.query(ExerciseContract.ExerciseEntry.TABLE_EXERCISE ,projection, selection, selectionArgs,null,null,sortOrder);
-
+                cursor = db.query(ExerciseContract.ExerciseEntry.TABLE_EXERCISE ,projection, selection, selectionArgs,null,null, sortOrder);
+                return cursor;
             case ALL_EXERCISE:
                 Log.d(TAG,"Query from " + ExerciseContract.ExerciseEntry.TABLE_ALL);
-                cursor = db.query(ExerciseContract.ExerciseEntry.TABLE_ALL,projection, selection, selectionArgs,null,null,sortOrder);
-
+                cursor = db.query(ExerciseContract.ExerciseEntry.TABLE_ALL,projection, selection, selectionArgs,null,null, sortOrder);
+                return cursor;
 
             case ALL_EXERCISE_WITH_ID:
-
-                break;
+                return null;
             default:
                 throw new UnsupportedOperationException("Unable to update table by uri:" + uri);
 
         }
 
-        return cursor;
+
 
     }
 

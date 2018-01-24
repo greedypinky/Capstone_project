@@ -38,6 +38,7 @@ import com.project.capstone_stage2.sync.ExerciseDataSyncTask;
 import com.project.capstone_stage2.util.CategoryListAdapter;
 import com.project.capstone_stage2.util.EndPointsAsyncTask;
 import com.project.capstone_stage2.util.ExerciseListAdapter;
+import com.project.capstone_stage2.util.FavExerciseListAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -81,11 +82,12 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
     private FavoriteExerciseFragment mFragment2;
 
     public static String[] EXERCISE_PROJECTION = {
-             ExerciseContract.ExerciseEntry.CATEGORY,
-                    ExerciseContract.ExerciseEntry.CATEGORY_DESC,
+            ExerciseContract.ExerciseEntry.CATEGORY,
+            ExerciseContract.ExerciseEntry.CATEGORY_DESC,
             ExerciseContract.ExerciseEntry.EXERCISE_ID,
             ExerciseContract.ExerciseEntry.EXERCISE_NAME,
             ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION,
+            ExerciseContract.ExerciseEntry.EXERCISE_STEPS,
             ExerciseContract.ExerciseEntry.EXERCISE_IMAGE,
             ExerciseContract.ExerciseEntry.EXERCISE_VIDEO
     };
@@ -140,10 +142,21 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                 switch (tabPosition)
                 {
                     case "0":
+                        // not only do we need to load the data but also need to get the fragment instance?
+                        if (mFragment1 == null) {
+
+                            Log.d(TAG,"when tab again, the fragment1 is null!");
+                            mFragment1 = (AllExerciseFragment) mAdapterViewPager.getItem(0);
+                        }
                         getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID,null, loaderCallbacks);
                         break;
                     case "1":
                         // query the favorite
+                        if (mFragment2 == null) {
+
+                            Log.d(TAG,"when tab again, the fragment2 is null!");
+                            mFragment2 = (FavoriteExerciseFragment) mAdapterViewPager.getItem(1);
+                        }
                         getSupportLoaderManager().initLoader(FAVORITE_EXERCISE_DB_DATA_LOADER_ID,null, loaderCallbacks);
                         break;
                     default:
@@ -186,12 +199,12 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
             // get information from intent
             Intent intent = getIntent();
             if (intent != null && intent.getExtras() != null) {
-                 Bundle bundle = intent.getExtras();
-                 mExceriseCategoryName = bundle.getString("name");
-                 mExceriseCategoryDesc = bundle.getString("desc");
-                 mExceriseCategoryImage = bundle.getInt("image");
-                 Log.d(TAG,String.format("Category name:%s CategoryDesc:%s CategoryImage:%s",
-                         mExceriseCategoryName,mExceriseCategoryDesc,mExceriseCategoryImage));
+                Bundle bundle = intent.getExtras();
+                mExceriseCategoryName = bundle.getString("name");
+                mExceriseCategoryDesc = bundle.getString("desc");
+                mExceriseCategoryImage = bundle.getInt("image");
+                Log.d(TAG,String.format("Category name:%s CategoryDesc:%s CategoryImage:%s",
+                        mExceriseCategoryName,mExceriseCategoryDesc,mExceriseCategoryImage));
             }
 
         }
@@ -203,7 +216,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
         //getSupportLoaderManager().initLoader(LOADER_ID, null, loaderCallbacks);
 
         // get the fragment that includes the ViewPager for AllExercise and FavoriteExercise
-       // mFragmentSwipeView = fragmentManager.findFragmentById(R.id.swipe_view_fragment);
+        // mFragmentSwipeView = fragmentManager.findFragmentById(R.id.swipe_view_fragment);
 
 
         // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -220,7 +233,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
 
         // TODO: get the JSON data, then starts the Sync task
 
-        Log.d(TAG,"initLoader to get the DB Cursor for all exercises");                               
+        Log.d(TAG,"onCreate() initLoader to get the DB Cursor for all exercises");
         getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
     }
 
@@ -288,7 +301,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                         selectionByCategoryName,
                         new String[] {mExceriseCategoryName},
                         sortOrder);
-                
+
                 // Get the data from here instead of the onCreate method
                 // getResponseFromEndPoint(true);
 //
@@ -332,12 +345,21 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                 Log.d(TAG,"All items in the cursor:" + mDataCursor.getCount());
                 data.moveToFirst();
                 //mFragment1.updateAdapterData(mDataCursor);
+                // TODO:- at this point sometimes Fragment is null
+                if (mFragment1 == null) {
+                    Log.d(TAG,"when tab again, the fragment1 is null!");
+                    mFragment1 = (AllExerciseFragment) mAdapterViewPager.getItem(0);
+                }
                 mFragment1.updateAdapterData(data);
             } else if (loaderID == FAVORITE_EXERCISE_DB_DATA_LOADER_ID) {
                 Log.d(TAG,"Update Adapter for Favorite Fragment");
                 Log.d(TAG,"favorite items in the cursor:" + mDataCursor.getCount());
                 // mFragment2.updateAdapterData(mDataCursor);
                 data.moveToFirst();
+                if (mFragment2 == null) {
+                    Log.d(TAG,"when tab again, the fragment2 is null!");
+                    mFragment2 = (FavoriteExerciseFragment) mAdapterViewPager.getItem(1);
+                }
                 mFragment2.updateAdapterData(data);
             }
 
@@ -484,11 +506,11 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
             // TODO: add back how to get the Page's fragment by position
             switch (position) {
                 case 0: // Fragment # 0 - This will show FirstFragment
-                     mFragment1 = AllExerciseFragment.newInstance(0, "All Exercise Page # 1");
+                    mFragment1 = AllExerciseFragment.newInstance(0, "All Exercise Page # 1");
                     // TODO : assign the result to mDataCursor
                     //fragment1.updateAdapterData(mDataCursor);
                     return mFragment1;
-                case 1: // Fragment # 0 - This will show FirstFragment different title
+                case 1: // Fragment # 1 - This will show second Fragment different title
                     mFragment2 = FavoriteExerciseFragment.newInstance(1, "Favorite Exercise Page # 2");
                     // TODO : assign the result to mDataCursor
                     //fragment2.updateAdapterData(mDataCursor);
