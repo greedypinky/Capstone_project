@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import com.project.capstone_stage2.util.FavExerciseListAdapter;
  */
 public class FavoriteExerciseFragment extends Fragment implements FavExerciseListAdapter.ExerciseItemOnClickHandler {
     // TODO: Rename parameter arguments, choose names that match
+    private static final String TAG = FavoriteExerciseFragment.class.getSimpleName();
     private static final String ARG_PAGE = "page";
     private static final String ARG_TITLE = "page_title";
 
@@ -98,7 +100,8 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
        // mAdapter.setAdapterData(cursor);
         // TODO: update the cursor
         // TODO: question - when do we need to close the cursor ??
-        if(cursor != null) {
+        if(cursor != null && !cursor.isClosed()) {
+            Log.d(TAG,"Cursor is not null, updateAdapterData!");
             mAdapter.setAdapterData(cursor);
             hideErrorMessage();
             mHasData = true;

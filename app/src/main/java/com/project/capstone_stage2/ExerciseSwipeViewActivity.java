@@ -149,6 +149,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                             mFragment1 = (AllExerciseFragment) mAdapterViewPager.getItem(0);
                         }
                         getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID,null, loaderCallbacks);
+
                         break;
                     case "1":
                         // query the favorite
@@ -157,6 +158,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                             Log.d(TAG,"when tab again, the fragment2 is null!");
                             mFragment2 = (FavoriteExerciseFragment) mAdapterViewPager.getItem(1);
                         }
+
                         getSupportLoaderManager().initLoader(FAVORITE_EXERCISE_DB_DATA_LOADER_ID,null, loaderCallbacks);
                         break;
                     default:
@@ -318,12 +320,18 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                 Uri queryUri2 = ExerciseContract.ExerciseEntry.CONTENT_URI_FAV;
                 /* Sort order: Ascending by exercise id */
                 String favSortOrder = ExerciseContract.ExerciseEntry.EXERCISE_ID + " ASC";
+                String selectionByCategoryName2 = ExerciseContract.ExerciseEntry.CATEGORY + "=?";
+//                loader2 = new CursorLoader(this,
+//                        queryUri2,
+//                        EXERCISE_PROJECTION,
+//                        selectionByCategoryName2,
+//                        new String[] {mExceriseCategoryName},
+//                        favSortOrder);
                 loader2 = new CursorLoader(this,
                         queryUri2,
                         EXERCISE_PROJECTION,
                         null,
-                        null,
-                        favSortOrder);
+                        null,favSortOrder);
                 Log.d(TAG, "loader2 Get uri:- " + loader2.getUri() );
                 return loader2;
             default:
@@ -360,6 +368,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                     Log.d(TAG,"when tab again, the fragment2 is null!");
                     mFragment2 = (FavoriteExerciseFragment) mAdapterViewPager.getItem(1);
                 }
+                Log.d(TAG,"onLoadFinish - Favorite case what is the count??" + data.getCount());
                 mFragment2.updateAdapterData(data);
             }
 

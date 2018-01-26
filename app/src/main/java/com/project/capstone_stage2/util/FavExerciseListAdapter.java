@@ -150,20 +150,21 @@ public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseList
     }
 
     public Cursor swapCursor(Cursor newCursor) {
-        if (newCursor == mCursor) {
-            return null;
-        }
+//        if (newCursor == mCursor) {
+//            return null;
+//        }
         Cursor oldCursor = mCursor;
         mCursor = newCursor;
-        if (newCursor != null) {
+        if ( mCursor != null) {
             // Why we do not have a column for _id ??
             //mRowID = newCursor.getColumnIndexOrThrow(ExerciseContract.ExerciseEntry._ID);
             mDataValid = true;
             // notify the observers about the new cursor
             notifyDataSetChanged();
             Log.d(TAG,"swapCursor: notifyDataSetChanged!");
-            Log.d(TAG,"swapCursor new Cursor count:" + newCursor.getCount());
+            Log.d(TAG,"swapCursor new Cursor count:" +  mCursor.getCount());
         } else {
+            Log.d(TAG,"newCursor is null!");
             mRowID = -1;
             mDataValid = false;
             // notify the observers about the lack of a data set

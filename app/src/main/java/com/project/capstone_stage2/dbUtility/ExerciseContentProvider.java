@@ -63,18 +63,24 @@ public class ExerciseContentProvider extends ContentProvider {
 
         switch (match) {
             case FAV_EXERCISE:
-                // where exercise_id = ?
-                // pass in selection Args {1}
-                Log.d(TAG,"Query from " + ExerciseContract.ExerciseEntry.TABLE_EXERCISE);
+                Log.d(TAG,"QUERY:FAVORITE EXERCISE Query from " + ExerciseContract.ExerciseEntry.TABLE_EXERCISE);
                 cursor = db.query(ExerciseContract.ExerciseEntry.TABLE_EXERCISE ,projection, selection, selectionArgs,null,null, sortOrder);
+                if(cursor!=null) {
+                   int count = cursor.getCount();
+                    Log.d(TAG,"cursor count:" + count);
+                }
                 return cursor;
             case FAV_EXERCISE_WITH_ID:
-
+                Log.d(TAG,"QUERY:FAVORITE EXERCISE ID Query from " + ExerciseContract.ExerciseEntry.TABLE_EXERCISE);
                 cursor = db.query(ExerciseContract.ExerciseEntry.TABLE_EXERCISE ,projection, selection, selectionArgs,null,null, sortOrder);
                 return cursor;
             case ALL_EXERCISE:
-                Log.d(TAG,"Query from " + ExerciseContract.ExerciseEntry.TABLE_ALL);
+                Log.d(TAG,"QUERY:ALL EXERCISE Query from " + ExerciseContract.ExerciseEntry.TABLE_ALL);
                 cursor = db.query(ExerciseContract.ExerciseEntry.TABLE_ALL,projection, selection, selectionArgs,null,null, sortOrder);
+                if(cursor!=null) {
+                    int count = cursor.getCount();
+                    Log.d(TAG,"cursor count:" + count);
+                }
                 return cursor;
 
             case ALL_EXERCISE_WITH_ID:
@@ -130,28 +136,31 @@ public class ExerciseContentProvider extends ContentProvider {
         Log.d(TAG,"matcher: " + match);
 
         switch (match) {
-
            case FAV_EXERCISE:
-               // use the insert method to insert
-              long id = db.insert(ExerciseContract.ExerciseEntry.TABLE_EXERCISE, null,
-               contentValues);
-                // if id is return
-               if (id > 0) {
-                   // build the insert URI with the returned ID
-                  insertUri =  ExerciseContract.ExerciseEntry.buildFavoriteExerciseUriWithId(id);
-                  return insertUri;
-               } else {
-
-                   throw new android.database.SQLException("unable to insert into table:" +
-                           ExerciseContract.ExerciseEntry.TABLE_EXERCISE);
-               }
-
+             //  db.beginTransaction();
+             //  try {
+                   // use the insert method to insert
+                   long id = db.insert(ExerciseContract.ExerciseEntry.TABLE_EXERCISE, null,
+                           contentValues);
+                   // if id is return
+                   if (id > 0) {
+                       // build the insert URI with the returned ID
+                       insertUri = ExerciseContract.ExerciseEntry.buildFavoriteExerciseUriWithId(id);
+                       //return insertUri;
+                   } else {
+                       throw new android.database.SQLException("unable to insert into table:" +
+                               ExerciseContract.ExerciseEntry.TABLE_EXERCISE);
+                   }
+                   //db.setTransactionSuccessful();
+             //  } finally {
+             //      db.endTransaction();
+             //  }
+               break;
            default:
                throw new UnsupportedOperationException("insert fail-unsupported url");
-
        }
 
-
+       return insertUri;
 
     }
 
@@ -326,14 +335,26 @@ public class ExerciseContentProvider extends ContentProvider {
 
         switch (match) {
             case FAV_EXERCISE:
-                updatedRowsNum = db.update(ExerciseContract.ExerciseEntry.TABLE_EXERCISE, contentValues, whereClause, whereArgs);
+                db.beginTransaction();
+                try {
+                    updatedRowsNum = db.update(ExerciseContract.ExerciseEntry.TABLE_EXERCISE, contentValues, whereClause, whereArgs);
+                    //db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
                 break;
             case FAV_EXERCISE_WITH_ID:
-                updatedRowsNum = db.update(ExerciseContract.ExerciseEntry.TABLE_EXERCISE,
-                         contentValues,
-                        ExerciseContract.ExerciseEntry._ID + " =?", // baseColumn's ID
-                         new String[] { String.valueOf(ContentUris.parseId(uri)) }
-                         );
+                db.beginTransaction();
+                try {
+                    updatedRowsNum = db.update(ExerciseContract.ExerciseEntry.TABLE_EXERCISE,
+                            contentValues,
+                            ExerciseContract.ExerciseEntry._ID + " =?", // baseColumn's ID
+                            new String[]{String.valueOf(ContentUris.parseId(uri))});
+                    //db.setTransactionSuccessful();
+                } finally {
+
+                    db.endTransaction();
+                }
                 break;
             default:
                 throw new UnsupportedOperationException("Unable to update table by uri:" + uri);

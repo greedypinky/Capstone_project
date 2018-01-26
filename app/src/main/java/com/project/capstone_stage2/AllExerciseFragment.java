@@ -117,9 +117,8 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
      * @param cursor
      */
     public void updateAdapterData(Cursor cursor) {
-        // TODO: update the cursor
-        // TODO: question - when do we need to close the cursor ??
         if(cursor != null) {
+            // TODO: how come quickly click on tab page the mAdapter is not ready ??
             mAdapter.setAdapterData(cursor);
             mHasData = true;
             showData();
@@ -309,6 +308,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         try {
             Cursor cursor = getActivity().getContentResolver().query(uri,projections,selection,selectionArgs,null);
             if (cursor.getCount() == 1) {
+                Log.d(TAG,"checkAlreadyInsertAsFavorite:" + cursor.getCount());
                 return true;
             }
         } catch (Exception e) {
