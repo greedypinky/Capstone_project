@@ -17,6 +17,7 @@
         card_view:cardElevation="@dimen/cardview_default_elevation"
         card_view:cardUseCompatPadding="true"
         android:layout_margin="5dp"
+        android:layout_gravity="center"
         >
 
         <LinearLayout

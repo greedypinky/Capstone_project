@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/swipe_view_coordinateLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.project.capstone_stage2.ExerciseSwipeViewActivity">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/swipe_view_appbarlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            android:elevation="4dp"
+            android:theme="@style/AppTheme.AppBarOverlay">
+            <android.support.design.widget.CollapsingToolbarLayout
+                android:id="@+id/swipe_view_collapsingtoolbarlayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:contentScrim="@color/colorPrimary"
+                app:layout_scrollFlags="scroll"
+                app:expandedTitleMarginStart="48dp"
+                app:expandedTitleMarginEnd="64dp">
+
+                <ImageView
+                    android:id="@+id/swipe_view_category_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_collapseMode="parallax"
+                    />
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/swipe_view_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/colorPrimary"
+                    app:layout_collapseMode="pin" />
+
+            </android.support.design.widget.CollapsingToolbarLayout>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <!-- ViewPager -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+        <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/exercise_pager"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <!-- use TabLayout -->
+            <android.support.design.widget.TabLayout
+                android:id="@+id/sliding_tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top" />
+
+
+        </android.support.v4.view.ViewPager>
+
+        <!-- this xml includes the right pane fragment-->
+        <!-- A small divider -->
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@android:color/darker_gray" />
+
+        <!-- right pane layout -->
+
+        <fragment
+            android:id="@+id/fragment_steps_detail_land"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="match_parent"
+            android:name="com.project.capstone_stage2.ExerciseDetailFragment">
+        </fragment>
+
+        </LinearLayout>
+    </android.support.design.widget.CoordinatorLayout>
+
+
+
+</FrameLayout>

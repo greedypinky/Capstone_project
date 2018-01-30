@@ -37,6 +37,7 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
     private ProgressBar mProgressIndicator;
     private boolean mHasData = false;
     private FavExerciseListAdapter mAdapter;
+    private boolean mTwoPane = false;
 
 
     private OnFragmentInteractionListener mListener;
@@ -70,6 +71,7 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(TAG,"onCreateView is called!");
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_favorite_exercise, container, false);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.fav_execise_recyclerview);
@@ -102,13 +104,22 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         // TODO: question - when do we need to close the cursor ??
         if(cursor != null && !cursor.isClosed()) {
             Log.d(TAG,"Cursor is not null, updateAdapterData!");
-            mAdapter.setAdapterData(cursor);
-            hideErrorMessage();
-            mHasData = true;
+            if(mAdapter != null) {
+                mAdapter.setAdapterData(cursor);
+                hideErrorMessage();
+                mHasData = true;
+            } else {
+                Log.d(TAG,"Adapter is null! Why?");
+            }
         } else {
             showErrorMessage();
             mHasData = false;
         }
+    }
+
+
+    public void setPaneMode(boolean mode) {
+        mTwoPane = mode;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

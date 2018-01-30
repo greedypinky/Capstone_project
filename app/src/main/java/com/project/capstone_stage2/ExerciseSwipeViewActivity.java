@@ -47,6 +47,7 @@ import java.io.InputStream;
 /**
  * ExerciseSwipeViewActivity
  * includes the TabView layout: All and Favorite execise
+ *
  */
 public class ExerciseSwipeViewActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, EndPointsAsyncTask.AsyncResponse {
 
@@ -80,6 +81,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
 
     private AllExerciseFragment mFragment1;
     private FavoriteExerciseFragment mFragment2;
+    private boolean mTwoPaneMode = false;
 
     public static String[] EXERCISE_PROJECTION = {
             ExerciseContract.ExerciseEntry.CATEGORY,
@@ -100,34 +102,25 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
 
         loaderCallbacks =  ExerciseSwipeViewActivity.this;
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.swipe_view_coordinateLayout);
-        //mToolBarImage = (ImageView) findViewById(R.id.swipe_view_category_image);
-        //mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.swipe_view_collapsingtoolbarlayout);
+        mToolBarImage = (ImageView) findViewById(R.id.swipe_view_category_image);
+        mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.swipe_view_collapsingtoolbarlayout);
         mToolBar = (Toolbar) findViewById(R.id.swipe_view_toolbar);
         // set toolbar
         setSupportActionBar(mToolBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mViewPager = findViewById(R.id.exercise_pager);
-        mAdapterViewPager = new MyFragmentPagerAdapter(getSupportFragmentManager());
-        mViewPager.setAdapter(mAdapterViewPager);
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        ExerciseDetailFragment detailFragment = (ExerciseDetailFragment) fragmentManager.findFragmentById(R.id.fragment_steps_detail_land);
+        if (detailFragment != null) {
+            Log.d(TAG, "sw600dp Two pane mode is detected!");
+            mTwoPaneMode = true;
+            // Right pane - Show the Place holder string when no exercise is selected
+            detailFragment.showGetStartPlaceHolderStr(true);
+        } else {
+            Log.d(TAG, "Only one pane is detected!");
+        }
 
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-                // TODO: how can we update the data ?
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
+        //example http://saulmm.github.io/mastering-coordinator
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(mViewPager);
@@ -178,12 +171,27 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
             }
         });
 
+        mViewPager = findViewById(R.id.exercise_pager);
+        mAdapterViewPager = new MyFragmentPagerAdapter(getSupportFragmentManager());
+        mViewPager.setAdapter(mAdapterViewPager);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-        //mViewPager = findViewById(R.id.exercise_pager);
-        //mAdapterViewPager = new SwipeViewFragment.MyFragmentPagerAdapter(getFragmentManager());
-        //mViewPager.setAdapter(mAdapterViewPager);
+            }
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
+            @Override
+            public void onPageSelected(int position) {
+
+                // TODO: how can we update the data ?
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
         if (savedInstanceState != null) {
 
             // TODO: add back implementation for SavedInstanceState for this view
@@ -211,7 +219,10 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
 
         }
 
-        // Picasso.with(getApplicationContext()).load(mExceriseCategoryImage).into(mToolBarImage);
+        // will use the default image for now
+        int defaultImage = R.drawable.exercise_default;
+        //Picasso.with(getApplicationContext()).load(mExceriseCategoryImage).into(mToolBarImage);
+        Picasso.with(getApplicationContext()).load(defaultImage).into(mToolBarImage);
 
         // https://www.grokkingandroid.com/using-loaders-in-android/
         //loaderCallbacks = ExerciseSwipeViewActivity.this;
@@ -349,7 +360,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
             Log.d(TAG, "onLoadFinished loader Get uri:- " + ((CursorLoader)loader).getUri() );
             mDataCursor.moveToFirst();
             if (loaderID == ALL_EXERCISE_DB_DATA_LOADER_ID) {
-                Log.d(TAG,"Update Adapter for All Fragment");
+
                 Log.d(TAG,"All items in the cursor:" + mDataCursor.getCount());
                 data.moveToFirst();
                 //mFragment1.updateAdapterData(mDataCursor);
@@ -358,7 +369,10 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                     Log.d(TAG,"when tab again, the fragment1 is null!");
                     mFragment1 = (AllExerciseFragment) mAdapterViewPager.getItem(0);
                 }
+                Log.d(TAG,"onLoadFinished:Update Adapter for All Fragment if mFragment1 is not null!");
                 mFragment1.updateAdapterData(data);
+                mFragment1.setPaneMode(mTwoPaneMode);
+
             } else if (loaderID == FAVORITE_EXERCISE_DB_DATA_LOADER_ID) {
                 Log.d(TAG,"Update Adapter for Favorite Fragment");
                 Log.d(TAG,"favorite items in the cursor:" + mDataCursor.getCount());
@@ -370,6 +384,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                 }
                 Log.d(TAG,"onLoadFinish - Favorite case what is the count??" + data.getCount());
                 mFragment2.updateAdapterData(data);
+                mFragment2.setPaneMode(mTwoPaneMode);
             }
 
 //            mForecastAdapter.swapCursor(data);

@@ -2,6 +2,7 @@ package com.project.capstone_stage2;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -41,6 +42,8 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     private ProgressBar mProgressIndicator;
     private boolean mHasData = false;
     private ExerciseListAdapter mAdapter;
+    private Cursor mCursor = null;
+    private boolean mTwoPane = false;
 
 
    // private OnFragmentInteractionListener mListener;
@@ -78,11 +81,13 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(TAG,"onCreateView is called!");
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_all_exercise, container, false);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.all_execise_recyclerview);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
         mRecyclerView.setHasFixedSize(true);
+        Log.d(TAG,"onCreateView:-create new instance for Recycler Adapter");
         mAdapter = new ExerciseListAdapter(getContext(),this);
         mRecyclerView.setAdapter(mAdapter);
         mNoDataText = (TextView) rootView.findViewById(R.id.all_execise_no_data_error_text);
@@ -94,7 +99,8 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 //            showErrorMessage();
 //        }
 
-        showLoading();
+        //showLoading();
+        showData();
 
         return rootView;
     }
@@ -119,13 +125,24 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     public void updateAdapterData(Cursor cursor) {
         if(cursor != null) {
             // TODO: how come quickly click on tab page the mAdapter is not ready ??
-            mAdapter.setAdapterData(cursor);
-            mHasData = true;
-            showData();
+            if(cursor != null) {
+                if(mAdapter != null) {
+                    mAdapter.setAdapterData(cursor);
+                    mHasData = true;
+                    showData();
+                    mCursor = cursor;
+                } else {
+                    Log.e(TAG,"Error:Adapter is null ? why?");
+                }
+            }
         } else {
             mHasData = false;
             showErrorMessage();
         }
+    }
+
+    public void setPaneMode(boolean mode) {
+        mTwoPane = mode;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -155,10 +172,21 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     }
 
     // This is a callback method of ExerciseListAdapter
+    // when click it will launch the Exercise Detail Activity
     @Override
-    public void onClickExercise() {
+    public void onClickExercise(Cursor cursor) {
         // TODO: implement how to handle when the Exercise Item is selected!
         Toast.makeText(getContext(),"navigate to Detail view", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(getContext() ,ExerciseDetailActivity.class);
+        Bundle bundle = new Bundle();
+        String exeID = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID));
+        String exeVideoURL = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO));
+        String exeSteps = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_STEPS));
+        bundle.putString(ExerciseDetailActivity.EXERCISE_KEY,exeID);
+        bundle.putString(ExerciseDetailActivity.EXERCISE_STEPS,exeSteps);
+        bundle.putString(ExerciseDetailActivity.EXERCISE_VIDEO_URL, exeVideoURL);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @Override
@@ -318,4 +346,9 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         return false;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+    }
 }

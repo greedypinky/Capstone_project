@@ -36,6 +36,7 @@ dependencies {
     // exoPlayer
     // compile 'com.google.android.exoplayer:exoplayer:r2.6.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.google.android.exoplayer:exoplayer:r2.2.0'
     compile 'com.android.support:recyclerview-v7:26.1.0'
     compile 'com.android.support:cardview-v7:26.1.0'
     compile 'com.google.code.findbugs:jsr305:2.0.1'

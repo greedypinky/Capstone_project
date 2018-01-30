@@ -21,7 +21,6 @@
         </activity>
         <activity
             android:name=".ExerciseSwipeViewActivity"
-            android:label="@string/title_activity_exercise_swipe_view"
             android:theme="@style/AppTheme.NoActionBar" />
 
 

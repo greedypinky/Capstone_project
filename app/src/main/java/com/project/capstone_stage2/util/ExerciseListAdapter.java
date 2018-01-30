@@ -19,6 +19,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import static android.content.ContentValues.TAG;
+
 // https://developer.android.com/training/material/lists-cards.html
 // RecyclerView provides these built-in layout managers:
 //
@@ -37,7 +39,7 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
 
     public interface ExerciseItemOnClickHandler {
         // callback to handle when VH is clicked
-        public void onClickExercise();
+        public void onClickExercise(Cursor cursor);
 
         public void onShareClick();
 
@@ -112,7 +114,7 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
 //            Picasso.with(mContext).load(imageURL).into(holder.mExerciseImage);
 //        }
 
-            // will use the default image for now
+            // TODO: will use the default image for now - need to load a real image !
             int defaultImage = R.drawable.exercise_default;
             Picasso.with(mContext).load(defaultImage).into(holder.mExerciseImage);
         }
@@ -236,12 +238,14 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
         // View.OnClickListener's method
         @Override
         public void onClick(View view) {
+            Log.d(TAG, "onClick Method to call the call back method on position");
             int adapterPosition = getAdapterPosition();
+            Log.d(TAG, "onClick Method to call the call back method on position:" + adapterPosition);
              mCursor.moveToPosition(adapterPosition);
             // Use Call back to pass information back to the activity
             //long dateInMillis = mCursor.getLong(MainActivity.INDEX_WEATHER_DATE);
             // mClickHandler.onClick(dateInMillis);
-            exerciseItemOnClickHandler.onClickExercise();
+            exerciseItemOnClickHandler.onClickExercise(mCursor);
 
         }
     }

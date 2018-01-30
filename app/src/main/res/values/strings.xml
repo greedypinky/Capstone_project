@@ -8,13 +8,19 @@
     <string name="title_activity_exercise_detail">ExerciseDetailActivity</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
-    <!-- Error Message String -->
-    <string name="error_no_exercise">Sorry,no excercise!</string>
+   <!-- default strings -->
     <string name="default_category_name">Category Name</string>
     <string name="default_category_desc">Category Desc</string>
+    <!-- Tab's name -->
     <string name="all_exercise">All</string>
     <string name="favorite_exercise">Favorite</string>
+    <!-- button strings -->
     <string name="btn_share">Share</string>
     <string name="btn_addFavorite">Add to favorite</string>
     <string name="btn_removeFavorite">Remove favorite</string>
+
+    <!-- Error Message String -->
+    <string name="error_no_exercise">No Excercise!</string>
+    <string name="error_no_video">No video for this exercise!</string>
+    <string name="get_start">Please select an exercise to get start!</string>
 </resources>
