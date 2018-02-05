@@ -11,6 +11,10 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import com.project.capstone_stage2.R;
 import com.project.capstone_stage2.sync.ExerciseDataSyncTask;
 import com.project.capstone_stage2.util.CategoryListAdapter;
@@ -33,10 +37,22 @@ import java.io.InputStream;
 
 // Main activity includes the CardView Layout for the activity
 public class MainActivity extends AppCompatActivity implements CategoryListAdapter.CardViewOnClickListener,EndPointsAsyncTask.AsyncResponse {
+
+
+    // App ID: ca-app-pub-3160158119336562~7703910721
+    /* Follow the SDK integration guide. Specify ad type, size, and placement when you integrate the code.
+     App ID: ca-app-pub-3160158119336562~7703910721
+     Ad unit ID: ca-app-pub-3160158119336562/5237884703
+    */
+    // ca-app-pub-3160158119336562~4874289441
+    private static final String AD_MOB_APP_ID = "ca-app-pub-3160158119336562~4874289441";
+    private static final String AD_MOB_UNIT_ID = "ca-app-pub-3160158119336562/6706245862";
     private static final String TAG = MainActivity.class.getSimpleName();
     private RecyclerView mRecyclerView = null;
     private CategoryListAdapter mListAdapter = null;
     private String mEXERCISE_DATA_FROM_ENDPOINT = null;
+    private InterstitialAd mInterstitial;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +67,18 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         mRecyclerView.setLayoutManager(linearLayoutManager);
         boolean useEndPoint = true;
+        // This the ads view
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+
         getResponseFromEndPoint(useEndPoint);
     }
 
     // Implement the callback method so that when clicking on ViewHolder Item, it will handle the navigation properly.
     @Override
     public void onClickCategory(CategoryListAdapter.ExerciseCategory category) {
+        // before showing the Exercise, lets show the ads here
+        showAds();
+
         // TODO: please add back the Intent and StartActivity with the intent!!
         Toast.makeText(this,"Start activity for " + category.getCategoryName(), Toast.LENGTH_LONG).show();
         Intent intent = new Intent(this,ExerciseSwipeViewActivity.class);
@@ -106,21 +128,37 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
 
     }
 
-//    public String getJSONFromAsset() {
-//        String json = null;
-//        try {
-//
-//            InputStream is = getAssets().open("exercise.json");
-//            int size = is.available();
-//            byte[] buffer = new byte[size];
-//            is.read(buffer);
-//            is.close();
-//            json = new String(buffer, "UTF-8");
-//        } catch (IOException ex) {
-//            ex.printStackTrace();
-//            return null;
-//        }
-//        return json;
-//    }
+    // at least it works when click on back
+    private void showAds() {
+        Log.d(TAG,"Show the TestAds from AdMob");
+        // Only show when it is a FREE application
+        if (mInterstitial!=null && mInterstitial.isLoaded()) {
+            mInterstitial.show();
+        } else {
+            initAds();
+            if ( mInterstitial!=null && mInterstitial.isLoaded()) {
+                mInterstitial.show();
+            }
+        }
+    }
+
+    private void initAds () {
+
+        // initialize Mobile Ads SDK with the AdMob App ID
+        MobileAds.initialize(this, AD_MOB_APP_ID);
+        mInterstitial = new InterstitialAd(this);
+        mInterstitial.setAdUnitId(AD_MOB_UNIT_ID); // TODO: replace ID please
+
+        // AdView mAdView = (AdView) root.findViewById(R.id.adView);
+        // Create an ad request. Check logcat output for the hashed device ID to
+        // get test ads on a physical device. e.g.
+        // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
+
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();
+        // mAdView.loadAd(adRequest);
+        mInterstitial.loadAd(adRequest);
+    }
 
 }

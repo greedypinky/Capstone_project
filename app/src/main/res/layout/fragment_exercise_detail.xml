@@ -1,9 +1,12 @@
+<ScrollView   xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.project.capstone_stage2.ExerciseDetailFragment">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context="com.project.capstone_stage2.ExerciseDetailFragment"
+        android:layout_height="wrap_content"
         android:id="@+id/fragment_exercise_detail"
         android:orientation="vertical"
         android:paddingTop="24dp"
@@ -49,6 +52,8 @@
             android:gravity="center"/>
 
     </LinearLayout>
+
+</ScrollView>
 
 
 

@@ -46,7 +46,22 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     private boolean mTwoPane = false;
 
 
-   // private OnFragmentInteractionListener mListener;
+    private AllExerciseFragment.OnFragmentInteractionListener mListener = null;
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void twoPaneModeOnClick(String exerciseID, String steps, String videoURL);
+    }
 
     public AllExerciseFragment() {
         // Required empty public constructor
@@ -59,12 +74,13 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
      */
     // TODO: Rename and change types and number of parameter
 
-    public static AllExerciseFragment newInstance(int page, String title) {
+    public static AllExerciseFragment newInstance(int page, String title,boolean twoPane) {
         AllExerciseFragment fragment = new AllExerciseFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_PAGE, page);
         args.putString(ARG_TITLE, title);
         fragment.setArguments(args);
+        fragment.setPaneMode(twoPane);
         return fragment;
     }
 
@@ -88,7 +104,10 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
         mRecyclerView.setHasFixedSize(true);
         Log.d(TAG,"onCreateView:-create new instance for Recycler Adapter");
-        mAdapter = new ExerciseListAdapter(getContext(),this);
+        // THINK ABOUT if we need to have 2 fragment
+        // actually the only difference is the adapter, do you think we need seperate Fragment class?
+        boolean isAllFragment = true;
+        mAdapter = new ExerciseListAdapter(getContext(),this, isAllFragment);
         mRecyclerView.setAdapter(mAdapter);
         mNoDataText = (TextView) rootView.findViewById(R.id.all_execise_no_data_error_text);
         mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.all_execise_loading_indicator);
@@ -101,19 +120,20 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 
         //showLoading();
         showData();
-
         return rootView;
     }
 
     private void showLoading() {
         /* Then, hide the weather data */
-        mRecyclerView.setVisibility(View.INVISIBLE);
+        mRecyclerView.setVisibility(View.GONE);
+        mNoDataText.setVisibility(View.GONE);
         /* Finally, show the loading indicator */
         mProgressIndicator.setVisibility(View.VISIBLE);
     }
 
     private void showData() {
         mProgressIndicator.setVisibility(View.GONE);
+        mNoDataText.setVisibility(View.GONE);
         mRecyclerView.setVisibility(View.VISIBLE);
 
     }
@@ -127,18 +147,26 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
             // TODO: how come quickly click on tab page the mAdapter is not ready ??
             if(cursor != null) {
                 if(mAdapter != null) {
-                    mAdapter.setAdapterData(cursor);
+                    mCursor = cursor;
+                    mAdapter.setAdapterData(mCursor);
                     mHasData = true;
                     showData();
-                    mCursor = cursor;
+
                 } else {
                     Log.e(TAG,"Error:Adapter is null ? why?");
                 }
             }
         } else {
             mHasData = false;
-            showErrorMessage();
+            // showErrorMessage();
         }
+    }
+
+    /**
+     * Set Cursor to Null
+     */
+    public void resetAdapterData() {
+        mCursor = null;
     }
 
     public void setPaneMode(boolean mode) {
@@ -157,12 +185,12 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 
         super.onAttach(context);
         // TODO: uncomment the callback listener if it is needed !
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
     }
 
     @Override
@@ -176,17 +204,33 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     @Override
     public void onClickExercise(Cursor cursor) {
         // TODO: implement how to handle when the Exercise Item is selected!
-        Toast.makeText(getContext(),"navigate to Detail view", Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(getContext() ,ExerciseDetailActivity.class);
-        Bundle bundle = new Bundle();
-        String exeID = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID));
-        String exeVideoURL = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO));
-        String exeSteps = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_STEPS));
-        bundle.putString(ExerciseDetailActivity.EXERCISE_KEY,exeID);
-        bundle.putString(ExerciseDetailActivity.EXERCISE_STEPS,exeSteps);
-        bundle.putString(ExerciseDetailActivity.EXERCISE_VIDEO_URL, exeVideoURL);
-        intent.putExtras(bundle);
-        startActivity(intent);
+        // If one pane - start the Detail Activity
+        Log.d(TAG, "onClickExercise:check 2 Pane mode is:" + mTwoPane);
+        Toast.makeText(getContext(), "2 pane mode:" + mTwoPane, Toast.LENGTH_LONG).show();
+       if (!mTwoPane ) {
+           Toast.makeText(getContext(), "navigate to Detail view", Toast.LENGTH_LONG).show();
+           Intent intent = new Intent(getContext(), ExerciseDetailActivity.class);
+           Bundle bundle = new Bundle();
+           String exeID = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID));
+           String exeVideoURL = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO));
+           String exeSteps = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_STEPS));
+           bundle.putString(ExerciseDetailActivity.EXERCISE_KEY, exeID);
+           bundle.putString(ExerciseDetailActivity.EXERCISE_STEPS, exeSteps);
+           bundle.putString(ExerciseDetailActivity.EXERCISE_VIDEO_URL, exeVideoURL);
+           intent.putExtras(bundle);
+           startActivity(intent);
+       } else {
+           // when in Two pane!
+           // Activity need to implement the Fragment listener to pass back the information to show the video
+           // show the video on the right pane
+           String exeID = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID));
+           String exeVideoURL = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO));
+           String exeSteps = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_STEPS));
+           mListener.twoPaneModeOnClick(exeID,exeSteps,exeVideoURL);
+
+           Toast.makeText(getContext(), "Callback action for 2pane mode, what the hell!", Toast.LENGTH_LONG).show();
+
+       }
     }
 
     @Override
@@ -273,7 +317,10 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         return false;
     }
 
-
+    @Override
+    public boolean onRemoveFavClick(Cursor cursor) {
+        return false;
+    }
 
     /**
      * This interface must be implemented by activities that contain this
@@ -292,7 +339,8 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 
     public void showErrorMessage() {
         mNoDataText.setVisibility(View.VISIBLE);
-        mRecyclerView.setVisibility(View.INVISIBLE);
+        mRecyclerView.setVisibility(View.GONE);
+        showProgress(false);
     }
 
     public void hideErrorMessage() {

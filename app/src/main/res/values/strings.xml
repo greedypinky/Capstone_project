@@ -8,7 +8,7 @@
     <string name="title_activity_exercise_detail">ExerciseDetailActivity</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
-   <!-- default strings -->
+    <!-- default strings -->
     <string name="default_category_name">Category Name</string>
     <string name="default_category_desc">Category Desc</string>
     <!-- Tab's name -->
@@ -23,4 +23,7 @@
     <string name="error_no_exercise">No Excercise!</string>
     <string name="error_no_video">No video for this exercise!</string>
     <string name="get_start">Please select an exercise to get start!</string>
+    <string name="ad_unit_id">ca-app-pub-3160158119336562/6706245862</string>
+    <string name="title_activity_widget_config">WidgetConfigActivity</string>
+
 </resources>

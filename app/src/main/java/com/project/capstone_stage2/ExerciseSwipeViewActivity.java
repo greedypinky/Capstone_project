@@ -49,7 +49,8 @@ import java.io.InputStream;
  * includes the TabView layout: All and Favorite execise
  *
  */
-public class ExerciseSwipeViewActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, EndPointsAsyncTask.AsyncResponse {
+public class ExerciseSwipeViewActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
+        EndPointsAsyncTask.AsyncResponse, AllExerciseFragment.OnFragmentInteractionListener {
 
     private static final String TAG = ExerciseSwipeViewActivity.class.getSimpleName();
     private static final int ALL_EXERCISE_DB_DATA_LOADER_ID = 1000;
@@ -82,6 +83,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
     private AllExerciseFragment mFragment1;
     private FavoriteExerciseFragment mFragment2;
     private boolean mTwoPaneMode = false;
+    ExerciseDetailFragment mDetailFragment; // show this Detail Fragment on right if in 2 pane mode.
 
     public static String[] EXERCISE_PROJECTION = {
             ExerciseContract.ExerciseEntry.CATEGORY,
@@ -93,7 +95,6 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
             ExerciseContract.ExerciseEntry.EXERCISE_IMAGE,
             ExerciseContract.ExerciseEntry.EXERCISE_VIDEO
     };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,14 +111,72 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        ExerciseDetailFragment detailFragment = (ExerciseDetailFragment) fragmentManager.findFragmentById(R.id.fragment_steps_detail_land);
-        if (detailFragment != null) {
+        mDetailFragment = (ExerciseDetailFragment) fragmentManager.findFragmentById(R.id.fragment_steps_detail_land);
+        if (mDetailFragment != null) {
             Log.d(TAG, "sw600dp Two pane mode is detected!");
             mTwoPaneMode = true;
             // Right pane - Show the Place holder string when no exercise is selected
-            detailFragment.showGetStartPlaceHolderStr(true);
+            mDetailFragment.showGetStartPlaceHolderStr(true);
         } else {
+            mTwoPaneMode = false;
             Log.d(TAG, "Only one pane is detected!");
+            // will use the default image for now
+            int defaultImage = R.drawable.exercise_default;
+            //Picasso.with(getApplicationContext()).load(mExceriseCategoryImage).into(mToolBarImage);
+            if (mToolBarImage!=null) {
+                Picasso.with(getApplicationContext()).load(defaultImage).into(mToolBarImage);
+            }
+        }
+
+        // init the ViewPager
+        mViewPager = findViewById(R.id.exercise_pager);
+        mAdapterViewPager = new MyFragmentPagerAdapter(getSupportFragmentManager());
+        mViewPager.setAdapter(mAdapterViewPager);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+                // TODO: how can we update the data ?
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+
+
+        if (savedInstanceState != null) {
+
+            // TODO: add back implementation for SavedInstanceState for this view
+            if(savedInstanceState.containsKey(CATEGORY_NAME_KEY)) {
+                mExceriseCategoryName = savedInstanceState.getString(CATEGORY_NAME_KEY);
+            }
+            if(savedInstanceState.containsKey(CATEGORY_DESC_KEY)) {
+                mExceriseCategoryDesc = savedInstanceState.getString(CATEGORY_DESC_KEY);
+            }
+            if(savedInstanceState.containsKey(CATEGORY_IMAGE_KEY)) {
+                mExceriseCategoryImage = savedInstanceState.getInt(CATEGORY_IMAGE_KEY);
+            }
+
+        } else {
+            // get information from intent
+            Intent intent = getIntent();
+            if (intent != null && intent.getExtras() != null) {
+                Bundle bundle = intent.getExtras();
+                mExceriseCategoryName = bundle.getString("name");
+                mExceriseCategoryDesc = bundle.getString("desc");
+                mExceriseCategoryImage = bundle.getInt("image");
+                Log.d(TAG,String.format("Category name:%s CategoryDesc:%s CategoryImage:%s",
+                        mExceriseCategoryName,mExceriseCategoryDesc,mExceriseCategoryImage));
+            }
+
         }
 
         //example http://saulmm.github.io/mastering-coordinator
@@ -171,58 +230,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
             }
         });
 
-        mViewPager = findViewById(R.id.exercise_pager);
-        mAdapterViewPager = new MyFragmentPagerAdapter(getSupportFragmentManager());
-        mViewPager.setAdapter(mAdapterViewPager);
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-                // TODO: how can we update the data ?
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
-        if (savedInstanceState != null) {
-
-            // TODO: add back implementation for SavedInstanceState for this view
-            if(savedInstanceState.containsKey(CATEGORY_NAME_KEY)) {
-                mExceriseCategoryName = savedInstanceState.getString(CATEGORY_NAME_KEY);
-            }
-            if(savedInstanceState.containsKey(CATEGORY_DESC_KEY)) {
-                mExceriseCategoryDesc = savedInstanceState.getString(CATEGORY_DESC_KEY);
-            }
-            if(savedInstanceState.containsKey(CATEGORY_IMAGE_KEY)) {
-                mExceriseCategoryImage = savedInstanceState.getInt(CATEGORY_IMAGE_KEY);
-            }
-
-        } else {
-            // get information from intent
-            Intent intent = getIntent();
-            if (intent != null && intent.getExtras() != null) {
-                Bundle bundle = intent.getExtras();
-                mExceriseCategoryName = bundle.getString("name");
-                mExceriseCategoryDesc = bundle.getString("desc");
-                mExceriseCategoryImage = bundle.getInt("image");
-                Log.d(TAG,String.format("Category name:%s CategoryDesc:%s CategoryImage:%s",
-                        mExceriseCategoryName,mExceriseCategoryDesc,mExceriseCategoryImage));
-            }
-
-        }
-
-        // will use the default image for now
-        int defaultImage = R.drawable.exercise_default;
-        //Picasso.with(getApplicationContext()).load(mExceriseCategoryImage).into(mToolBarImage);
-        Picasso.with(getApplicationContext()).load(defaultImage).into(mToolBarImage);
 
         // https://www.grokkingandroid.com/using-loaders-in-android/
         //loaderCallbacks = ExerciseSwipeViewActivity.this;
@@ -409,11 +417,11 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
         Log.d(TAG, "onLoadFinished by loader ID:-" + loaderID);
 
         if (loaderID == ALL_EXERCISE_DB_DATA_LOADER_ID) {
-            Log.d(TAG, "Update Adapter for All Fragment");
-            mFragment1.updateAdapterData(null);
+            Log.d(TAG, "AllExerciseFragment : Set cursor to null");
+            mFragment1.resetAdapterData();
         } else {
-            Log.d(TAG, "Update Adapter for Favorite Fragment");
-            mFragment2.updateAdapterData(null);
+            Log.d(TAG, "FavoriteExerciseFragment : Set cursor to null");
+            mFragment2.resetAdapterData();
         }
 
     }
@@ -487,6 +495,22 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
 
     }
 
+    // Fragment callback to pass back the exercise details to start the video
+    @Override
+    public void twoPaneModeOnClick(String exerciseID, String steps, String videoURL) {
+        Log.d(TAG, "twoPaneModeOnClick - will call the  mDetailFragment.setFragmentData");
+        Bundle bundle = new Bundle();
+        bundle.putString(ExerciseDetailActivity.EXERCISE_KEY, exerciseID);
+        bundle.putString(ExerciseDetailActivity.EXERCISE_STEPS, steps);
+        bundle.putString(ExerciseDetailActivity.EXERCISE_VIDEO_URL, videoURL);
+        if (mDetailFragment!=null) {
+
+            mDetailFragment.setFragmentData(bundle);
+            mDetailFragment.showVideo(true);
+        }
+
+    }
+
     // swipe across a collection of Fragment objects
     // https://guides.codepath.com/android/Google-Play-Style-Tabs-using-TabLayout
     public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
@@ -530,12 +554,12 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
             // TODO: add back how to get the Page's fragment by position
             switch (position) {
                 case 0: // Fragment # 0 - This will show FirstFragment
-                    mFragment1 = AllExerciseFragment.newInstance(0, "All Exercise Page # 1");
+                    mFragment1 = AllExerciseFragment.newInstance(0, getString(R.string.all_exercise), mTwoPaneMode);
                     // TODO : assign the result to mDataCursor
                     //fragment1.updateAdapterData(mDataCursor);
                     return mFragment1;
                 case 1: // Fragment # 1 - This will show second Fragment different title
-                    mFragment2 = FavoriteExerciseFragment.newInstance(1, "Favorite Exercise Page # 2");
+                    mFragment2 = FavoriteExerciseFragment.newInstance(1, getString(R.string.favorite_exercise), mTwoPaneMode);
                     // TODO : assign the result to mDataCursor
                     //fragment2.updateAdapterData(mDataCursor);
                     return mFragment2;

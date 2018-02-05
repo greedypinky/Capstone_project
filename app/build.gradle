@@ -35,6 +35,8 @@ dependencies {
     // picasso
     // exoPlayer
     // compile 'com.google.android.exoplayer:exoplayer:r2.6.0'
+    // compile 'com.google.android.gms:play-services-ads:11.0.8'
+    compile 'com.google.android.gms:play-services-ads:9.0.2'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.google.android.exoplayer:exoplayer:r2.2.0'
     compile 'com.android.support:recyclerview-v7:26.1.0'

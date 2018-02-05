@@ -21,14 +21,16 @@
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:text="@string/error_no_exercise"
+        android:layout_gravity="center"
+        android:gravity="center"/>
         android:visibility="gone"
-        android:layout_gravity="center"/>
 
     <ProgressBar
         android:id="@+id/all_execise_loading_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:gravity="center"
         android:visibility="gone"/>
 
 </FrameLayout>

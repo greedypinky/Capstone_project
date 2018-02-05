@@ -14,6 +14,9 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.project.capstone_stage2.util.ExerciseListAdapter;
 import com.project.capstone_stage2.util.FavExerciseListAdapter;
 
 /**
@@ -37,7 +40,10 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
     private ProgressBar mProgressIndicator;
     private boolean mHasData = false;
     private FavExerciseListAdapter mAdapter;
+    // Try to use the same adapter instead of 2
+    // private ExerciseListAdapter mAdapter;
     private boolean mTwoPane = false;
+    private Cursor mCursor = null;
 
 
     private OnFragmentInteractionListener mListener;
@@ -51,11 +57,12 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
      * this fragment using the provided parameters.
      */
     // TODO: Rename and change types and number of parameters
-    public static FavoriteExerciseFragment newInstance(int page, String title) {
+    public static FavoriteExerciseFragment newInstance(int page, String title, boolean twoPane) {
         FavoriteExerciseFragment fragment = new FavoriteExerciseFragment();
         Bundle args = new Bundle();
         args.putString(ARG_TITLE, title);
         fragment.setArguments(args);
+        fragment.setPaneMode(twoPane);
         return fragment;
     }
 
@@ -78,7 +85,8 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
         mRecyclerView.setHasFixedSize(true);
         // fixed the nullpointerException by pass in context from constructor
-        mAdapter = new FavExerciseListAdapter(getContext(),this);
+         mAdapter = new FavExerciseListAdapter(getContext(),this);
+        // mAdapter = new ExerciseListAdapter(getContext(), this, false);
         mRecyclerView.setAdapter(mAdapter);
         mNoDataText = (TextView) rootView.findViewById(R.id.fav_execise_no_data_error_text);
         mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.fav_execise_loading_indicator);
@@ -105,7 +113,8 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         if(cursor != null && !cursor.isClosed()) {
             Log.d(TAG,"Cursor is not null, updateAdapterData!");
             if(mAdapter != null) {
-                mAdapter.setAdapterData(cursor);
+                mCursor = cursor;
+                mAdapter.setAdapterData(mCursor);
                 hideErrorMessage();
                 mHasData = true;
             } else {
@@ -117,6 +126,12 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         }
     }
 
+    /**
+     * Set Cursor to Null
+     */
+    public void resetAdapterData() {
+        mCursor = null;
+    }
 
     public void setPaneMode(boolean mode) {
         mTwoPane = mode;
@@ -147,11 +162,46 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         mListener = null;
     }
 
-    // This is a callback method of ExerciseListAdapter
+    // Implement the Callback methods
+//    @Override
+//    public void onClickExercise(Cursor cursor) {
+//
+//        Toast.makeText(getContext(),"FavoriteExercise - onClickExercise", Toast.LENGTH_LONG).show();
+//
+//    }
+//
+//    @Override
+//    public void onShareClick() {
+//        Toast.makeText(getContext(),"share content!", Toast.LENGTH_LONG).show();
+//    }
+//
+//    @Override
+//    public boolean onAddFavClick(Cursor cursor) {
+//        return false;
+//    }
+//
+//    @Override
+//    public boolean onRemoveFavClick(Cursor cursor) {
+//        Toast.makeText(getContext(),"Remove ", Toast.LENGTH_LONG).show();
+//        return false;
+//    }
+
     @Override
     public void onClickExercise() {
-        // TODO: implement how to handle when the Exercise Item is selected!
+        Toast.makeText(getContext(), "navigate to Detail view", Toast.LENGTH_LONG).show();
     }
+
+    @Override
+    public void onShareClick() {
+        Toast.makeText(getContext(), "Share!", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public boolean onRemoveFavClick(Cursor cursor) {
+        return false;
+    }
+
+
 
     /**
      * This interface must be implemented by activities that contain this

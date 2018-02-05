@@ -39,9 +39,9 @@ public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseList
         // callback to handle when VH is clicked
         public void onClickExercise();
 
-        //public void onShareClick();
+        public void onShareClick();
 
-        //public void onAddFavClick();
+        public boolean onRemoveFavClick(Cursor cursor);
     }
 
     // Default Constructor
@@ -198,6 +198,25 @@ public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseList
             mRemoveFavButton = (Button) itemView.findViewById(R.id.remove_fav_btn);
 
             // TODO: add onClickListener to the Fav Button to trigger the callback?
+            mRemoveFavButton = (Button) itemView.findViewById(R.id.remove_fav_btn);
+            if (mRemoveFavButton!=null) {
+                mRemoveFavButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        if (exerciseItemOnClickHandler != null) {
+
+                            int adapterPosition = getAdapterPosition();
+                            // mCursor.moveToPosition(adapterPosition);
+                            Cursor cursor = mCursor;
+                            cursor.moveToPosition(adapterPosition);
+
+                            boolean removeFavorite = exerciseItemOnClickHandler.onRemoveFavClick(cursor);
+                            //mAddFavButton.setEnabled(!addFavorite);
+                        }
+                    }
+                });
+            }
 
         }
 

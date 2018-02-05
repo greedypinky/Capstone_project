@@ -175,12 +175,15 @@ public class ExerciseDetailFragment extends Fragment {
 
     public void showVideo(boolean show) {
         if (show) {
+            // if there is video for the exercise
             mNoVideo.setVisibility(View.GONE);
             mPlaceHolder.setVisibility(View.GONE);
             mStepVideoView.setVisibility(View.VISIBLE);
             mExerciseSteps.setVisibility(View.VISIBLE);
         } else {
+            // if no video for the exercise
             mNoVideo.setVisibility(View.VISIBLE);
+            mStepVideoView.setVisibility(View.GONE);
             mStepVideoView.setVisibility(View.GONE);
             mPlaceHolder.setVisibility(View.GONE);
         }
@@ -188,10 +191,12 @@ public class ExerciseDetailFragment extends Fragment {
 
     public void showGetStartPlaceHolderStr(boolean show) {
         if (show) {
-            mNoVideo.setVisibility(View.GONE);
-            mStepVideoView.setVisibility(View.GONE);
-            mExerciseSteps.setVisibility(View.GONE);
-            mPlaceHolder.setVisibility(View.VISIBLE);
+            mPlaceHolder.setVisibility(View.VISIBLE); // No Exercise is selected!
+            // Not show video until the video is clicked
+//            mNoVideo.setVisibility(View.GONE);
+//            mStepVideoView.setVisibility(View.GONE);
+//            mExerciseSteps.setVisibility(View.GONE);
+
 
         }
     }
@@ -303,7 +308,9 @@ public class ExerciseDetailFragment extends Fragment {
         super.onResume();
         Log.d(TAG, "onResume - initialize the player");
         // TODO: get the video url again
-        //initializePlayer(Uri.parse(videoURL));
+        if (mVideoURI !=null) {
+            initializePlayer(mVideoURI);
+        }
     }
 
     @Override

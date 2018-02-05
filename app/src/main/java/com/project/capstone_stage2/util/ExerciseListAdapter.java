@@ -1,6 +1,7 @@
 package com.project.capstone_stage2.util;
 
 import android.content.Context;
+import android.content.CursorLoader;
 import android.database.Cursor;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -36,6 +37,7 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
     // TODO: activity need to implement this listener 's call back and pass into the adapter
     private static ExerciseItemOnClickHandler exerciseItemOnClickHandler;
     private static Context mContext;
+    boolean mIsAllExercise = true;
 
     public interface ExerciseItemOnClickHandler {
         // callback to handle when VH is clicked
@@ -45,6 +47,8 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
 
         // pass in selected Row ID
         public boolean onAddFavClick(Cursor cursor);
+
+        public boolean onRemoveFavClick(Cursor cursor);
     }
 
     // Default Constructor
@@ -52,12 +56,12 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
 
     }
 
-    public ExerciseListAdapter(Context context, ExerciseItemOnClickHandler onClickHandler) {
+    public ExerciseListAdapter(Context context, ExerciseItemOnClickHandler onClickHandler, boolean isALLExercise) {
         // implemented by the Activity
         exerciseItemOnClickHandler = onClickHandler;
         // assign the parent's activity
         mContext = context;
-
+        mIsAllExercise = isALLExercise;
     }
 
     @Override
@@ -180,7 +184,7 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
     /**
      * ExerciseViewHolder
      */
-    public static class ExerciseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ExerciseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public CardView mCardView;
         public TextView mExerciseName;
         public TextView mExerciseDesc;
@@ -189,6 +193,8 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
         public Button mShareButton;
         // Add Favorite button
         public Button mAddFavButton;
+        // Remove Favorite button
+        public Button mRemoveFavButton;
 
         public ExerciseViewHolder(View itemView) {
             // initialize the views inside the view holder
@@ -199,7 +205,51 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
             mExerciseDesc = (TextView) itemView.findViewById(R.id.execise_desc);
             mExerciseImage = (ImageView) itemView.findViewById(R.id.execise_image);
             mShareButton = (Button) itemView.findViewById(R.id.share_btn);
-            mAddFavButton = (Button) itemView.findViewById(R.id.add_fav_btn);
+            if (mIsAllExercise) {
+                mAddFavButton = (Button) itemView.findViewById(R.id.add_fav_btn);
+                if (mAddFavButton!=null) {
+                    mAddFavButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                            if (exerciseItemOnClickHandler != null) {
+                                int adapterPosition = getAdapterPosition();
+                                // mCursor.moveToPosition(adapterPosition);
+                                Cursor cursor = mCursor;
+                                cursor.moveToPosition(adapterPosition);
+                                //int id_index = mCursor.getColumnIndex(ExerciseContract.ExerciseEntry._ID)
+                                //int _id = mCursor.getInt(id_index);
+                                //long dateInMillis = mCursor.getLong(MainActivity.INDEX_WEATHER_DATE);
+                                //mClickHandler.onClick(dateInMillis);
+
+                                boolean addFavorite = exerciseItemOnClickHandler.onAddFavClick(cursor);
+                                mAddFavButton.setEnabled(!addFavorite);
+                            }
+                        }
+                    });
+                }
+            } else {
+                mRemoveFavButton = (Button) itemView.findViewById(R.id.remove_fav_btn);
+                if (mRemoveFavButton!=null) {
+                    mRemoveFavButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                            if (exerciseItemOnClickHandler != null) {
+
+                                int adapterPosition = getAdapterPosition();
+                                // mCursor.moveToPosition(adapterPosition);
+                                Cursor cursor = mCursor;
+                                cursor.moveToPosition(adapterPosition);
+
+                                boolean removeFavorite = exerciseItemOnClickHandler.onRemoveFavClick(cursor);
+                                //mAddFavButton.setEnabled(!addFavorite);
+                            }
+                        }
+                    });
+                }
+
+            }
 
             // TODO: add onClickListener to the Fav Button to trigger the callback?
 
@@ -211,28 +261,6 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
                     }
                 }
             });
-
-            mAddFavButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    if (exerciseItemOnClickHandler != null){
-
-                        int adapterPosition = getAdapterPosition();
-                        // mCursor.moveToPosition(adapterPosition);
-                        Cursor cursor =  mCursor;
-                        cursor.moveToPosition(adapterPosition);
-                        //int id_index = mCursor.getColumnIndex(ExerciseContract.ExerciseEntry._ID)
-                        //int _id = mCursor.getInt(id_index);
-                        //long dateInMillis = mCursor.getLong(MainActivity.INDEX_WEATHER_DATE);
-                        //mClickHandler.onClick(dateInMillis);
-
-                        boolean addFavorite = exerciseItemOnClickHandler.onAddFavClick(cursor);
-                        mAddFavButton.setEnabled(!addFavorite);
-                    }
-                }
-            });
-
         }
 
         // View.OnClickListener's method
@@ -246,7 +274,6 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
             //long dateInMillis = mCursor.getLong(MainActivity.INDEX_WEATHER_DATE);
             // mClickHandler.onClick(dateInMillis);
             exerciseItemOnClickHandler.onClickExercise(mCursor);
-
         }
     }
 }
