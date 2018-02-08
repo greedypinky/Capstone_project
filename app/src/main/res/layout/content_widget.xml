@@ -8,4 +8,13 @@
     tools:context="com.project.capstone_stage2.WidgetConfigActivity"
     tools:showIn="@layout/activity_widget_config">
 
+    <ListView
+        android:id="@+id/widget_exercise_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+
+
+    </ListView>
+
 </android.support.constraint.ConstraintLayout>
