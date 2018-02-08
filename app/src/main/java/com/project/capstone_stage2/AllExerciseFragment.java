@@ -19,6 +19,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.project.capstone_stage2.dbUtility.ExerciseContract;
 import com.project.capstone_stage2.util.ExerciseListAdapter;
 
@@ -44,6 +46,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     private ExerciseListAdapter mAdapter;
     private Cursor mCursor = null;
     private boolean mTwoPane = false;
+    private Tracker mTracker;
 
 
     private AllExerciseFragment.OnFragmentInteractionListener mListener = null;
@@ -97,6 +100,11 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        // Obtain the shared Tracker instance.
+        //AnalyticsApplication application = (AnalyticsApplication) getApplication();
+        //mTracker = application.getDefaultTracker();
+
         Log.d(TAG,"onCreateView is called!");
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_all_exercise, container, false);
@@ -234,7 +242,15 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     }
 
     @Override
-    public void onShareClick() {
+    public void onShareClick(Cursor cursor) {
+        String exeID = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID));
+        String exeName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
+
+        // Add analytics to track which exercise is shared
+/*        mTracker.send(new HitBuilders.EventBuilder()
+                .setCategory("Exercise Name:" + exeName)
+                .setAction("Share")
+                .build());*/
         Toast.makeText(getContext(),"share content!", Toast.LENGTH_LONG).show();
     }
 
@@ -242,12 +258,23 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     @Override
     public boolean onAddFavClick(Cursor cursor) {
 
+
+
         // https://developer.android.com/guide/topics/providers/content-provider-basics.html
         // select the row from All Exercise and add the parameter to Favorite Exercise
         int id_index = cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID);
         int name_index = cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME);
         String exeID = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID));
         String exeName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
+
+        // Add analytics to track which exercise is add as favorite
+/*
+        mTracker.send(new HitBuilders.EventBuilder()
+                .setCategory("Exercise Name:" + exeName)
+                .setAction("Add favorite")
+                .build());
+*/
+
         //long dateInMillis = mCursor.getLong(MainActivity.INDEX_WEATHER_DATE);
 
 

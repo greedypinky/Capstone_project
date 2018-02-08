@@ -7,7 +7,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_exercise_detail">ExerciseDetailActivity</string>
     <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
+    <string name="add_widget">Add Exercise Widget</string>
     <!-- default strings -->
     <string name="default_category_name">Category Name</string>
     <string name="default_category_desc">Category Desc</string>

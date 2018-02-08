@@ -33,6 +33,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.Tracker;
 import com.project.capstone_stage2.dbUtility.ExerciseContract;
 import com.project.capstone_stage2.sync.ExerciseDataSyncTask;
 import com.project.capstone_stage2.util.CategoryListAdapter;
@@ -84,6 +85,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
     private FavoriteExerciseFragment mFragment2;
     private boolean mTwoPaneMode = false;
     ExerciseDetailFragment mDetailFragment; // show this Detail Fragment on right if in 2 pane mode.
+    private Tracker mTracker; // https://developers.google.com/analytics/devguides/collection/android/v4/
 
     public static String[] EXERCISE_PROJECTION = {
             ExerciseContract.ExerciseEntry.CATEGORY,
@@ -100,6 +102,10 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise_swipe_view);
+
+        // Obtain the shared Tracker instance.
+        //AnalyticsApplication application = (AnalyticsApplication) getApplication();
+        //mTracker = application.getDefaultTracker();
 
         loaderCallbacks =  ExerciseSwipeViewActivity.this;
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.swipe_view_coordinateLayout);

@@ -43,7 +43,7 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
         // callback to handle when VH is clicked
         public void onClickExercise(Cursor cursor);
 
-        public void onShareClick();
+        public void onShareClick(Cursor cursor);
 
         // pass in selected Row ID
         public boolean onAddFavClick(Cursor cursor);
@@ -257,7 +257,12 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
                 @Override
                 public void onClick(View view) {
                     if(exerciseItemOnClickHandler!=null) {
-                        exerciseItemOnClickHandler.onShareClick();
+
+                        int adapterPosition = getAdapterPosition();
+                        // mCursor.moveToPosition(adapterPosition);
+                        Cursor cursor = mCursor;
+                        cursor.moveToPosition(adapterPosition);
+                        exerciseItemOnClickHandler.onShareClick(cursor);
                     }
                 }
             });

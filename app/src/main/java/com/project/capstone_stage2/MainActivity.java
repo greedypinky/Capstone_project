@@ -15,6 +15,8 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.project.capstone_stage2.R;
 import com.project.capstone_stage2.sync.ExerciseDataSyncTask;
 import com.project.capstone_stage2.util.CategoryListAdapter;
@@ -52,12 +54,17 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
     private CategoryListAdapter mListAdapter = null;
     private String mEXERCISE_DATA_FROM_ENDPOINT = null;
     private InterstitialAd mInterstitial;
+    private Tracker mTracker; // https://developers.google.com/analytics/devguides/collection/android/v4/
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Obtain the shared Tracker instance.
+        //AnalyticsApplication application = (AnalyticsApplication) getApplication();
+        //mTracker = application.getDefaultTracker();
 
         mRecyclerView = (RecyclerView) findViewById(R.id.category_recycler_view);
         mListAdapter = new CategoryListAdapter(this);
@@ -76,6 +83,17 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
     // Implement the callback method so that when clicking on ViewHolder Item, it will handle the navigation properly.
     @Override
     public void onClickCategory(CategoryListAdapter.ExerciseCategory category) {
+
+        // https://github.com/googlesamples/google-services/blob/master/android/analytics/app/src/main/java/com/google/samples/quickstart/analytics/MainActivity.java#L153-L155
+        // add analytics code to check which categories people tends to click on
+        // [START]
+        /*
+        Log.i(TAG, "Clicks on category: " + category);
+        mTracker.setScreenName("Category screen: " + category);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        */
+        // [END]
+
         // before showing the Exercise, lets show the ads here
         showAds();
 
