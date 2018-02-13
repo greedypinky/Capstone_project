@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Capstone_stage2</string>
+    <string name="app_name">Naoto Work From Home Exercise</string>
     <string name="title_activity_exercise_swipe_view">ExerciseSwipeViewActivity</string>
     <string name="content_authority">com.project.capstone_stage2.app.provider</string>
 
@@ -8,6 +8,7 @@
     <string name="title_activity_exercise_detail">ExerciseDetailActivity</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add Exercise Widget</string>
+    <string name="exercise_option_title">Please select a exercise category</string>
     <!-- default strings -->
     <string name="default_category_name">Category Name</string>
     <string name="default_category_desc">Category Desc</string>

@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
         //mTracker = application.getDefaultTracker();
 
         mRecyclerView = (RecyclerView) findViewById(R.id.category_recycler_view);
-        mListAdapter = new CategoryListAdapter(this);
+        mListAdapter = new CategoryListAdapter(this, this.getApplicationContext());
         // set card adapter
         mRecyclerView.setAdapter(mListAdapter);
         mRecyclerView.setHasFixedSize(true);

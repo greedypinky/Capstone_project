@@ -329,15 +329,6 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                         new String[] {mExceriseCategoryName},
                         sortOrder);
 
-                // Get the data from here instead of the onCreate method
-                // getResponseFromEndPoint(true);
-//
-//                loader = new CursorLoader(this,
-//                        queryUri,
-//                        EXERCISE_PROJECTION,
-//                        null,
-//                        null,
-//                        sortOrder);
                 Log.d(TAG,"loader:-" + loader);
                 return loader;
             case FAVORITE_EXERCISE_DB_DATA_LOADER_ID:
@@ -401,10 +392,6 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                 mFragment2.setPaneMode(mTwoPaneMode);
             }
 
-//            mForecastAdapter.swapCursor(data);
-//            if (mPosition == RecyclerView.NO_POSITION) mPosition = 0;
-//            mRecyclerView.smoothScrollToPosition(mPosition);
-//            if (data.getCount() != 0) showWeatherDataView();
         } else {
             Log.e(TAG,"onLoadFinished - No Data!!");
         }

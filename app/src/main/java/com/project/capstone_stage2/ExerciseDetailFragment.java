@@ -139,6 +139,9 @@ public class ExerciseDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
+
         Log.d(TAG,"onCreateView!");
         // Inflate the layout for this fragment
         View fragmentRootView = inflater.inflate(R.layout.fragment_exercise_detail, container, false);

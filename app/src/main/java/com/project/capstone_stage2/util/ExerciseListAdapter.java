@@ -281,4 +281,5 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
             exerciseItemOnClickHandler.onClickExercise(mCursor);
         }
     }
+
 }

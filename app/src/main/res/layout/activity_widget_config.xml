@@ -7,24 +7,31 @@
     tools:context="com.project.capstone_stage2.WidgetConfigActivity"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/config_activity_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="@color/colorPrimary"
+        android:text="@string/exercise_option_title"/>
+
     <RadioGroup
         android:id="@+id/radio_category_group"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="16dp">
 
-            />
     </RadioGroup>
-
 
     <Button
         android:id="@+id/addWidget"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/btn_text_size"
+        android:layout_gravity="center"
         android:text="@string/add_widget"
-        android:layout_gravity="center"/>
-
+        android:textSize="@dimen/btn_text_size"
+        android:padding="@dimen/btn_text_size"/>
 
 </LinearLayout>
 

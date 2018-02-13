@@ -23,11 +23,18 @@ import android.widget.RadioGroup;
 
 import com.project.capstone_stage2.dbUtility.ExerciseContract;
 import com.project.capstone_stage2.sync.ExerciseDataSyncTask;
+import com.project.capstone_stage2.util.CategoryListAdapter;
 import com.project.capstone_stage2.util.EndPointsAsyncTask;
+import com.project.capstone_stage2.util.Exercise;
+
+import java.util.ArrayList;
 
 import static android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID;
 
 //https://developer.android.com/guide/topics/appwidgets/index.html#Configuring
+// UX
+// https://stackoverflow.com/questions/27661305/material-design-suggestions-for-lists-with-avatar-text-and-icon
+// https://material.io/guidelines/resources/sticker-sheets-icons.html#sticker-sheets-icons-components
 public class WidgetConfigActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,EndPointsAsyncTask.AsyncResponse {
 
     private static String TAG = WidgetConfigActivity.class.getSimpleName();
@@ -87,18 +94,23 @@ public class WidgetConfigActivity extends AppCompatActivity implements LoaderMan
                 // TODO: get the database cursor by category ?
                 // use LoaderManager to get the data in a seperate thread
                 loaderCallbacks = WidgetConfigActivity.this; // this activity implements the callbacks method
-                Log.d(TAG, "getSupportLoaderManager - get ricipe data!");
+                Log.d(TAG, "getSupportLoaderManager - get exercise data!");
                 getSupportLoaderManager().initLoader(LOADER_ID, null, loaderCallbacks);
 
             }
         });
 
         // set the exercise categories string to the radio button text
+        int i = 0;
         for (String cat:categories) {
           RadioButton radioButton = new RadioButton(this);
           radioButton.setText(cat);
           mRadioGrp.addView(radioButton);
-
+          if(i ==0) {
+              int id = radioButton.getId();
+              mRadioGrp.check(id);
+          }
+          i++;
         }
 
         // fetch the JSON data from the API endpoint
@@ -107,6 +119,8 @@ public class WidgetConfigActivity extends AppCompatActivity implements LoaderMan
 
     @Override
     public Loader onCreateLoader(int id, Bundle args) {
+
+        Log.d(TAG,"onCreateLoader:" + id);
         CursorLoader loader = null;
                 /* URI for all rows of all exercise data in table */
         Uri queryUri = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
@@ -134,6 +148,7 @@ public class WidgetConfigActivity extends AppCompatActivity implements LoaderMan
 
     @Override
     public void onLoadFinished(Loader loader, Cursor data) {
+
         addAppWidget(data);
     }
 
@@ -148,24 +163,44 @@ public class WidgetConfigActivity extends AppCompatActivity implements LoaderMan
         // When the configuration is complete, get an instance of the AppWidgetManager
        mAppWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
 
+       // TODO: Loop through cursor and put the info into the CategoryExercise POJO Class
+        ArrayList<Exercise> exerciseArrayList = new ArrayList<Exercise>();
+
+        if (data != null) {
+            data.moveToFirst();
+
+            for (int i =0; i < data.getCount(); i++) {
+               String name = data.getString(data.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
+               String desc = data.getString(data.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION));
+               String imageURI = data.getString(data.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE));
+
+                 exerciseArrayList.add(new Exercise(name,desc,imageURI));
+            }
+
+        }
+
 // TODO: pass the data cursor to the updateWidget to populate the list.
      // Call BakingAppWidget.udpateAppWidget method directly to update the widget
 //        BakingAppWidget.updateAppWidget(getApplicationContext(), appWidgetManager,
 //                mAppWidgetId, mCursor);
+//
+//        Intent startServiceIntent = new Intent(WidgetConfigActivity.this,
+//                MyExerciseAppWidget.UpdateWidgetService.class);
+//        startServiceIntent.putExtra(
+//                EXTRA_APPWIDGET_ID, mAppWidgetId);
+//        // TODO: pass the data
+//        startServiceIntent.putExtra(
+//               MyExerciseAppWidget.WIDGET_EXERCISE_DATA, "");
+//        startServiceIntent.setAction("FROM CONFIGURATION ACTIVITY");
+//        setResult(RESULT_OK, startServiceIntent);
+//        startService(startServiceIntent);
 
-        Intent startService = new Intent(WidgetConfigActivity.this,
-                MyExerciseAppWidget.UpdateWidgetService.class);
-        startService.putExtra(
-                EXTRA_APPWIDGET_ID, mAppWidgetId);
-//        startService.put(
-//               EXERCISE_CURSOR, data);
-        startService.setAction("FROM CONFIGURATION ACTIVITY");
-        setResult(RESULT_OK, startService);
-        startService(startService);
+        MyExerciseAppWidget.updateExerciseAppWidget(getApplicationContext(),mAppWidgetManager,mAppWidgetId,exerciseArrayList);
 
-//        Intent intent = new Intent();
-//        intent.putExtra(EXTRA_APPWIDGET_ID,mAppWidgetId);
-//        setResult(RESULT_OK, intent);
+      Intent intent = new Intent();
+      intent.putExtra(EXTRA_APPWIDGET_ID,mAppWidgetId);
+//        intent.putExtra( MyExerciseAppWidget.WIDGET_EXERCISE_DATA, "");
+        setResult(RESULT_OK, intent);
         finish();
 
     }
@@ -185,14 +220,14 @@ public class WidgetConfigActivity extends AppCompatActivity implements LoaderMan
         if("Connection refused".equals(result)) {
             // use local mock json data from the Assets folder
             //mEXERCISE_DATA_FROM_ENDPOINT = getJSONFromAsset();
+            Log.d(TAG,"Connection refused! unable to get the data from the backend!");
         } else {
             mEXERCISE_DATA_FROM_ENDPOINT = result;
+            // TODO: 2) Initialize the database by IntentService
+            Log.d(TAG,"Sync DB data by IntentService");
+            // ExerciseDataSyncTask.startImmediateSync(this, EXERCISE_DATA_FROM_ENDP
+            ExerciseDataSyncTask.initialize(this, mEXERCISE_DATA_FROM_ENDPOINT);
         }
-
-        // TODO: 2) Initialize the database by IntentService
-        Log.d(TAG,"Sync DB data by IntentService");
-        // ExerciseDataSyncTask.startImmediateSync(this, EXERCISE_DATA_FROM_ENDP
-        ExerciseDataSyncTask.initialize(this, mEXERCISE_DATA_FROM_ENDPOINT);
 
     }
 }

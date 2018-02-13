@@ -71,8 +71,8 @@ public class WidgetExerciseListAdapter extends RecyclerView.Adapter<WidgetExerci
     public WidgetExerciseListAdapter.ExerciseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Init the layout of the ViewHolder
         // TODO : why on a null reference?
-        View execiseCardView = LayoutInflater.from(mContext).inflate(R.layout.widget_exercise_item, parent, false);
-        ExerciseViewHolder viewHolder = new ExerciseViewHolder(execiseCardView);
+        View itemView = LayoutInflater.from(mContext).inflate(R.layout.widget_exercise_item, parent, false);
+        ExerciseViewHolder viewHolder = new ExerciseViewHolder(itemView);
         return viewHolder;
     }
 
@@ -177,7 +177,7 @@ public class WidgetExerciseListAdapter extends RecyclerView.Adapter<WidgetExerci
      * ExerciseViewHolder
      */
     public class ExerciseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        public CardView mCardView;
+
         public TextView mExerciseName;
         public TextView mExerciseDesc;
         public ImageView mExerciseImage;
@@ -185,11 +185,10 @@ public class WidgetExerciseListAdapter extends RecyclerView.Adapter<WidgetExerci
         public ExerciseViewHolder(View itemView) {
             // initialize the views inside the view holder
             super(itemView); // must be in the first line of constructor
-            mCardView = (CardView) itemView.findViewById(R.id.exercise_card_view);
-            mCardView.setOnClickListener(this); // adapter implements the OnClickListener
+            mExerciseImage = (ImageView) itemView.findViewById(R.id.execise_image);
             mExerciseName = (TextView) itemView.findViewById(R.id.execise_name);
             mExerciseDesc = (TextView) itemView.findViewById(R.id.execise_desc);
-            mExerciseImage = (ImageView) itemView.findViewById(R.id.execise_image);
+
         }
 
         // View.OnClickListener's method
@@ -198,11 +197,11 @@ public class WidgetExerciseListAdapter extends RecyclerView.Adapter<WidgetExerci
             Log.d(TAG, "onClick Method to call the call back method on position");
             int adapterPosition = getAdapterPosition();
             Log.d(TAG, "onClick Method to call the call back method on position:" + adapterPosition);
-             mCursor.moveToPosition(adapterPosition);
+            // mCursor.moveToPosition(adapterPosition);
             // Use Call back to pass information back to the activity
             //long dateInMillis = mCursor.getLong(MainActivity.INDEX_WEATHER_DATE);
             // mClickHandler.onClick(dateInMillis);
-            exerciseItemOnClickHandler.onClickExercise(mCursor);
+            // exerciseItemOnClickHandler.onClickExercise(mCursor);
         }
     }
 }

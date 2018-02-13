@@ -1,20 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.project.capstone_stage2.WidgetConfigActivity"
-    tools:showIn="@layout/activity_widget_config">
+    android:orientation="vertical">
 
+    <!-- Do we need to add the title -->
+        <TextView
+            android:id="@+id/widgetTitleLabel"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:text="Your Widget Title"
+            android:textColor="@android:color/black"
+            android:background="@color/colorPrimary"
+            android:textSize="18dp"
+            android:gravity="center"
+            android:textAllCaps="true"
+            android:padding="16dp"/>
+
+    <!-- This is the exercise data -->
     <ListView
-        android:id="@+id/widget_exercise_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:id="@+id/widget_exercise_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context="com.project.capstone_stage2.WidgetConfigActivity"
+        tools:showIn="@layout/activity_widget_config">
 
-
-
+        <!-- This is the Empty view if there is no data -->
+        <!--
+        <TextView
+            android:id="@+id/widget_empty_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            style="@android:style/TextAppearance.Medium"
+            android:layout_gravity="center"
+            android:layout_margin="4dp"
+            android:text="No Data!"
+            />
+            -->
     </ListView>
 
-</android.support.constraint.ConstraintLayout>
+
+</LinearLayout>

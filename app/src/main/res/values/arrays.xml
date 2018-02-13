@@ -3,8 +3,14 @@
 
 <resources>
 <string-array name="category_array">
-    <item>Squad</item>
+    <item>Squat</item>
     <item>Pull</item>
     <item>Push</item>
 </string-array>
+    <string-array name="category_desc_array">
+        <item>Squat</item>
+        <item>UpperBody Pull</item>
+        <item>Upper Body Push</item>
+    </string-array>
+
 </resources>

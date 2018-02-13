@@ -1,5 +1,6 @@
 package com.project.capstone_stage2.util;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -25,22 +26,55 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
     private Context mContext;
 
     // Constructor that require the listener implements the onClick callback method
-    public CategoryListAdapter(CardViewOnClickListener listener) {
+    public CategoryListAdapter(CardViewOnClickListener listener,Context context) {
         cardViewOnClickListener = listener;
-        initData();
+        initData(context);
     }
 
-
     public interface CardViewOnClickListener {
-
         public void onClickCategory(ExerciseCategory category);
     }
 
-    private void initData() {
-        // init default Data
-        catArrayList.add(new ExerciseCategory("Squat","Squat", R.drawable.squat));
-        catArrayList.add(new ExerciseCategory("Push","UpperBody Push", R.drawable.squat));
-        catArrayList.add(new ExerciseCategory("Pull","UpperBody Pull", R.drawable.squat));
+    private int getImageResource(String name) {
+
+        int drawable = -1;
+        switch(name) {
+
+            case "Squat": {
+                drawable =  R.drawable.nao_squat01;
+                //drawable =  R.drawable.exercise_default;
+                break;
+            }
+
+            case "Pull": {
+                drawable = R.drawable.nao_pull01;
+                //drawable =  R.drawable.exercise_default2;
+                break;
+            }
+
+            case "Push": {
+                drawable = R.drawable.nao_push01;
+                //drawable =  R.drawable.exercise_default3;
+                break;
+            }
+
+        };
+
+        return drawable;
+    }
+
+    private void initData(Context context) {
+
+        String[] category_array = context.getResources().getStringArray(R.array.category_array);
+        String[] category_desc_array = context.getResources().getStringArray(R.array.category_desc_array);
+
+
+        int i = 0;
+        for(String cat:category_array) {
+            // init default Data
+            catArrayList.add(new ExerciseCategory(category_array[i], category_desc_array[i], getImageResource(category_array[i])));
+            i++;
+        }
     }
 
     @Override
@@ -145,6 +179,8 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
         public int getImage() {
             return categoryImage;
         }
+
+
     }
 
 
