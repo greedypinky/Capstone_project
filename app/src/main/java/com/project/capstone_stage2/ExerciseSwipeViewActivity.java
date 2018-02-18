@@ -203,21 +203,30 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                         // not only do we need to load the data but also need to get the fragment instance?
                         if (mFragment1 == null) {
 
-                            Log.d(TAG,"when tab again, the fragment1 is null!");
+                            Log.d(TAG,"when Fragment1 tab again!");
                             mFragment1 = (AllExerciseFragment) mAdapterViewPager.getItem(0);
+                            getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID,null, loaderCallbacks);
+                        } else {
+                            getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID,null, loaderCallbacks);
+
                         }
-                        getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID,null, loaderCallbacks);
+
 
                         break;
                     case "1":
                         // query the favorite
                         if (mFragment2 == null) {
 
-                            Log.d(TAG,"when tab again, the fragment2 is null!");
+                            Log.d(TAG,"when Fragment2 tab again!");
                             mFragment2 = (FavoriteExerciseFragment) mAdapterViewPager.getItem(1);
+                            if (mFragment2 != null) {
+                                getSupportLoaderManager().initLoader(FAVORITE_EXERCISE_DB_DATA_LOADER_ID,null, loaderCallbacks);
+                            }
+                        } else {
+                            getSupportLoaderManager().initLoader(FAVORITE_EXERCISE_DB_DATA_LOADER_ID,null, loaderCallbacks);
                         }
 
-                        getSupportLoaderManager().initLoader(FAVORITE_EXERCISE_DB_DATA_LOADER_ID,null, loaderCallbacks);
+
                         break;
                     default:
                         Log.d(TAG,"invalid tab position!");
@@ -393,7 +402,12 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
             }
 
         } else {
-            Log.e(TAG,"onLoadFinished - No Data!!");
+            Log.e(TAG, "onLoadFinished - No Data!!");
+            if (loaderID == ALL_EXERCISE_DB_DATA_LOADER_ID) {
+                mFragment1.showData(false);
+            } else {
+                mFragment2.showData(false);
+            }
         }
 
     }

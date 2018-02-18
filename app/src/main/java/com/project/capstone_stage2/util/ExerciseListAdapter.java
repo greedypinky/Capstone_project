@@ -223,6 +223,7 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
                                 //mClickHandler.onClick(dateInMillis);
 
                                 boolean addFavorite = exerciseItemOnClickHandler.onAddFavClick(cursor);
+                                Log.d(TAG,"addFavorite flag:" + addFavorite);
                                 mAddFavButton.setEnabled(!addFavorite);
                             }
                         }

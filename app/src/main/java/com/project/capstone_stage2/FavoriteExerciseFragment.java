@@ -91,11 +91,6 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         mNoDataText = (TextView) rootView.findViewById(R.id.fav_execise_no_data_error_text);
         mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.fav_execise_loading_indicator);
 
-        // if no data
-        if (!mHasData) {
-
-            showErrorMessage();
-        }
 
         return rootView;
     }
@@ -110,19 +105,16 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
        // mAdapter.setAdapterData(cursor);
         // TODO: update the cursor
         // TODO: question - when do we need to close the cursor ??
-        if(cursor != null && !cursor.isClosed()) {
+        if (cursor != null && !cursor.isClosed()) {
             Log.d(TAG,"Cursor is not null, updateAdapterData!");
-            if(mAdapter != null) {
+            if (mAdapter != null) {
                 mCursor = cursor;
                 mAdapter.setAdapterData(mCursor);
-                hideErrorMessage();
                 mHasData = true;
+                showData(true);
             } else {
                 Log.d(TAG,"Adapter is null! Why?");
             }
-        } else {
-            showErrorMessage();
-            mHasData = false;
         }
     }
 
@@ -218,24 +210,32 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         void onFragmentInteraction(Uri uri);
     }
 
-    public void showErrorMessage(){
 
-        mNoDataText.setVisibility(View.VISIBLE);
-        mRecyclerView.setVisibility(View.GONE);
-
-    }
-
-    public void hideErrorMessage(){
-
-        mNoDataText.setVisibility(View.GONE);
-        mRecyclerView.setVisibility(View.VISIBLE);
-    }
-
-    public void showProgress(boolean showProgress) {
-        if(showProgress) {
-            mProgressIndicator.setVisibility(View.VISIBLE);
+    public void showData(boolean hasData){
+        if(hasData) {
+            mProgressIndicator.setVisibility(View.GONE);
+            mNoDataText.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
         } else {
             mProgressIndicator.setVisibility(View.GONE);
+            mNoDataText.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.INVISIBLE);
         }
     }
+
+    public void showLoading() {
+        /* Then, hide the weather data */
+        mRecyclerView.setVisibility(View.GONE);
+        mNoDataText.setVisibility(View.GONE);
+        /* Finally, show the loading indicator */
+        mProgressIndicator.setVisibility(View.VISIBLE);
+    }
+
+//    public void showProgress(boolean showProgress) {
+//        if (showProgress) {
+//            mProgressIndicator.setVisibility(View.VISIBLE);
+//        } else {
+//            mProgressIndicator.setVisibility(View.GONE);
+//        }
+//    }
 }

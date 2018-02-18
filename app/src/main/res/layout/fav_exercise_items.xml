@@ -13,7 +13,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/exercise_card_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         card_view:cardCornerRadius="4dp"
         card_view:cardElevation="@dimen/cardview_default_elevation"
         card_view:cardUseCompatPadding="true"
@@ -82,17 +82,11 @@
             android:id="@+id/remove_fav_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/btn_addFavorite"
+            android:text="@string/btn_removeFavorite"
             android:textSize="@dimen/btn_text_size"
             android:textColor="@color/colorPrimaryDark"/>
 
     </LinearLayout>
 
-    <ProgressBar
-        android:id="@+id/exercise_loading_indicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:visibility="gone"/>
 
 </LinearLayout>

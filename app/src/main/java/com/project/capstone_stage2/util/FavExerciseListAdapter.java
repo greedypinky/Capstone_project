@@ -155,7 +155,7 @@ public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseList
 //        }
         Cursor oldCursor = mCursor;
         mCursor = newCursor;
-        if ( mCursor != null) {
+        if (mCursor != null) {
             // Why we do not have a column for _id ??
             //mRowID = newCursor.getColumnIndexOrThrow(ExerciseContract.ExerciseEntry._ID);
             mDataValid = true;

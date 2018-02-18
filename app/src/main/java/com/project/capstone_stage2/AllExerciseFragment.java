@@ -120,18 +120,10 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         mNoDataText = (TextView) rootView.findViewById(R.id.all_execise_no_data_error_text);
         mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.all_execise_loading_indicator);
 
-        // if no data
-//        if (!mHasData) {
-//
-//            showErrorMessage();
-//        }
-
-        //showLoading();
-        showData();
         return rootView;
     }
 
-    private void showLoading() {
+    public void showLoading() {
         /* Then, hide the weather data */
         mRecyclerView.setVisibility(View.GONE);
         mNoDataText.setVisibility(View.GONE);
@@ -139,10 +131,17 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         mProgressIndicator.setVisibility(View.VISIBLE);
     }
 
-    private void showData() {
-        mProgressIndicator.setVisibility(View.GONE);
-        mNoDataText.setVisibility(View.GONE);
-        mRecyclerView.setVisibility(View.VISIBLE);
+    public void showData(boolean hasData) {
+        if(hasData) {
+            mProgressIndicator.setVisibility(View.GONE);
+            mNoDataText.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+        } else {
+
+            mProgressIndicator.setVisibility(View.GONE);
+            mNoDataText.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.INVISIBLE);
+        }
 
     }
 
@@ -158,7 +157,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
                     mCursor = cursor;
                     mAdapter.setAdapterData(mCursor);
                     mHasData = true;
-                    showData();
+                    showData(true);
 
                 } else {
                     Log.e(TAG,"Error:Adapter is null ? why?");
@@ -364,24 +363,24 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 //        void onFragmentInteraction(Uri uri);
 //    }
 
-    public void showErrorMessage() {
-        mNoDataText.setVisibility(View.VISIBLE);
-        mRecyclerView.setVisibility(View.GONE);
-        showProgress(false);
-    }
-
-    public void hideErrorMessage() {
-        mNoDataText.setVisibility(View.GONE);
-        mRecyclerView.setVisibility(View.VISIBLE);
-    }
-
-    public void showProgress(boolean showProgress) {
-        if(showProgress) {
-            mProgressIndicator.setVisibility(View.VISIBLE);
-        } else {
-            mProgressIndicator.setVisibility(View.GONE);
-        }
-    }
+//    public void showErrorMessage() {
+//        mNoDataText.setVisibility(View.VISIBLE);
+//        mRecyclerView.setVisibility(View.GONE);
+//        showProgress(false);
+//    }
+//
+//    public void hideErrorMessage() {
+//        mNoDataText.setVisibility(View.GONE);
+//        mRecyclerView.setVisibility(View.VISIBLE);
+//    }
+//
+//    public void showProgress(boolean showProgress) {
+//        if(showProgress) {
+//            mProgressIndicator.setVisibility(View.VISIBLE);
+//        } else {
+//            mProgressIndicator.setVisibility(View.GONE);
+//        }
+//    }
 
     // LoaderManager's Callback methods
     // TODO: 1) add back the login to get the data from backend API!
