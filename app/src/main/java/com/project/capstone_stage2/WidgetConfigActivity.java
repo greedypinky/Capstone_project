@@ -150,6 +150,7 @@ public class WidgetConfigActivity extends AppCompatActivity implements LoaderMan
     public void onLoadFinished(Loader loader, Cursor data) {
 
         addAppWidget(data);
+
     }
 
     @Override

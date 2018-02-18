@@ -13,13 +13,15 @@
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:textColor="@color/colorPrimary"
-        android:text="@string/exercise_option_title"/>
+        android:text="@string/exercise_option_title"
+        android:padding="16dp"
+        android:gravity="center"/>
 
     <RadioGroup
         android:id="@+id/radio_category_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:gravity="center"
         android:padding="16dp">
 
     </RadioGroup>
@@ -31,7 +33,7 @@
         android:layout_gravity="center"
         android:text="@string/add_widget"
         android:textSize="@dimen/btn_text_size"
-        android:padding="@dimen/btn_text_size"/>
+        android:padding="16dp"/>
 
 </LinearLayout>
 

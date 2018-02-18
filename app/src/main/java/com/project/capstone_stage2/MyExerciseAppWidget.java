@@ -51,7 +51,7 @@ public class MyExerciseAppWidget extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId);
+           // updateAppWidget(context, appWidgetManager, appWidgetId);
         }
     }
 
@@ -104,17 +104,18 @@ public class MyExerciseAppWidget extends AppWidgetProvider {
     public static void updateExerciseAppWidget(Context context,AppWidgetManager appWidgetManager,
                                                int appWidgetId, ArrayList<Exercise> exercises) {
 
-        Log.d(TAG,"updateExerciseAppWidget:" + context.getPackageName());
-        if (exercises!=null) {
-            Log.d(TAG, "Exercise Data count:-" + exercises.size());
-        }
-//            RemoteViews views = new RemoteViews(t
-// his.getPackageName(),
-//                    R.layout.layout_appwidget_large);
-
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(),R.layout.content_widget);
-        remoteViews.setTextViewText(R.id.widgetTitleLabel,"hello!");
-        // Trigger listview item click
+        Log.d(TAG,"updateExerciseAppWidget:" + context.getPackageName());
+
+        if (exercises!=null && exercises.size() == 0) {
+            Log.d(TAG, "No Exercise Data!" );
+            // should set the No Exercise Data place holder Text !
+        } else {
+
+            Log.d(TAG, "Have Exercise Data!" );
+
+            // remoteViews.setTextViewText(R.id.widgetTitleLabel,"hello!");
+            // Trigger listview item click
         Intent startListViewServiceIntent = new Intent(context, ListViewWidgetService.class);
         startListViewServiceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         startListViewServiceIntent.putParcelableArrayListExtra(WIDGET_EXERCISE_DATA, exercises);
@@ -122,25 +123,19 @@ public class MyExerciseAppWidget extends AppWidgetProvider {
         // TODO: populate the data - need to implement the data correctly
         remoteViews.setRemoteAdapter(R.id.widget_exercise_listview, startListViewServiceIntent);
 
-        // template to handle the click listener for each item
-        Intent clickIntentTemplate = new Intent(context, MainActivity.class);
-        PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
-                .addNextIntentWithParentStack(clickIntentTemplate)
-                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-        remoteViews.setPendingIntentTemplate(R.id.widget_exercise_listview, clickPendingIntentTemplate);
+        //     template to handle the click listener for each item
+//        Intent clickIntentTemplate = new Intent(context, MainActivity.class);
+//        PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
+//                .addNextIntentWithParentStack(clickIntentTemplate)
+//                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+//        remoteViews.setPendingIntentTemplate(R.id.widget_exercise_listview, clickPendingIntentTemplate);
 
-//            Intent startActivityIntent = new Intent(context,MainActivity.class);
-//
-//            PendingIntent startActivityPendingIntent = PendingIntent.getActivity(context, 0, startActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//            // set the pendingIntent for each of the List item
-//            remoteViews.setPendingIntentTemplate(R.id.widget_ListView, startActivityPendingIntent);
+            // The empty view is displayed when the collection has no items.
 
-        // The empty view is displayed when the collection has no items.
+            // It should be in the same layout used to instantiate the RemoteViews  object above.
 
-        // It should be in the same layout used to instantiate the RemoteViews  object above.
-
-        //remoteViews.setEmptyView(R.id.widget_ListView, R.id.widget_empty_view);
+            //remoteViews.setEmptyView(R.id.widget_ListView, R.id.widget_empty_view);
+        }
         Log.d(TAG, "call appWidgetManager.updateAppWidget");
         appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
     }

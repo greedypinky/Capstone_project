@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,26 +8,23 @@
     android:orientation="vertical">
 
     <!-- Do we need to add the title -->
-        <TextView
-            android:id="@+id/widgetTitleLabel"
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:text="Your Widget Title"
-            android:textColor="@android:color/black"
-            android:background="@color/colorPrimary"
-            android:textSize="18dp"
-            android:gravity="center"
-            android:textAllCaps="true"
-            android:padding="16dp"/>
+    <TextView
+        android:id="@+id/widgetTitleLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
+        android:padding="16dp"
+        android:text="Your Widget Title"
+        android:textColor="@android:color/black"
+        android:textSize="18dp" />
 
     <!-- This is the exercise data -->
     <ListView
         android:id="@+id/widget_exercise_listview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context="com.project.capstone_stage2.WidgetConfigActivity"
-        tools:showIn="@layout/activity_widget_config">
+        android:layout_height="wrap_content"
+        >
 
         <!-- This is the Empty view if there is no data -->
         <!--
@@ -43,5 +40,28 @@
             -->
     </ListView>
 
+    <!-- TODO add the empty view if there is no data? -->
 
-</LinearLayout>
+    <RelativeLayout
+        android:id="@+id/widget_empty_view_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="8dp">
+        <TextView
+            android:id="@+id/widget_empty_textview"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="No data"
+            android:textColor="#ffffff"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:visibility="invisible"/>
+
+    </RelativeLayout>
+
+
+
+</FrameLayout>

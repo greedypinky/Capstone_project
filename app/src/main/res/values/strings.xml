@@ -26,5 +26,6 @@
     <string name="get_start">Please select an exercise to get start!</string>
     <string name="ad_unit_id">ca-app-pub-3160158119336562/6706245862</string>
     <string name="title_activity_widget_config">WidgetConfigActivity</string>
+    <string name="widget_no_data">No Exercise Data</string>
 
 </resources>
