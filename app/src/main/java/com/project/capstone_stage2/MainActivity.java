@@ -2,6 +2,7 @@ package com.project.capstone_stage2;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +10,8 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
@@ -21,6 +24,7 @@ import com.project.capstone_stage2.R;
 import com.project.capstone_stage2.sync.ExerciseDataSyncTask;
 import com.project.capstone_stage2.util.CategoryListAdapter;
 import com.project.capstone_stage2.util.EndPointsAsyncTask;
+import com.project.capstone_stage2.util.NetworkUtil;
 
 import java.io.InputStream;
 
@@ -77,7 +81,27 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
         // This the ads view
         AdView mAdView = (AdView) findViewById(R.id.adView);
 
-        getResponseFromEndPoint(useEndPoint);
+        // check the network connectivity
+        if (!NetworkUtil.isNetworkConnected(this)) {
+            Snackbar noNetworkSnackBar = NetworkUtil.makeSnackbar(getRootView(), getString(R.string.no_network_connection), true);
+            noNetworkSnackBar.show();
+        } else {
+            getResponseFromEndPoint(useEndPoint);
+        }
+    }
+
+
+    private View getRootView() {
+        final ViewGroup contentViewGroup = (ViewGroup) findViewById(android.R.id.content);
+        View rootView = null;
+
+        if(contentViewGroup != null)
+            rootView = contentViewGroup.getChildAt(0);
+
+        if(rootView == null)
+            rootView = getWindow().getDecorView().getRootView();
+
+        return rootView;
     }
 
     // Implement the callback method so that when clicking on ViewHolder Item, it will handle the navigation properly.

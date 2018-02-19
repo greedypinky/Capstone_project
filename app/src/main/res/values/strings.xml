@@ -9,6 +9,8 @@
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add Exercise Widget</string>
     <string name="exercise_option_title">Please select a exercise category</string>
+    <string name="share_exercise_sendTo">Send To</string>
+    <string name="share_exercise_title">Share our exercise</string>
     <!-- default strings -->
     <string name="default_category_name">Category Name</string>
     <string name="default_category_desc">Category Desc</string>
@@ -27,5 +29,6 @@
     <string name="ad_unit_id">ca-app-pub-3160158119336562/6706245862</string>
     <string name="title_activity_widget_config">WidgetConfigActivity</string>
     <string name="widget_no_data">No Exercise Data</string>
+    <string name="no_network_connection">No Network Connection</string>
 
 </resources>

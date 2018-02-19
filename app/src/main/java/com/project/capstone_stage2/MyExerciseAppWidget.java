@@ -7,6 +7,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.CursorLoader;
 import android.util.Log;
@@ -114,11 +115,17 @@ public class MyExerciseAppWidget extends AppWidgetProvider {
 
             Log.d(TAG, "Have Exercise Data!" );
 
+            // TODO: DEBUG by finding AppWidgetHostView
+            // AppWidgetHostView: android.os.BadParcelableException: ClassNotFoundException when unmarshalling: com.project.capstone_stage2.util.Exercise
             // remoteViews.setTextViewText(R.id.widgetTitleLabel,"hello!");
             // Trigger listview item click
         Intent startListViewServiceIntent = new Intent(context, ListViewWidgetService.class);
-        startListViewServiceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        startListViewServiceIntent.putParcelableArrayListExtra(WIDGET_EXERCISE_DATA, exercises);
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(WIDGET_EXERCISE_DATA, exercises);
+        bundle.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID,appWidgetId);
+            startListViewServiceIntent.putExtras(bundle);
+       // startListViewServiceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+       // startListViewServiceIntent.putParcelableArrayListExtra(WIDGET_EXERCISE_DATA, exercises);
         //startListViewServiceIntent.putExtra(WIDGET_EXERCISE_DATA, "");
         // TODO: populate the data - need to implement the data correctly
         remoteViews.setRemoteAdapter(R.id.widget_exercise_listview, startListViewServiceIntent);

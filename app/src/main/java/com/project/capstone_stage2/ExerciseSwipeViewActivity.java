@@ -40,6 +40,7 @@ import com.project.capstone_stage2.util.CategoryListAdapter;
 import com.project.capstone_stage2.util.EndPointsAsyncTask;
 import com.project.capstone_stage2.util.ExerciseListAdapter;
 import com.project.capstone_stage2.util.FavExerciseListAdapter;
+import com.project.capstone_stage2.util.NetworkUtil;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -88,6 +89,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
     private Tracker mTracker; // https://developers.google.com/analytics/devguides/collection/android/v4/
 
     public static String[] EXERCISE_PROJECTION = {
+            "_ID",
             ExerciseContract.ExerciseEntry.CATEGORY,
             ExerciseContract.ExerciseEntry.CATEGORY_DESC,
             ExerciseContract.ExerciseEntry.EXERCISE_ID,
@@ -102,6 +104,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise_swipe_view);
+
 
         // Obtain the shared Tracker instance.
         //AnalyticsApplication application = (AnalyticsApplication) getApplication();
@@ -271,6 +274,25 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
 
         Log.d(TAG,"onCreate() initLoader to get the DB Cursor for all exercises");
         getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
+
+        // check the network connectivity
+        if (!NetworkUtil.isNetworkConnected(this)) {
+            Snackbar noNetworkSnackBar = NetworkUtil.makeSnackbar(getRootView(), getString(R.string.no_network_connection), true);
+            noNetworkSnackBar.show();
+        }
+    }
+
+    private View getRootView() {
+        final ViewGroup contentViewGroup = (ViewGroup) findViewById(android.R.id.content);
+        View rootView = null;
+
+        if(contentViewGroup != null)
+            rootView = contentViewGroup.getChildAt(0);
+
+        if(rootView == null)
+            rootView = getWindow().getDecorView().getRootView();
+
+        return rootView;
     }
 
     private void getResponseFromEndPoint(boolean useEndPoint) {
@@ -329,7 +351,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                 // TODO: Selection we need to filter by the Category Name
                 // String selection = WeatherContract.WeatherEntry.getSqlSelectForTodayOnwards();
                 // SQL's where clause - where category = SQUAT or PULL or PUSH
-                String selectionByCategoryName = ExerciseContract.ExerciseEntry.CATEGORY + "=?";
+                String selectionByCategoryName = ExerciseContract.ExerciseEntry.CATEGORY + " = ?";
 
                 loader = new CursorLoader(this,
                         queryUri,
@@ -345,7 +367,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                 Uri queryUri2 = ExerciseContract.ExerciseEntry.CONTENT_URI_FAV;
                 /* Sort order: Ascending by exercise id */
                 String favSortOrder = ExerciseContract.ExerciseEntry.EXERCISE_ID + " ASC";
-                String selectionByCategoryName2 = ExerciseContract.ExerciseEntry.CATEGORY + "=?";
+                String selectionByCategoryName2 = ExerciseContract.ExerciseEntry.CATEGORY + " = ?";
 //                loader2 = new CursorLoader(this,
 //                        queryUri2,
 //                        EXERCISE_PROJECTION,
@@ -590,4 +612,29 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
             }
         }
     }
+
+
+    /**
+     * setBitMapForToolBar
+     * Set the Article bitmap image to the toolbar
+     * also update the ContentScrimColor by the image vibrant color
+     * @param bitmap
+     */
+//    public void setBitMapForToolBar(Bitmap bitmap) {
+//        // TODO: add implementation
+//        mToolBarImage.setImageBitmap(bitmap);
+//        Log.d(TAG,"setToolBarBitMap");
+//
+//        Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+//            @Override
+//            public void onGenerated(Palette palette) {
+//                Palette.Swatch vibrant = palette.getVibrantSwatch();
+//                if (vibrant != null) {
+//                    mCollapsingToolbarLayout.setContentScrimColor(palette.getMutedColor(vibrant.getRgb()));
+//                }
+//            }
+//        });
+//    }
+
+
 }

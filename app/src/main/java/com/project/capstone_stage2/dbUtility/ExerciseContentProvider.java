@@ -302,23 +302,28 @@ public class ExerciseContentProvider extends ContentProvider {
 
         Log.d(TAG,"delete by uri: " + uri);
         Log.d(TAG,"matcher: " + match);
+        Log.d(TAG,"where clause: " + whereClause);
 
         switch (match) {
             case FAV_EXERCISE:
                 deleteRowsNum  = db.delete(ExerciseContract.ExerciseEntry.TABLE_EXERCISE, whereClause, whereArgs);
                 break;
-
             case ALL_EXERCISE:
                 deleteRowsNum  = db.delete(ExerciseContract.ExerciseEntry.TABLE_ALL, whereClause, whereArgs);
                 break;
             case FAV_EXERCISE_WITH_ID:
-                deleteRowsNum  = db.delete(ExerciseContract.ExerciseEntry.TABLE_EXERCISE,
-                        ExerciseContract.ExerciseEntry._ID + " =?",
-                         new String[] { String.valueOf(ContentUris.parseId(uri))});
+                if (whereArgs != null) {
+                    Log.d(TAG, "delete row with id: " + whereArgs[0]);
+                    deleteRowsNum = db.delete(ExerciseContract.ExerciseEntry.TABLE_EXERCISE, whereClause,
+                            whereArgs);
+                } else {
+                    deleteRowsNum = 0;
+                }
                 break;
             default:
                 throw new UnsupportedOperationException("Unable to delete table by uri:" + uri);
         }
+        Log.d(TAG,"delete number of rows:" + deleteRowsNum);
         return deleteRowsNum ;
     }
 

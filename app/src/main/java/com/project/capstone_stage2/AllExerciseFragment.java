@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.app.ShareCompat;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -242,23 +243,35 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 
     @Override
     public void onShareClick(Cursor cursor) {
-        String exeID = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID));
-        String exeName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
-
         // Add analytics to track which exercise is shared
 /*        mTracker.send(new HitBuilders.EventBuilder()
                 .setCategory("Exercise Name:" + exeName)
                 .setAction("Share")
                 .build());*/
+
         Toast.makeText(getContext(),"share content!", Toast.LENGTH_LONG).show();
+        Bundle bundle = new Bundle();
+        String exeName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
+        String exeVideoURL = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO));
+        String exeSteps = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_STEPS));
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("Exercise Name:" + exeName + "\n")
+                .append("Exercise Steps:" + exeSteps + "\n");
+        if(exeVideoURL!=null && !exeVideoURL.isEmpty()) {
+                builder.append("Please check out our exercise by this link: " + exeVideoURL + "\n");
+        }
+
+        startActivity(Intent.createChooser(ShareCompat.IntentBuilder.from(getActivity())
+                .setType("text/plain")
+                .setChooserTitle(getString(R.string.share_exercise_title))
+                .setText(builder.toString())
+                .getIntent(), getString(R.string.share_exercise_sendTo)));
     }
 
     // Call back method for ExerciseListAdapter to pass in the cursor
     @Override
     public boolean onAddFavClick(Cursor cursor) {
-
-
-
         // https://developer.android.com/guide/topics/providers/content-provider-basics.html
         // select the row from All Exercise and add the parameter to Favorite Exercise
         int id_index = cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID);
@@ -296,6 +309,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         Log.d(TAG,"insert favorite index5: " + cursor.getString(5) );
         Log.d(TAG,"insert favorite index6: " + cursor.getString(6) );
         Log.d(TAG,"insert favorite index0: " + cursor.getString(7) );
+        Log.d(TAG,"insert favorite index0: " + cursor.getString(8) );
 
 
 
@@ -317,15 +331,15 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 //            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO, cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO)));
 
 /// 01-23 00:07:05.885 2637-2637/com.project.capstone_stage2 E/CursorWindow: Failed to read row 0, column 7 from a CursorWindow which has 2 rows, 7 columns.
-            mNewValues.put(ExerciseContract.ExerciseEntry.CATEGORY, cursor.getString(0));
-            mNewValues.put(ExerciseContract.ExerciseEntry.CATEGORY_DESC, cursor.getString(1));
-            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_ID, cursor.getString(2));
-            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_NAME, cursor.getString(3));
-            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION, cursor.getString(4));
-            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_STEPS, cursor.getString(5));
+            mNewValues.put(ExerciseContract.ExerciseEntry.CATEGORY, cursor.getString(1));
+            mNewValues.put(ExerciseContract.ExerciseEntry.CATEGORY_DESC, cursor.getString(2));
+            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_ID, cursor.getString(3));
+            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_NAME, cursor.getString(4));
+            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION, cursor.getString(5));
+            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_STEPS, cursor.getString(6));
             //mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_STEPS, "no steps");
-            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE, cursor.getString(6));
-            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO, cursor.getString(7));
+            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE, cursor.getString(7));
+            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO, cursor.getString(8));
 
             Uri insertUri = getActivity().getContentResolver()
                     .insert(ExerciseContract.ExerciseEntry.CONTENT_URI_FAV, mNewValues);
@@ -402,6 +416,10 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 
     }
 
+    //D/AllExerciseFragment: insert favorite exercise result uri: content://com.project.capstone_stage2.app.provider/FavoriteExercise/1
+//02-18 18:28:48.324 2832-2832/com.project.capstone_stage2 D/ExerciseContentProvider: QUERY:FAVORITE EXERCISE Query from FavoriteExercise
+//02-18 18:28:48.325 2832-2832/com.project.capstone_stage2 D/ExerciseContentProvider: cursor count:0
+//            02-18 18:28:48.325 2832-2832/com.project.capstone_stage2 D/ContentValues: addFavorite flag:false
     private boolean checkAlreadyInsertAsFavorite(String exerciseID) {
         Uri uri = ExerciseContract.ExerciseEntry.CONTENT_URI_FAV;
         String[] projections = {ExerciseContract.ExerciseEntry.EXERCISE_ID, ExerciseContract.ExerciseEntry.EXERCISE_NAME};
@@ -410,8 +428,11 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         try {
             Cursor cursor = getActivity().getContentResolver().query(uri,projections,selection,selectionArgs,null);
             if (cursor.getCount() == 1) {
-                Log.d(TAG,"checkAlreadyInsertAsFavorite:" + cursor.getCount());
+                Log.d(TAG,"Assert if favorite is added ::: checkAlreadyInsertAsFavorite:" + cursor.getCount());
+
                 return true;
+            }  else {
+                Log.d(TAG,"Error:::unable to query the added favorite exercise!");
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -39,7 +39,7 @@ public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseList
         // callback to handle when VH is clicked
         public void onClickExercise();
 
-        public void onShareClick();
+        public void onShareClick(Cursor cursor);
 
         public boolean onRemoveFavClick(Cursor cursor);
     }

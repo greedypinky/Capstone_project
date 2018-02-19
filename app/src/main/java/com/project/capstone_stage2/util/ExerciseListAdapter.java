@@ -224,7 +224,8 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
 
                                 boolean addFavorite = exerciseItemOnClickHandler.onAddFavClick(cursor);
                                 Log.d(TAG,"addFavorite flag:" + addFavorite);
-                                mAddFavButton.setEnabled(!addFavorite);
+                                toggleButtonDisable(addFavorite);
+
                             }
                         }
                     });
@@ -281,6 +282,22 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
             // mClickHandler.onClick(dateInMillis);
             exerciseItemOnClickHandler.onClickExercise(mCursor);
         }
+
+
+        public void toggleButtonDisable(boolean disable){
+
+            if (disable) {
+                mAddFavButton.setAlpha(0.5f);
+                mAddFavButton.setEnabled(!disable);
+            } else {
+                mAddFavButton.setAlpha(0f);
+                mAddFavButton.setEnabled(!disable);
+            }
+
+
+        }
     }
+
+
 
 }

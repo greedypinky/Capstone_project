@@ -1,10 +1,12 @@
 package com.project.capstone_stage2;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,8 +18,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.project.capstone_stage2.dbUtility.ExerciseContract;
+import com.project.capstone_stage2.util.CategoryListAdapter;
 import com.project.capstone_stage2.util.ExerciseListAdapter;
 import com.project.capstone_stage2.util.FavExerciseListAdapter;
+
+import java.util.function.LongFunction;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -184,13 +190,59 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
     }
 
     @Override
-    public void onShareClick() {
+    public void onShareClick(Cursor cursor) {
+
         Toast.makeText(getContext(), "Share!", Toast.LENGTH_LONG).show();
+
+        Toast.makeText(getContext(),"share content!", Toast.LENGTH_LONG).show();
+        Bundle bundle = new Bundle();
+        String exeName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
+        String exeVideoURL = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO));
+        String exeSteps = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_STEPS));
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("Exercise Name:" + exeName + "\n")
+                .append("Exercise Steps:" + exeSteps + "\n");
+        if(exeVideoURL!=null && !exeVideoURL.isEmpty()) {
+            builder.append("Please check out our exercise by this link: " + exeVideoURL + "\n");
+        }
+
+        startActivity(Intent.createChooser(ShareCompat.IntentBuilder.from(getActivity())
+                .setType("text/plain")
+                .setChooserTitle(getString(R.string.share_exercise_title))
+                .setText(builder.toString())
+                .getIntent(), getString(R.string.share_exercise_sendTo)));
     }
 
     @Override
     public boolean onRemoveFavClick(Cursor cursor) {
+        Log.d(TAG,"callback onRemoveFavClick");
+        String id = cursor.getString(cursor.getColumnIndex("_id"));
+        String exeID = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID));
+        String exeName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
+        String catName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.CATEGORY));
+        String  whereClause = ExerciseContract.ExerciseEntry._ID + " =?";
+        Uri uri = ExerciseContract.ExerciseEntry.buildFavoriteExerciseUriWithId(Long.parseLong(id));
+        int deleteRow = getActivity().getContentResolver().delete(uri, whereClause, new String[]{id});
+
+
+
+        // TODO: need to refresh the list after a list is deleted
+
+        Uri queryURI = ExerciseContract.ExerciseEntry.CONTENT_URI_FAV;
+                /* Sort order: Ascending by exercise id */
+        String favSortOrder = ExerciseContract.ExerciseEntry.EXERCISE_ID + " ASC";
+        String selectionByCategoryName = ExerciseContract.ExerciseEntry.CATEGORY + " = ?";
+        Cursor newCursor = getActivity().getContentResolver().query(queryURI, ExerciseSwipeViewActivity.EXERCISE_PROJECTION,selectionByCategoryName, new String[]{catName},favSortOrder);
+        if(newCursor!=null) {
+            Log.d(TAG, "Assert After remove data count:" + newCursor.getCount());
+            mAdapter.swapCursor(newCursor);
+        } else {
+            Log.e(TAG, "unable to get the cursor!");
+        }
+
         return false;
+
     }
 
 
