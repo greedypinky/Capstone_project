@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
     private RecyclerView mRecyclerView = null;
     private CategoryListAdapter mListAdapter = null;
     private String mEXERCISE_DATA_FROM_ENDPOINT = null;
+    private ProgressBar mProgressBar = null;
     private InterstitialAd mInterstitial;
     private Tracker mTracker; // https://developers.google.com/analytics/devguides/collection/android/v4/
 
@@ -77,6 +79,8 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
         mRecyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         mRecyclerView.setLayoutManager(linearLayoutManager);
+
+        mProgressBar = (ProgressBar) findViewById(R.id.main_loading_indicator);
         boolean useEndPoint = true;
         // This the ads view
         AdView mAdView = (AdView) findViewById(R.id.adView);

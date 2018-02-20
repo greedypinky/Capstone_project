@@ -1,5 +1,6 @@
 package com.project.capstone_stage2.util;
 
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -38,7 +39,13 @@ public class ListViewWidgetService extends RemoteViewsService {
             intentWithData = intent;
             if(intentWithData != null) {
 
-                mExercisesData = intentWithData.getParcelableArrayListExtra(MyExerciseAppWidget.WIDGET_EXERCISE_DATA);
+                Bundle bundle = intentWithData.getExtras();
+                Log.d(TAG,"Get exercise Arraylist");
+
+                mExercisesData =  bundle.getParcelableArrayList(MyExerciseAppWidget.WIDGET_EXERCISE_DATA);
+                int widgetID = bundle.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
+                Log.d(TAG,"widget id is:" + widgetID);
+
             }
 
         }

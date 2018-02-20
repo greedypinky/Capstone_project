@@ -168,14 +168,12 @@ public class WidgetConfigActivity extends AppCompatActivity implements LoaderMan
         ArrayList<Exercise> exerciseArrayList = new ArrayList<Exercise>();
 
         if (data != null) {
-            data.moveToFirst();
-
-            for (int i =0; i < data.getCount(); i++) {
+            while (data.moveToNext()) {
                String name = data.getString(data.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
                String desc = data.getString(data.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION));
                String imageURI = data.getString(data.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE));
-
-                 exerciseArrayList.add(new Exercise(name,desc,imageURI));
+               Log.d(TAG, String.format("name %s, desc %s, imageURL %s", name, desc, imageURI));
+               exerciseArrayList.add(new Exercise(name,desc,imageURI));
             }
 
         }
@@ -199,7 +197,7 @@ public class WidgetConfigActivity extends AppCompatActivity implements LoaderMan
         MyExerciseAppWidget.updateExerciseAppWidget(getApplicationContext(),mAppWidgetManager,mAppWidgetId,exerciseArrayList);
 
       Intent intent = new Intent();
-      intent.putExtra(EXTRA_APPWIDGET_ID,mAppWidgetId);
+      intent.putExtra(EXTRA_APPWIDGET_ID, mAppWidgetId);
 //        intent.putExtra( MyExerciseAppWidget.WIDGET_EXERCISE_DATA, "");
         setResult(RESULT_OK, intent);
         finish();

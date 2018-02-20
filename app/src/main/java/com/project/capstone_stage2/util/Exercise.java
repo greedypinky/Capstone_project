@@ -25,9 +25,9 @@ public class Exercise implements Parcelable{
         mExerciseImageURI = imageURI;
     }
 
-    public Exercise() {
-
-    }
+//    public Exercise() {
+//
+//    }
 
     public Exercise(Parcel in ) {
         mExerciseName = in.readString();
