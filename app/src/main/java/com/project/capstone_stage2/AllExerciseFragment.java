@@ -120,11 +120,13 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         mRecyclerView.setAdapter(mAdapter);
         mNoDataText = (TextView) rootView.findViewById(R.id.all_execise_no_data_error_text);
         mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.all_execise_loading_indicator);
+        showLoading();
 
         return rootView;
     }
 
     public void showLoading() {
+        Log.d(TAG,"showLoading...");
         /* Then, hide the weather data */
         mRecyclerView.setVisibility(View.GONE);
         mNoDataText.setVisibility(View.GONE);
@@ -134,11 +136,12 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 
     public void showData(boolean hasData) {
         if(hasData) {
+            Log.d(TAG, "show the recycler view!");
             mProgressIndicator.setVisibility(View.GONE);
             mNoDataText.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
         } else {
-
+            Log.d(TAG, "hide the recycler view!");
             mProgressIndicator.setVisibility(View.GONE);
             mNoDataText.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.INVISIBLE);
@@ -153,7 +156,8 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     public void updateAdapterData(Cursor cursor) {
         if(cursor != null) {
             // TODO: how come quickly click on tab page the mAdapter is not ready ??
-            if(cursor != null) {
+            if (cursor != null && !cursor.isClosed() && cursor.getCount() > 0) {
+                Log.d(TAG,"Cursor has data!");
                 if(mAdapter != null) {
                     mCursor = cursor;
                     mAdapter.setAdapterData(mCursor);
@@ -165,8 +169,9 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
                 }
             }
         } else {
+            Log.d(TAG,"Cursor has No data!");
             mHasData = false;
-            // showErrorMessage();
+            showData(false);
         }
     }
 
@@ -420,7 +425,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 //02-18 18:28:48.324 2832-2832/com.project.capstone_stage2 D/ExerciseContentProvider: QUERY:FAVORITE EXERCISE Query from FavoriteExercise
 //02-18 18:28:48.325 2832-2832/com.project.capstone_stage2 D/ExerciseContentProvider: cursor count:0
 //            02-18 18:28:48.325 2832-2832/com.project.capstone_stage2 D/ContentValues: addFavorite flag:false
-    private boolean checkAlreadyInsertAsFavorite(String exerciseID) {
+    public boolean checkAlreadyInsertAsFavorite(String exerciseID) {
         Uri uri = ExerciseContract.ExerciseEntry.CONTENT_URI_FAV;
         String[] projections = {ExerciseContract.ExerciseEntry.EXERCISE_ID, ExerciseContract.ExerciseEntry.EXERCISE_NAME};
         String selection = ExerciseContract.ExerciseEntry.EXERCISE_ID + "=?";

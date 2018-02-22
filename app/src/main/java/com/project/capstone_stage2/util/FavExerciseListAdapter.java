@@ -91,26 +91,27 @@ public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseList
     @Override
     public void onBindViewHolder(ExerciseViewHolder holder, int position) {
         // TODO: so before that we need to pass the cursor by setAdapterData
-        if (mCursor != null) {
+        if (mCursor != null && !mCursor.isClosed() && mCursor.getCount() > 0) {
             mCursor.moveToPosition(position);
-        }
+            holder.mExerciseName.setText(mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME)));
+            // TODO: add back the Backend JSON with exercise description
+            // holder.mExerciseDesc.setText(mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION)));
+            // set the DUMMY data for now
+            holder.mExerciseDesc.setText("<exercise description here...>");
+            String imageURL = mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE));
 
-        holder.mExerciseName.setText(mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME)));
-        // TODO: add back the Backend JSON with exercise description
-        // holder.mExerciseDesc.setText(mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION)));
-        // set the DUMMY data for now
-        holder.mExerciseDesc.setText("<exercise description here...>");
-        String imageURL = mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE));
-
-        // holder.mExerciseImage.setImageResource(mCursor.getInt(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE)));
+            // holder.mExerciseImage.setImageResource(mCursor.getInt(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE)));
 //        if(!imageURL.isEmpty() && imageURL != null) {
 //            // Picasso will handle loading the images on a background thread, image decompression and caching the images.
 //            Picasso.with(mContext).load(imageURL).into(holder.mExerciseImage);
 //        }
 
-        // will use the default image for now
-        int defaultImage = R.drawable.exercise_default;
-        Picasso.with(mContext).load(defaultImage).into(holder.mExerciseImage);
+            // will use the default image for now
+            int defaultImage = R.drawable.exercise_default;
+            Picasso.with(mContext).load(defaultImage).into(holder.mExerciseImage);
+        } else {
+            Log.e(TAG,"onBindViewHolder - cursor is closed!");
+        }
     }
 
     @Override

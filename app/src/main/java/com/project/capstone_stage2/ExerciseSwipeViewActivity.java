@@ -60,11 +60,13 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
     LoaderManager.LoaderCallbacks<Cursor> loaderCallbacks;
     private static String mExceriseCategoryName = "";
     private static String mExceriseCategoryDesc = "";
-    private static int mExceriseCategoryImage = 0;
+    private static String mExceriseCategoryImage = "";
+    private static String mCurrentTabPosition = "0"; // default position is always the ALL tab, else the Favorite tab
     private Fragment mFragmentSwipeView;
     public static final String CATEGORY_NAME_KEY = "name";
     public static final String CATEGORY_DESC_KEY = "desc";
     public static final String CATEGORY_IMAGE_KEY = "image";
+    public static final String CATEGORY_TAB_POS_KEY = "image";
 
     // View Objects
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
@@ -110,7 +112,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
         //AnalyticsApplication application = (AnalyticsApplication) getApplication();
         //mTracker = application.getDefaultTracker();
 
-        loaderCallbacks =  ExerciseSwipeViewActivity.this;
+        loaderCallbacks = ExerciseSwipeViewActivity.this;
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.swipe_view_coordinateLayout);
         mToolBarImage = (ImageView) findViewById(R.id.swipe_view_category_image);
         mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.swipe_view_collapsingtoolbarlayout);
@@ -132,7 +134,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
             // will use the default image for now
             int defaultImage = R.drawable.exercise_default;
             //Picasso.with(getApplicationContext()).load(mExceriseCategoryImage).into(mToolBarImage);
-            if (mToolBarImage!=null) {
+            if (mToolBarImage != null) {
                 Picasso.with(getApplicationContext()).load(defaultImage).into(mToolBarImage);
             }
         }
@@ -160,18 +162,22 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
         });
 
 
-
         if (savedInstanceState != null) {
+            Log.d(TAG,"DEBUG:::savedInstanceState!");
 
             // TODO: add back implementation for SavedInstanceState for this view
-            if(savedInstanceState.containsKey(CATEGORY_NAME_KEY)) {
+            if (savedInstanceState.containsKey(CATEGORY_NAME_KEY)) {
                 mExceriseCategoryName = savedInstanceState.getString(CATEGORY_NAME_KEY);
             }
-            if(savedInstanceState.containsKey(CATEGORY_DESC_KEY)) {
+            if (savedInstanceState.containsKey(CATEGORY_DESC_KEY)) {
                 mExceriseCategoryDesc = savedInstanceState.getString(CATEGORY_DESC_KEY);
             }
-            if(savedInstanceState.containsKey(CATEGORY_IMAGE_KEY)) {
-                mExceriseCategoryImage = savedInstanceState.getInt(CATEGORY_IMAGE_KEY);
+            if (savedInstanceState.containsKey(CATEGORY_IMAGE_KEY)) {
+                mExceriseCategoryImage = savedInstanceState.getString(CATEGORY_IMAGE_KEY);
+            }
+
+            if (savedInstanceState.containsKey(CATEGORY_TAB_POS_KEY)) {
+                mCurrentTabPosition = savedInstanceState.getString(CATEGORY_TAB_POS_KEY);
             }
 
         } else {
@@ -181,9 +187,9 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                 Bundle bundle = intent.getExtras();
                 mExceriseCategoryName = bundle.getString("name");
                 mExceriseCategoryDesc = bundle.getString("desc");
-                mExceriseCategoryImage = bundle.getInt("image");
-                Log.d(TAG,String.format("Category name:%s CategoryDesc:%s CategoryImage:%s",
-                        mExceriseCategoryName,mExceriseCategoryDesc,mExceriseCategoryImage));
+                mExceriseCategoryImage = bundle.getString("image");
+                Log.d(TAG, String.format("Category name:%s CategoryDesc:%s CategoryImage:%s",
+                        mExceriseCategoryName, mExceriseCategoryDesc, mExceriseCategoryImage));
             }
 
         }
@@ -197,20 +203,22 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
             public void onTabSelected(TabLayout.Tab tab) {
                 // need to update the view page ?
                 String tabPosition = String.valueOf(tab.getPosition());
+                mCurrentTabPosition = tabPosition;
                 String tabText = (String) tab.getText();
                 CharSequence debugmsg = "tab position:" + tabPosition + " tab text:" + tabText;
                 Toast.makeText(getApplicationContext(), debugmsg, Toast.LENGTH_LONG).show();
-                switch (tabPosition)
-                {
+                switch (tabPosition) {
                     case "0":
                         // not only do we need to load the data but also need to get the fragment instance?
                         if (mFragment1 == null) {
 
-                            Log.d(TAG,"when Fragment1 tab again!");
+                            Log.d(TAG, "when Fragment1 tab again!");
                             mFragment1 = (AllExerciseFragment) mAdapterViewPager.getItem(0);
-                            getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID,null, loaderCallbacks);
+                            if(mFragment1!=null) {
+                                getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
+                            }
                         } else {
-                            getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID,null, loaderCallbacks);
+                            getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
 
                         }
 
@@ -220,19 +228,19 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                         // query the favorite
                         if (mFragment2 == null) {
 
-                            Log.d(TAG,"when Fragment2 tab again!");
+                            Log.d(TAG, "when Fragment2 tab again!");
                             mFragment2 = (FavoriteExerciseFragment) mAdapterViewPager.getItem(1);
                             if (mFragment2 != null) {
-                                getSupportLoaderManager().initLoader(FAVORITE_EXERCISE_DB_DATA_LOADER_ID,null, loaderCallbacks);
+                                getSupportLoaderManager().initLoader(FAVORITE_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
                             }
                         } else {
-                            getSupportLoaderManager().initLoader(FAVORITE_EXERCISE_DB_DATA_LOADER_ID,null, loaderCallbacks);
+                            getSupportLoaderManager().initLoader(FAVORITE_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
                         }
 
 
                         break;
                     default:
-                        Log.d(TAG,"invalid tab position!");
+                        Log.d(TAG, "invalid tab position!");
 
                 }
             }
@@ -247,7 +255,6 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
 
             }
         });
-
 
 
         // https://www.grokkingandroid.com/using-loaders-in-android/
@@ -271,9 +278,15 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
         // Log.d(TAG,"Google Endpoint API response:-" + response);
 
         // TODO: get the JSON data, then starts the Sync task
-
-        Log.d(TAG,"onCreate() initLoader to get the DB Cursor for all exercises");
-        getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
+        Log.d(TAG, "onCreate() initLoader to get the DB Cursor for all exercises");
+        Log.d(TAG, "onCreate() currentTabPosition:" + mCurrentTabPosition);
+        if (mCurrentTabPosition == "0") {
+            Log.d(TAG,"onCreate:- load the all exercise");
+            getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
+        } else {
+            Log.d(TAG,"onCreate:- load the favorite exercise");
+            getSupportLoaderManager().initLoader(FAVORITE_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
+        }
 
         // check the network connectivity
         if (!NetworkUtil.isNetworkConnected(this)) {
@@ -374,11 +387,13 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
 //                        selectionByCategoryName2,
 //                        new String[] {mExceriseCategoryName},
 //                        favSortOrder);
+
                 loader2 = new CursorLoader(this,
                         queryUri2,
                         EXERCISE_PROJECTION,
-                        null,
-                        null,favSortOrder);
+                        selectionByCategoryName2,
+                        new String[] {mExceriseCategoryName},
+                        favSortOrder);
                 Log.d(TAG, "loader2 Get uri:- " + loader2.getUri() );
                 return loader2;
             default:
@@ -478,7 +493,8 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
         // TODO: add back the save state
         outState.putString(CATEGORY_NAME_KEY, mExceriseCategoryName);
         outState.putString(CATEGORY_DESC_KEY, mExceriseCategoryDesc);
-        outState.putInt(CATEGORY_IMAGE_KEY, mExceriseCategoryImage);
+        outState.putString(CATEGORY_IMAGE_KEY, mExceriseCategoryImage);
+        outState.putString(CATEGORY_TAB_POS_KEY, mCurrentTabPosition);
         // TODO: DO we save which tab is on focus before
 
     }
@@ -614,12 +630,12 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
     }
 
 
-    /**
-     * setBitMapForToolBar
-     * Set the Article bitmap image to the toolbar
-     * also update the ContentScrimColor by the image vibrant color
-     * @param bitmap
-     */
+//    /**
+//     * setBitMapForToolBar
+//     * Set the Article bitmap image to the toolbar
+//     * also update the ContentScrimColor by the image vibrant color
+//     * @param bitmap
+//     */
 //    public void setBitMapForToolBar(Bitmap bitmap) {
 //        // TODO: add implementation
 //        mToolBarImage.setImageBitmap(bitmap);
@@ -635,6 +651,27 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
 //            }
 //        });
 //    }
+
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
 
 }

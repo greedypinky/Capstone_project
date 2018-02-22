@@ -97,7 +97,7 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         mNoDataText = (TextView) rootView.findViewById(R.id.fav_execise_no_data_error_text);
         mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.fav_execise_loading_indicator);
 
-
+        showData(false);
         return rootView;
     }
 
@@ -111,8 +111,8 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
        // mAdapter.setAdapterData(cursor);
         // TODO: update the cursor
         // TODO: question - when do we need to close the cursor ??
-        if (cursor != null && !cursor.isClosed()) {
-            Log.d(TAG,"Cursor is not null, updateAdapterData!");
+        if (cursor != null && !cursor.isClosed() && cursor.getCount() > 0) {
+            Log.d(TAG,"Cursor is not null and has data -> updateAdapterData!");
             if (mAdapter != null) {
                 mCursor = cursor;
                 mAdapter.setAdapterData(mCursor);
@@ -121,6 +121,9 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
             } else {
                 Log.d(TAG,"Adapter is null! Why?");
             }
+        } else {
+            Log.d(TAG,"Cursor has no data!");
+            showData(false);
         }
     }
 
@@ -225,10 +228,9 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         Uri uri = ExerciseContract.ExerciseEntry.buildFavoriteExerciseUriWithId(Long.parseLong(id));
         int deleteRow = getActivity().getContentResolver().delete(uri, whereClause, new String[]{id});
 
-
-
+        Log.e(TAG, "deleted item count:" + deleteRow);
         // TODO: need to refresh the list after a list is deleted
-
+        Log.e(TAG, "reload the list after removal of the item!");
         Uri queryURI = ExerciseContract.ExerciseEntry.CONTENT_URI_FAV;
                 /* Sort order: Ascending by exercise id */
         String favSortOrder = ExerciseContract.ExerciseEntry.EXERCISE_ID + " ASC";
@@ -242,7 +244,6 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         }
 
         return false;
-
     }
 
 
@@ -264,11 +265,13 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
 
 
     public void showData(boolean hasData){
-        if(hasData) {
+        if (hasData) {
+            Log.d(TAG,"show the recycler view!");
             mProgressIndicator.setVisibility(View.GONE);
             mNoDataText.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
         } else {
+            Log.d(TAG,"hide the recycler view!");
             mProgressIndicator.setVisibility(View.GONE);
             mNoDataText.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.INVISIBLE);
