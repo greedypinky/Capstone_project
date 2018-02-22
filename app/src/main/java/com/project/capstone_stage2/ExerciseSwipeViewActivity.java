@@ -203,6 +203,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
             public void onTabSelected(TabLayout.Tab tab) {
                 // need to update the view page ?
                 String tabPosition = String.valueOf(tab.getPosition());
+                Log.d(TAG,"set tab position to:" + tabPosition);
                 mCurrentTabPosition = tabPosition;
                 String tabText = (String) tab.getText();
                 CharSequence debugmsg = "tab position:" + tabPosition + " tab text:" + tabText;
@@ -280,11 +281,16 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
         // TODO: get the JSON data, then starts the Sync task
         Log.d(TAG, "onCreate() initLoader to get the DB Cursor for all exercises");
         Log.d(TAG, "onCreate() currentTabPosition:" + mCurrentTabPosition);
+
         if (mCurrentTabPosition == "0") {
+            TabLayout.Tab tab = tabLayout.getTabAt(0);
+            tab.select();
             Log.d(TAG,"onCreate:- load the all exercise");
             getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
         } else {
-            Log.d(TAG,"onCreate:- load the favorite exercise");
+            TabLayout.Tab tab = tabLayout.getTabAt(1);
+            tab.select();
+            Log.d(TAG,"DEBUG:::onCreate:- load the favorite exercise");
             getSupportLoaderManager().initLoader(FAVORITE_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
         }
 
