@@ -203,7 +203,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
             public void onTabSelected(TabLayout.Tab tab) {
                 // need to update the view page ?
                 String tabPosition = String.valueOf(tab.getPosition());
-                Log.d(TAG,"set tab position to:" + tabPosition);
+                Log.d(TAG,"Listener method:onTabSelected method -set tab position to:" + tabPosition);
                 mCurrentTabPosition = tabPosition;
                 String tabText = (String) tab.getText();
                 CharSequence debugmsg = "tab position:" + tabPosition + " tab text:" + tabText;

@@ -8,6 +8,7 @@
     android:orientation="vertical">
 
     <!-- Do we need to add the title -->
+    <!--
     <TextView
         android:id="@+id/widgetTitleLabel"
         android:layout_width="match_parent"
@@ -17,13 +18,15 @@
         android:padding="16dp"
         android:text="Your Widget Title"
         android:textColor="@android:color/black"
-        android:textSize="18dp" />
+        android:textSize="18dp" /> -->
 
     <!-- This is the exercise data -->
+
     <ListView
         android:id="@+id/widget_exercise_listview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/cardview_light_background"
         >
 
         <!-- This is the Empty view if there is no data -->

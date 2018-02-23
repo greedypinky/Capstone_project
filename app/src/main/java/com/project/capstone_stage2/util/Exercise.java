@@ -19,20 +19,32 @@ public class Exercise implements Parcelable{
     };
 
     // Constructor
-    public Exercise(String name, String desc, String imageURI) {
+//    public Exercise(String name, String desc, String imageURI) {
+//        mExerciseName = name;
+//        mExerciseDesc = desc;
+//        mExerciseImageURI = imageURI;
+//    }
+
+    public Exercise(String name) {
         mExerciseName = name;
-        mExerciseDesc = desc;
-        mExerciseImageURI = imageURI;
+        //mExerciseDesc = desc;
+        //mExerciseImageURI = imageURI;
     }
 
 //    public Exercise() {
 //
 //    }
+//
+//    public Exercise(Parcel in) {
+//        mExerciseName = in.readString();
+//        mExerciseDesc = in.readString();
+//        mExerciseImageURI = in.readString();
+//    }
 
-    public Exercise(Parcel in ) {
+    public Exercise(Parcel in) {
         mExerciseName = in.readString();
-        mExerciseDesc = in.readString();
-        mExerciseImageURI = in.readString();
+        // mExerciseDesc = in.readString();
+        // mExerciseImageURI = in.readString();
     }
 
     public String getExerciseDesc() {
@@ -69,8 +81,8 @@ public class Exercise implements Parcelable{
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(mExerciseName);
-        parcel.writeString(mExerciseDesc);
-        parcel.writeString(mExerciseImageURI);
+       // parcel.writeString(mExerciseDesc);
+       // parcel.writeString(mExerciseImageURI);
     }
 
 }

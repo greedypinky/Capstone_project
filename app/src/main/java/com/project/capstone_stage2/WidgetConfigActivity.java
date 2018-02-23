@@ -28,6 +28,7 @@ import com.project.capstone_stage2.util.EndPointsAsyncTask;
 import com.project.capstone_stage2.util.Exercise;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID;
 
@@ -165,7 +166,8 @@ public class WidgetConfigActivity extends AppCompatActivity implements LoaderMan
        mAppWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
 
        // TODO: Loop through cursor and put the info into the CategoryExercise POJO Class
-        ArrayList<Exercise> exerciseArrayList = new ArrayList<Exercise>();
+        //ArrayList<Exercise> exerciseArrayList = new ArrayList<Exercise>();
+        ArrayList<HashMap<String,String>> exerciseArrayList = new ArrayList<HashMap<String,String>>();
 
         if (data != null) {
             while (data.moveToNext()) {
@@ -173,7 +175,13 @@ public class WidgetConfigActivity extends AppCompatActivity implements LoaderMan
                String desc = data.getString(data.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION));
                String imageURI = data.getString(data.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE));
                Log.d(TAG, String.format("name %s, desc %s, imageURL %s", name, desc, imageURI));
-               exerciseArrayList.add(new Exercise(name,desc,imageURI));
+               //exerciseArrayList.add(new Exercise(name,desc,imageURI));
+               // exerciseArrayList.add(new Exercise(name));
+                HashMap<String,String> hmap = new HashMap<String,String>();
+                hmap.put("name",name);
+                hmap.put("desc",desc);
+                hmap.put("imageuri",imageURI);
+                exerciseArrayList.add(hmap);
             }
 
         }

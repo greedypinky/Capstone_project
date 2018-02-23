@@ -16,6 +16,8 @@ import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
 
 //http://www.worldbestlearningcenter.com/answers/1524/using-listview-in-home-screen-widget-in-android
 public class ListViewWidgetService extends RemoteViewsService {
@@ -30,8 +32,9 @@ public class ListViewWidgetService extends RemoteViewsService {
         private Context mContext = null;
         private Intent intentWithData = null;
 
-        private ArrayList<Exercise> mExercisesData = new ArrayList<Exercise>();
-        //  startListViewServiceIntent.putParcelableArrayListExtra(WIDGET_EXERCISE_DATA, exercises);
+       // private ArrayList<Exercise> mExercisesData = new ArrayList<Exercise>();
+        private ArrayList<HashMap<String,String>> mExercisesData = new ArrayList<HashMap<String, String>>();
+        // startListViewServiceIntent.putParcelableArrayListExtra(WIDGET_EXERCISE_DATA, exercises);
         // TODO: question is where should we get back the data?
         public ListViewRemoteViewsFactory(Context context, Intent intent) {
 
@@ -42,7 +45,8 @@ public class ListViewWidgetService extends RemoteViewsService {
                 Bundle bundle = intentWithData.getExtras();
                 Log.d(TAG,"Get exercise Arraylist");
 
-                mExercisesData =  bundle.getParcelableArrayList(MyExerciseAppWidget.WIDGET_EXERCISE_DATA);
+                //mExercisesData =  bundle.getParcelableArrayList(MyExerciseAppWidget.WIDGET_EXERCISE_DATA);
+                mExercisesData = (ArrayList<HashMap<String,String>>)bundle.getSerializable(MyExerciseAppWidget.WIDGET_EXERCISE_DATA);
                 int widgetID = bundle.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
                 Log.d(TAG,"widget id is:" + widgetID);
 
@@ -81,17 +85,36 @@ public class ListViewWidgetService extends RemoteViewsService {
 
             RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.widget_exercise_item);
 
-            // get the row data at position
-            Exercise data = mExercisesData.get(position);
+            HashMap<String,String> hmap = mExercisesData.get(position);
+            String name = "";
+            String desc =  "";
+            String imageurl = "";
 
-            rv.setTextViewText(R.id.widget_execise_name, data.getExerciseName());
-            Log.d(TAG, "remoteview - set exercise name:" + data.getExerciseName());
-            rv.setTextViewText(R.id.widget_execise_desc, data.getExerciseDesc());
-            Log.d(TAG, "remoteview - set exercise desc:" + data.getExerciseDesc());
+            for (int i=0;i<hmap.size();i++){
+               name = hmap.get("name");
+               desc =  hmap.get("desc");
+               imageurl = hmap.get("imageurl");
+                Log.d(TAG, String.format("name %s, desc %s, imageURL %s", name, desc, imageurl));
+
+            }
+
+            // get the row data at position
+            //Exercise data = mExercisesData.get(position);
+//            Exercise data = new Exercise("Dummy name","Dummy exercise","dummyURL");
+//
+//            rv.setTextViewText(R.id.widget_execise_name, data.getExerciseName());
+//            Log.d(TAG, "remoteview - set exercise name:" + data.getExerciseName());
+//            rv.setTextViewText(R.id.widget_execise_desc, data.getExerciseDesc());
+//            Log.d(TAG, "remoteview - set exercise desc:" + data.getExerciseDesc());
+
+            rv.setTextViewText(R.id.widget_execise_name, name);
+            rv.setTextViewText(R.id.widget_execise_desc, desc);
+
             try {
                 // TODO : in real, we get the URI and set the image by PICASSO?
                 // Picasso will handle loading the images on a background thread, image decompression and caching the images.
                 // Bitmap bm = Picasso.with(mContext).load(data.getExerciseImageURI()).get();
+                // Bitmap bm = Picasso.with(mContext).load(imageurl).get();
                 // for now, we can use a default icon to set the image
                 Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.nao_squat01);
                 //rv.setImageViewResource(R.id.widget_execise_image,bm);
@@ -132,6 +155,7 @@ public class ListViewWidgetService extends RemoteViewsService {
 
             Log.d(TAG,mExercisesData.size()+"");
             return mExercisesData.size();
+            //return 3;
 
         }
 

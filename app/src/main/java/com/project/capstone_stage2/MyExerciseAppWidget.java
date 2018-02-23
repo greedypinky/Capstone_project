@@ -18,6 +18,7 @@ import com.project.capstone_stage2.util.Exercise;
 import com.project.capstone_stage2.util.ListViewWidgetService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID;
 import static android.appwidget.AppWidgetManager.INVALID_APPWIDGET_ID;
@@ -102,8 +103,10 @@ public class MyExerciseAppWidget extends AppWidgetProvider {
     }
 
     //https://www.sitepoint.com/killer-way-to-show-a-list-of-items-in-android-collection-widget/
-    public static void updateExerciseAppWidget(Context context,AppWidgetManager appWidgetManager,
-                                               int appWidgetId, ArrayList<Exercise> exercises) {
+//    public static void updateExerciseAppWidget(Context context,AppWidgetManager appWidgetManager,
+//                                               int appWidgetId, ArrayList<Exercise> exercises) {
+        public static void updateExerciseAppWidget(Context context,AppWidgetManager appWidgetManager,
+        int appWidgetId, ArrayList<HashMap<String,String>> exercises) {
 
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(),R.layout.content_widget);
         Log.d(TAG,"updateExerciseAppWidget:" + context.getPackageName());
@@ -121,7 +124,8 @@ public class MyExerciseAppWidget extends AppWidgetProvider {
             // Trigger listview item click
         Intent startListViewServiceIntent = new Intent(context, ListViewWidgetService.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(WIDGET_EXERCISE_DATA, exercises);
+        //bundle.putParcelableArrayList(WIDGET_EXERCISE_DATA, exercises);
+            bundle.putSerializable(WIDGET_EXERCISE_DATA, exercises);
         bundle.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID,appWidgetId);
             startListViewServiceIntent.putExtras(bundle);
        // startListViewServiceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
