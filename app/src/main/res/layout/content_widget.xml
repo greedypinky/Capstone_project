@@ -8,7 +8,6 @@
     android:orientation="vertical">
 
     <!-- Do we need to add the title -->
-    <!--
     <TextView
         android:id="@+id/widgetTitleLabel"
         android:layout_width="match_parent"
@@ -16,9 +15,9 @@
         android:background="@color/colorPrimary"
         android:gravity="center"
         android:padding="16dp"
-        android:text="Your Widget Title"
+        android:text="@string/app_name"
         android:textColor="@android:color/black"
-        android:textSize="18dp" /> -->
+        android:textSize="18dp" />
 
     <!-- This is the exercise data -->
 
@@ -30,7 +29,7 @@
         >
 
         <!-- This is the Empty view if there is no data -->
-        <!--
+       <!--
         <TextView
             android:id="@+id/widget_empty_view"
             android:layout_width="match_parent"
@@ -39,8 +38,10 @@
             android:layout_gravity="center"
             android:layout_margin="4dp"
             android:text="No Data!"
+
             />
             -->
+
     </ListView>
 
     <!-- TODO add the empty view if there is no data? -->
@@ -48,7 +49,7 @@
     <RelativeLayout
         android:id="@+id/widget_empty_view_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="8dp">
         <TextView
@@ -57,7 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:text="No data"
+            android:text="@string/widget_no_data"
             android:textColor="#ffffff"
             android:textSize="20sp"
             android:textStyle="bold"

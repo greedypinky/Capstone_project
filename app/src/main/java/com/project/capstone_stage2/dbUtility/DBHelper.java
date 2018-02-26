@@ -1,8 +1,10 @@
 package com.project.capstone_stage2.dbUtility;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 import android.util.Log;
 
 
@@ -42,7 +44,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 .append(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION +  TEXT_NOT_NULL + ",")
                 .append(ExerciseContract.ExerciseEntry.EXERCISE_STEPS +  TEXT_NOT_NULL + ",")
                 .append(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE +  TEXT_NOT_NULL + ",")
-                .append(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO +  TEXT_NOT_NULL)
+                .append(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO +  TEXT_NOT_NULL + ",")
+                .append(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE + " INTEGER DEFAULT 0")
                 .append(");");
 
         final String SQL_CREATE_TABLE1 = builder.toString();
@@ -84,4 +87,7 @@ public class DBHelper extends SQLiteOpenHelper {
         // re-create database
         onCreate(sqLiteDatabase);
     }
+
+
+
 }

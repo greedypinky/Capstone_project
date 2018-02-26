@@ -9,6 +9,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -26,6 +27,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -84,6 +86,11 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
 
     private String mEXERCISE_DATA_FROM_ENDPOINT = null;
 
+    @Override
+    public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
+        return super.onCreateView(parent, name, context, attrs);
+    }
+
     private AllExerciseFragment mFragment1;
     private FavoriteExerciseFragment mFragment2;
     private boolean mTwoPaneMode = false;
@@ -99,8 +106,14 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
             ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION,
             ExerciseContract.ExerciseEntry.EXERCISE_STEPS,
             ExerciseContract.ExerciseEntry.EXERCISE_IMAGE,
-            ExerciseContract.ExerciseEntry.EXERCISE_VIDEO
+            ExerciseContract.ExerciseEntry.EXERCISE_VIDEO,
+            ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE
     };
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -208,6 +221,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                 String tabText = (String) tab.getText();
                 CharSequence debugmsg = "tab position:" + tabPosition + " tab text:" + tabText;
                 Toast.makeText(getApplicationContext(), debugmsg, Toast.LENGTH_LONG).show();
+                mViewPager.setCurrentItem(tab.getPosition());
                 switch (tabPosition) {
                     case "0":
                         // not only do we need to load the data but also need to get the fragment instance?
@@ -220,15 +234,13 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                             }
                         } else {
                             getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
-
                         }
-
-
                         break;
                     case "1":
                         // query the favorite
+                        //# Select "name" and "value" columns from secure settings where "name" is equal to "new_setting" and sort the result by name in ascending order.
+                        //adb shell content query --uri content://settings/secure --projection name:value --where "name='new_setting'" --sort "name ASC"
                         if (mFragment2 == null) {
-
                             Log.d(TAG, "when Fragment2 tab again!");
                             mFragment2 = (FavoriteExerciseFragment) mAdapterViewPager.getItem(1);
                             if (mFragment2 != null) {
@@ -237,12 +249,9 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                         } else {
                             getSupportLoaderManager().initLoader(FAVORITE_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
                         }
-
-
                         break;
                     default:
                         Log.d(TAG, "invalid tab position!");
-
                 }
             }
 
@@ -417,7 +426,6 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
             Log.d(TAG, "onLoadFinished loader Get uri:- " + ((CursorLoader)loader).getUri() );
             mDataCursor.moveToFirst();
             if (loaderID == ALL_EXERCISE_DB_DATA_LOADER_ID) {
-
                 Log.d(TAG,"All items in the cursor:" + mDataCursor.getCount());
                 data.moveToFirst();
                 //mFragment1.updateAdapterData(mDataCursor);
@@ -429,7 +437,6 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                 Log.d(TAG,"onLoadFinished:Update Adapter for All Fragment if mFragment1 is not null!");
                 mFragment1.updateAdapterData(data);
                 mFragment1.setPaneMode(mTwoPaneMode);
-
             } else if (loaderID == FAVORITE_EXERCISE_DB_DATA_LOADER_ID) {
                 Log.d(TAG,"Update Adapter for Favorite Fragment");
                 Log.d(TAG,"favorite items in the cursor:" + mDataCursor.getCount());
@@ -440,7 +447,8 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                     mFragment2 = (FavoriteExerciseFragment) mAdapterViewPager.getItem(1);
                 }
                 Log.d(TAG,"onLoadFinish - Favorite case what is the count??" + data.getCount());
-                mFragment2.updateAdapterData(data);
+                //mFragment2.updateAdapterData(data);
+                mFragment2.reloadData(mExceriseCategoryName);
                 mFragment2.setPaneMode(mTwoPaneMode);
             }
 

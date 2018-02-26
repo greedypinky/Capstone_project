@@ -2,7 +2,7 @@
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:initialKeyguardLayout="@layout/content_widget"
     android:initialLayout="@layout/content_widget"
-    android:minHeight="80dp"
+    android:minHeight="120dp"
     android:minWidth="80dp"
     android:previewImage="@drawable/nao_squat01"
     android:resizeMode="horizontal|vertical"

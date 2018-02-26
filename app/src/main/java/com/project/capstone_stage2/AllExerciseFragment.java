@@ -353,9 +353,12 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
             Toast.makeText(getContext(), "Error:Cursor is not valid!", Toast.LENGTH_LONG).show();
         }
 
-
         if (checkAlreadyInsertAsFavorite(exeID)) {
             // TODO: disable the ADD Favorite button!
+            ContentValues contentValues = new ContentValues();
+            // set the favorite flag = 1
+            contentValues.put(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE,1);
+            updateAllExerciseFavoriteCol(exeID, contentValues);
             return true;
         }
 
@@ -449,6 +452,16 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+    }
 
+    // TODO: should we move to an Util class
+    public void updateAllExerciseFavoriteCol(String exerciseID, ContentValues contentValues){
+        // TODO: need to refresh the list after a list is deleted
+        Log.e(TAG, "reload the list after removal of the item!");
+        Uri updateURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
+                /* Sort order: Ascending by exercise id */
+        String favSortOrder = ExerciseContract.ExerciseEntry.EXERCISE_ID + " ASC";
+        String whereClause = ExerciseContract.ExerciseEntry.EXERCISE_ID + " = ?";
+        int updateRow = getActivity().getContentResolver().update(updateURI, contentValues, whereClause, new String[]{exerciseID});
     }
 }

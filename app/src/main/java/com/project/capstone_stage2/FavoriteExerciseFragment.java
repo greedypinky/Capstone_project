@@ -1,5 +1,6 @@
 package com.project.capstone_stage2;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -231,21 +232,56 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         Log.e(TAG, "deleted item count:" + deleteRow);
         // TODO: need to refresh the list after a list is deleted
         Log.e(TAG, "reload the list after removal of the item!");
+        reloadData(catName);
+
+        Log.e(TAG, "update the favorite flag in the All table!");
+
+        ContentValues contentValues = new ContentValues();
+        // set the favorite flag to false since the user remove from the favorite list
+        contentValues.put(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE, 0);
+        updateAllExerciseFavoriteCol(exeID, contentValues);
+
+        if (deleteRow > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    public void reloadData(String catName){
+
+        // TODO: need to refresh the list after a list is deleted
+        Log.e(TAG, "reload the list after removal of the item!");
         Uri queryURI = ExerciseContract.ExerciseEntry.CONTENT_URI_FAV;
                 /* Sort order: Ascending by exercise id */
         String favSortOrder = ExerciseContract.ExerciseEntry.EXERCISE_ID + " ASC";
         String selectionByCategoryName = ExerciseContract.ExerciseEntry.CATEGORY + " = ?";
         Cursor newCursor = getActivity().getContentResolver().query(queryURI, ExerciseSwipeViewActivity.EXERCISE_PROJECTION,selectionByCategoryName, new String[]{catName},favSortOrder);
-        if(newCursor!=null) {
-            Log.d(TAG, "Assert After remove data count:" + newCursor.getCount());
+        if (newCursor != null) {
+            Log.d(TAG, "Assert latest data count:" + newCursor.getCount());
             mAdapter.swapCursor(newCursor);
+            if (newCursor.getCount() == 0) {
+                // TODO: show no data
+                showData(false);
+            } else {
+                showData(true);
+            }
         } else {
             Log.e(TAG, "unable to get the cursor!");
         }
-
-        return false;
     }
 
+    public void updateAllExerciseFavoriteCol(String exerciseID, ContentValues contentValues){
+        // TODO: need to refresh the list after a list is deleted
+        Log.e(TAG, "reload the list after removal of the item!");
+        Uri updateURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
+                /* Sort order: Ascending by exercise id */
+        String favSortOrder = ExerciseContract.ExerciseEntry.EXERCISE_ID + " ASC";
+        String whereClause = ExerciseContract.ExerciseEntry.EXERCISE_ID + " = ?";
+        int updateRow = getActivity().getContentResolver().update(updateURI, contentValues, whereClause, new String[]{exerciseID});
+
+    }
 
 
     /**

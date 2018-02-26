@@ -90,9 +90,23 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
             Snackbar noNetworkSnackBar = NetworkUtil.makeSnackbar(getRootView(), getString(R.string.no_network_connection), true);
             noNetworkSnackBar.show();
         } else {
+            showProgressBar(true);
             getResponseFromEndPoint(useEndPoint);
         }
     }
+
+
+    private void showProgressBar(boolean showProgress){
+        if (showProgress) {
+            mProgressBar.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.INVISIBLE);
+        } else {
+            mProgressBar.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+        }
+    }
+
+
 
 
     private View getRootView() {
@@ -157,9 +171,8 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
 
     @Override
     public void processFinish(String result) {
-
         Log.d(TAG,"Google Endpoint API response:-" + result);
-        if("Connection refused".equals(result)) {
+        if ("Connection refused".equals(result)) {
             // use local mock json data from the Assets folder
             //mEXERCISE_DATA_FROM_ENDPOINT = getJSONFromAsset();
         } else {
@@ -170,8 +183,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
         Log.d(TAG,"Sync DB data by IntentService");
         // ExerciseDataSyncTask.startImmediateSync(this, EXERCISE_DATA_FROM_ENDP
         ExerciseDataSyncTask.initialize(this, mEXERCISE_DATA_FROM_ENDPOINT);
-
-
+        showProgressBar(false);
     }
 
     // at least it works when click on back
@@ -189,7 +201,6 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
     }
 
     private void initAds () {
-
         // initialize Mobile Ads SDK with the AdMob App ID
         MobileAds.initialize(this, AD_MOB_APP_ID);
         mInterstitial = new InterstitialAd(this);

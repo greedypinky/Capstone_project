@@ -361,6 +361,19 @@ public class ExerciseContentProvider extends ContentProvider {
                     db.endTransaction();
                 }
                 break;
+            case ALL_EXERCISE_WITH_ID:
+                db.beginTransaction();
+                try {
+                    updatedRowsNum = db.update(ExerciseContract.ExerciseEntry.TABLE_ALL,
+                            contentValues,
+                            ExerciseContract.ExerciseEntry.EXERCISE_ID + " =?", // baseColumn's ExerciseID, not _id
+                            new String[]{String.valueOf(ContentUris.parseId(uri))});
+                    //db.setTransactionSuccessful();
+                } finally {
+
+                    db.endTransaction();
+                }
+                break;
             default:
                 throw new UnsupportedOperationException("Unable to update table by uri:" + uri);
 

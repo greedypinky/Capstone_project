@@ -214,6 +214,8 @@ public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseList
 
                             boolean removeFavorite = exerciseItemOnClickHandler.onRemoveFavClick(cursor);
                             //mAddFavButton.setEnabled(!addFavorite);
+                            toggleButtonDisable(removeFavorite);
+
                         }
                     }
                 });
@@ -232,5 +234,23 @@ public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseList
             exerciseItemOnClickHandler.onClickExercise();
 
         }
+
+        public void toggleButtonDisable(boolean disable){
+
+            if (disable) {
+                mRemoveFavButton.setAlpha(0.5f);
+                mRemoveFavButton.setEnabled(!disable);
+            } else {
+                mRemoveFavButton.setAlpha(1f);
+                mRemoveFavButton.setEnabled(!disable);
+            }
+
+
+        }
+
+        // adb shell content query --uri content://settings/secure --projection name:value --where "name='new_setting'" --sort "name ASC"
+        // adb shell content query --uri content://com.project.capstone_stage2.app.provider/FavoriteExercise --projection _id:category:name --where "category=squat" --sort "_id DESC"
+
+
     }
 }

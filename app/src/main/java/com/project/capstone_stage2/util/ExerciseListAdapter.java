@@ -166,7 +166,7 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
         }
         Cursor oldCursor = mCursor;
         mCursor = newCursor;
-        if (newCursor != null) {
+        if (newCursor != null && !newCursor.isClosed()) {
             // Why we do not have a column for _id ??
             //mRowID = newCursor.getColumnIndexOrThrow(ExerciseContract.ExerciseEntry._ID);
             mDataValid = true;
@@ -290,7 +290,7 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
                 mAddFavButton.setAlpha(0.5f);
                 mAddFavButton.setEnabled(!disable);
             } else {
-                mAddFavButton.setAlpha(0f);
+                mAddFavButton.setAlpha(1f);
                 mAddFavButton.setEnabled(!disable);
             }
 

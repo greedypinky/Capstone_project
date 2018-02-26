@@ -114,6 +114,7 @@ public class MyExerciseAppWidget extends AppWidgetProvider {
         if (exercises!=null && exercises.size() == 0) {
             Log.d(TAG, "No Exercise Data!" );
             // should set the No Exercise Data place holder Text !
+            remoteViews.setTextViewText(R.id.widget_empty_textview, context.getString(R.string.widget_no_data));
         } else {
 
             Log.d(TAG, "Have Exercise Data!" );
@@ -122,17 +123,19 @@ public class MyExerciseAppWidget extends AppWidgetProvider {
             // AppWidgetHostView: android.os.BadParcelableException: ClassNotFoundException when unmarshalling: com.project.capstone_stage2.util.Exercise
             // remoteViews.setTextViewText(R.id.widgetTitleLabel,"hello!");
             // Trigger listview item click
-        Intent startListViewServiceIntent = new Intent(context, ListViewWidgetService.class);
-        Bundle bundle = new Bundle();
-        //bundle.putParcelableArrayList(WIDGET_EXERCISE_DATA, exercises);
+            Intent startListViewServiceIntent = new Intent(context, ListViewWidgetService.class);
+            Bundle bundle = new Bundle();
+            //bundle.putParcelableArrayList(WIDGET_EXERCISE_DATA, exercises);
+
             bundle.putSerializable(WIDGET_EXERCISE_DATA, exercises);
-        bundle.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID,appWidgetId);
+            bundle.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID,appWidgetId);
             startListViewServiceIntent.putExtras(bundle);
-       // startListViewServiceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-       // startListViewServiceIntent.putParcelableArrayListExtra(WIDGET_EXERCISE_DATA, exercises);
-        //startListViewServiceIntent.putExtra(WIDGET_EXERCISE_DATA, "");
-        // TODO: populate the data - need to implement the data correctly
-        remoteViews.setRemoteAdapter(R.id.widget_exercise_listview, startListViewServiceIntent);
+
+            // startListViewServiceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+            // startListViewServiceIntent.putParcelableArrayListExtra(WIDGET_EXERCISE_DATA, exercises);
+            // startListViewServiceIntent.putExtra(WIDGET_EXERCISE_DATA, "");
+            // TODO: populate the data - need to implement the data correctly
+            remoteViews.setRemoteAdapter(R.id.widget_exercise_listview, startListViewServiceIntent);
 
         //     template to handle the click listener for each item
 //        Intent clickIntentTemplate = new Intent(context, MainActivity.class);
