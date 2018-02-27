@@ -106,9 +106,11 @@ public class ExerciseContentProvider extends ContentProvider {
       int type =  uriMatcher.match(uri);
       switch(type) {
 
+          //vnc.android.cursor.dir
           case FAV_EXERCISE:
               return ExerciseContract.ExerciseEntry.CONTENT_DIR_FAV;
 
+          //vnc.android.cursor.item
           case FAV_EXERCISE_WITH_ID:
               return ExerciseContract.ExerciseEntry.CONTENT_ITEM_FAV;
 
@@ -361,13 +363,16 @@ public class ExerciseContentProvider extends ContentProvider {
                     db.endTransaction();
                 }
                 break;
-            case ALL_EXERCISE_WITH_ID:
+            case ALL_EXERCISE:
                 db.beginTransaction();
                 try {
+                    Log.d(TAG, "update all exercise");
+                    Log.d(TAG, "contentValues:" + contentValues.toString());
+                    Log.d(TAG, "where " + ExerciseContract.ExerciseEntry.EXERCISE_ID + " = " + whereArgs[0]);
                     updatedRowsNum = db.update(ExerciseContract.ExerciseEntry.TABLE_ALL,
                             contentValues,
                             ExerciseContract.ExerciseEntry.EXERCISE_ID + " =?", // baseColumn's ExerciseID, not _id
-                            new String[]{String.valueOf(ContentUris.parseId(uri))});
+                             whereArgs);
                     //db.setTransactionSuccessful();
                 } finally {
 

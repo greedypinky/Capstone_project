@@ -103,7 +103,9 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
         if (mCursor != null && !mCursor.isClosed()) {
             mCursor.moveToPosition(position);
 
-
+            boolean isFavorite = (mCursor.getInt(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE)) == 1)? true:false;
+            Log.d(TAG,">>>>>> onBindViewHolder: favorite flag int? " + mCursor.getInt(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE)));
+            Log.d(TAG,">>>>>> onBindViewHolder: favorite flag boolean? " + isFavorite);
             // TODO: StaleException - after going back to MainActivity the cursor is destroyed!
             holder.mExerciseName.setText(mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME)));
             // TODO: add back the Backend JSON with exercise description
@@ -111,6 +113,8 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
             // set the DUMMY data for now
             holder.mExerciseDesc.setText("<exercise description here...>");
             String imageURL = mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE));
+
+            holder.toggleButtonDisable(isFavorite);
 
             // holder.mExerciseImage.setImageResource(mCursor.getInt(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE)));
 //        if(!imageURL.isEmpty() && imageURL != null) {
@@ -223,35 +227,36 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
                                 //mClickHandler.onClick(dateInMillis);
 
                                 boolean addFavorite = exerciseItemOnClickHandler.onAddFavClick(cursor);
-                                Log.d(TAG,"addFavorite flag:" + addFavorite);
+                                Log.d(TAG,"setOnClickListener - addFavorite flag: " + addFavorite);
                                 toggleButtonDisable(addFavorite);
 
                             }
                         }
                     });
                 }
-            } else {
-                mRemoveFavButton = (Button) itemView.findViewById(R.id.remove_fav_btn);
-                if (mRemoveFavButton!=null) {
-                    mRemoveFavButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                            if (exerciseItemOnClickHandler != null) {
-
-                                int adapterPosition = getAdapterPosition();
-                                // mCursor.moveToPosition(adapterPosition);
-                                Cursor cursor = mCursor;
-                                cursor.moveToPosition(adapterPosition);
-
-                                boolean removeFavorite = exerciseItemOnClickHandler.onRemoveFavClick(cursor);
-                                //mAddFavButton.setEnabled(!addFavorite);
-                            }
-                        }
-                    });
-                }
-
             }
+//            else {
+//                mRemoveFavButton = (Button) itemView.findViewById(R.id.remove_fav_btn);
+//                if (mRemoveFavButton!=null) {
+//                    mRemoveFavButton.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View view) {
+//
+//                            if (exerciseItemOnClickHandler != null) {
+//
+//                                int adapterPosition = getAdapterPosition();
+//                                // mCursor.moveToPosition(adapterPosition);
+//                                Cursor cursor = mCursor;
+//                                cursor.moveToPosition(adapterPosition);
+//
+//                                boolean removeFavorite = exerciseItemOnClickHandler.onRemoveFavClick(cursor);
+//                                //mAddFavButton.setEnabled(!addFavorite);
+//                            }
+//                        }
+//                    });
+//                }
+//
+//            }
 
             // TODO: add onClickListener to the Fav Button to trigger the callback?
 
@@ -283,18 +288,16 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
             exerciseItemOnClickHandler.onClickExercise(mCursor);
         }
 
-
         public void toggleButtonDisable(boolean disable){
-
             if (disable) {
+                Log.d(TAG, "disable the Add Button!");
                 mAddFavButton.setAlpha(0.5f);
                 mAddFavButton.setEnabled(!disable);
             } else {
+                Log.d(TAG, "Enable the Add Button!");
                 mAddFavButton.setAlpha(1f);
                 mAddFavButton.setEnabled(!disable);
             }
-
-
         }
     }
 

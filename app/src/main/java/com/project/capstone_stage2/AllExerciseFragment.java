@@ -358,6 +358,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
             ContentValues contentValues = new ContentValues();
             // set the favorite flag = 1
             contentValues.put(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE,1);
+            // TODO: update the AllExercise table's favorite flag
             updateAllExerciseFavoriteCol(exeID, contentValues);
             return true;
         }
@@ -459,9 +460,8 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         // TODO: need to refresh the list after a list is deleted
         Log.e(TAG, "reload the list after removal of the item!");
         Uri updateURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
-                /* Sort order: Ascending by exercise id */
-        String favSortOrder = ExerciseContract.ExerciseEntry.EXERCISE_ID + " ASC";
         String whereClause = ExerciseContract.ExerciseEntry.EXERCISE_ID + " = ?";
         int updateRow = getActivity().getContentResolver().update(updateURI, contentValues, whereClause, new String[]{exerciseID});
+        Log.e(TAG, "updateAllExerciseFavoriteCol #of row:" + updateRow);
     }
 }

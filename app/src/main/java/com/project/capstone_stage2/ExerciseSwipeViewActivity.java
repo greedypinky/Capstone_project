@@ -110,6 +110,18 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
             ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE
     };
 
+    public static String[] FAV_EXERCISE_PROJECTION = {
+            "_ID",
+            ExerciseContract.ExerciseEntry.CATEGORY,
+            ExerciseContract.ExerciseEntry.CATEGORY_DESC,
+            ExerciseContract.ExerciseEntry.EXERCISE_ID,
+            ExerciseContract.ExerciseEntry.EXERCISE_NAME,
+            ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION,
+            ExerciseContract.ExerciseEntry.EXERCISE_STEPS,
+            ExerciseContract.ExerciseEntry.EXERCISE_IMAGE,
+            ExerciseContract.ExerciseEntry.EXERCISE_VIDEO,
+    };
+
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -405,7 +417,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
 
                 loader2 = new CursorLoader(this,
                         queryUri2,
-                        EXERCISE_PROJECTION,
+                        FAV_EXERCISE_PROJECTION,
                         selectionByCategoryName2,
                         new String[] {mExceriseCategoryName},
                         favSortOrder);
@@ -563,7 +575,6 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
         bundle.putString(ExerciseDetailActivity.EXERCISE_STEPS, steps);
         bundle.putString(ExerciseDetailActivity.EXERCISE_VIDEO_URL, videoURL);
         if (mDetailFragment!=null) {
-
             mDetailFragment.setFragmentData(bundle);
             mDetailFragment.showVideo(true);
         }
@@ -675,17 +686,24 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
     @Override
     protected void onStart() {
         super.onStart();
+        Log.d(TAG, "onStop()");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        Log.d(TAG, "onStop()");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.d(TAG, "onDestroy()");
     }
 
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume()");
+    }
 }

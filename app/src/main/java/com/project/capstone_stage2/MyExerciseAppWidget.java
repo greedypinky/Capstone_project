@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.CursorLoader;
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import com.project.capstone_stage2.dbUtility.ExerciseContract;
@@ -113,8 +114,9 @@ public class MyExerciseAppWidget extends AppWidgetProvider {
 
         if (exercises!=null && exercises.size() == 0) {
             Log.d(TAG, "No Exercise Data!" );
-            // should set the No Exercise Data place holder Text !
+            // should set the No Exercise Data place holder Text if there is no exercise data!
             remoteViews.setTextViewText(R.id.widget_empty_textview, context.getString(R.string.widget_no_data));
+            remoteViews.setViewVisibility(R.id.widget_empty_textview, View.VISIBLE);
         } else {
 
             Log.d(TAG, "Have Exercise Data!" );

@@ -257,7 +257,7 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
                 /* Sort order: Ascending by exercise id */
         String favSortOrder = ExerciseContract.ExerciseEntry.EXERCISE_ID + " ASC";
         String selectionByCategoryName = ExerciseContract.ExerciseEntry.CATEGORY + " = ?";
-        Cursor newCursor = getActivity().getContentResolver().query(queryURI, ExerciseSwipeViewActivity.EXERCISE_PROJECTION,selectionByCategoryName, new String[]{catName},favSortOrder);
+        Cursor newCursor = getActivity().getContentResolver().query(queryURI, ExerciseSwipeViewActivity.FAV_EXERCISE_PROJECTION,selectionByCategoryName, new String[]{catName},favSortOrder);
         if (newCursor != null) {
             Log.d(TAG, "Assert latest data count:" + newCursor.getCount());
             mAdapter.swapCursor(newCursor);
