@@ -120,7 +120,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         mRecyclerView.setAdapter(mAdapter);
         mNoDataText = (TextView) rootView.findViewById(R.id.all_execise_no_data_error_text);
         mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.all_execise_loading_indicator);
-        showLoading();
+        //showLoading();
 
         return rootView;
     }
@@ -166,6 +166,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 
                 } else {
                     Log.e(TAG,"Error:Adapter is null ? why?");
+                    // showData(false);
                 }
             }
         } else {
@@ -279,7 +280,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     public boolean onAddFavClick(Cursor cursor) {
         // https://developer.android.com/guide/topics/providers/content-provider-basics.html
         // select the row from All Exercise and add the parameter to Favorite Exercise
-        int id_index = cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID);
+        int id = cursor.getColumnIndex(ExerciseContract.ExerciseEntry._ID);
         int name_index = cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME);
         String exeID = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID));
         String exeName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
@@ -359,7 +360,10 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
             // set the favorite flag = 1
             contentValues.put(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE,1);
             // TODO: update the AllExercise table's favorite flag
-            updateAllExerciseFavoriteCol(exeID, contentValues);
+            // Uri updateURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
+            Uri uri = ExerciseContract.ExerciseEntry.buildAllExerciseUriWithId(id);
+            updateAllExerciseFavoriteCol(uri,contentValues);
+            //updateAllExerciseFavoriteCol(exeID, contentValues);
             return true;
         }
 
@@ -456,12 +460,15 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     }
 
     // TODO: should we move to an Util class
-    public void updateAllExerciseFavoriteCol(String exerciseID, ContentValues contentValues){
+   // public void updateAllExerciseFavoriteCol(Uri updateURI,String exerciseID, ContentValues contentValues){
+    public void updateAllExerciseFavoriteCol(Uri updateURI, ContentValues contentValues){
         // TODO: need to refresh the list after a list is deleted
         Log.e(TAG, "reload the list after removal of the item!");
-        Uri updateURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
-        String whereClause = ExerciseContract.ExerciseEntry.EXERCISE_ID + " = ?";
-        int updateRow = getActivity().getContentResolver().update(updateURI, contentValues, whereClause, new String[]{exerciseID});
+        // Uri updateURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
+        String whereClause = ExerciseContract.ExerciseEntry._ID + " = ?";
+        //String whereClause = ExerciseContract.ExerciseEntry.EXERCISE_ID + " = ?";
+        //int updateRow = getActivity().getContentResolver().update(updateURI, contentValues, whereClause, new String[]{id});
+        int updateRow = getActivity().getContentResolver().update(updateURI, contentValues, whereClause, null);
         Log.e(TAG, "updateAllExerciseFavoriteCol #of row:" + updateRow);
     }
 }

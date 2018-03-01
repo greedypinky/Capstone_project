@@ -235,11 +235,12 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         reloadData(catName);
 
         Log.e(TAG, "update the favorite flag in the All table!");
-
+        //
         ContentValues contentValues = new ContentValues();
         // set the favorite flag to false since the user remove from the favorite list
         contentValues.put(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE, 0);
-        updateAllExerciseFavoriteCol(exeID, contentValues);
+        // TODO: not sure why but unable to update the flag
+        //updateAllExerciseFavoriteCol(exeID, contentValues);
 
         if (deleteRow > 0) {
             return true;
@@ -322,11 +323,5 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         mProgressIndicator.setVisibility(View.VISIBLE);
     }
 
-//    public void showProgress(boolean showProgress) {
-//        if (showProgress) {
-//            mProgressIndicator.setVisibility(View.VISIBLE);
-//        } else {
-//            mProgressIndicator.setVisibility(View.GONE);
-//        }
-//    }
+
 }

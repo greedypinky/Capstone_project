@@ -369,10 +369,14 @@ public class ExerciseContentProvider extends ContentProvider {
                     Log.d(TAG, "update all exercise");
                     Log.d(TAG, "contentValues:" + contentValues.toString());
                     Log.d(TAG, "where " + ExerciseContract.ExerciseEntry.EXERCISE_ID + " = " + whereArgs[0]);
+//                    updatedRowsNum = db.update(ExerciseContract.ExerciseEntry.TABLE_ALL,
+//                            contentValues,
+//                            ExerciseContract.ExerciseEntry.EXERCISE_ID + " =?", // baseColumn's ExerciseID, not _id
+//                             whereArgs);
                     updatedRowsNum = db.update(ExerciseContract.ExerciseEntry.TABLE_ALL,
                             contentValues,
                             ExerciseContract.ExerciseEntry.EXERCISE_ID + " =?", // baseColumn's ExerciseID, not _id
-                             whereArgs);
+                            new String[]{String.valueOf(ContentUris.parseId(uri))});
                     //db.setTransactionSuccessful();
                 } finally {
 

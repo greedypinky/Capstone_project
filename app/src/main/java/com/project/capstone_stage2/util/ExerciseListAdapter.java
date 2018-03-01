@@ -67,9 +67,9 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
     @Override
     public void onBindViewHolder(ExerciseListAdapter.ExerciseViewHolder holder, int position, List payloads) {
         // TODO: bind the data
-        if (mCursor != null && !mCursor.isClosed()) {
-            mCursor.moveToPosition(position);
-        }
+//        if (mCursor != null && !mCursor.isClosed()) {
+//            mCursor.moveToPosition(position);
+//        }
         // get data by index
         //int weatherId = mCursor.getInt(MainActivity.INDEX_WEATHER_CONDITION_ID);
         super.onBindViewHolder(holder, position, payloads);
@@ -125,6 +125,9 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
             // TODO: will use the default image for now - need to load a real image !
             int defaultImage = R.drawable.exercise_default;
             Picasso.with(mContext).load(defaultImage).into(holder.mExerciseImage);
+        } else {
+
+            Log.e(TAG,"onBindViewHolder - cursor is closed");
         }
     }
 

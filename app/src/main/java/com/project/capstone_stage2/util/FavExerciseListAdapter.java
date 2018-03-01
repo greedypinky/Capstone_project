@@ -18,6 +18,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import static android.content.ContentValues.TAG;
+
 // https://developer.android.com/training/material/lists-cards.html
 // RecyclerView provides these built-in layout managers:
 //
@@ -59,11 +61,20 @@ public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseList
 
     @Override
     public void onBindViewHolder(FavExerciseListAdapter.ExerciseViewHolder holder, int position, List payloads) {
-        // TODO: bind the data
-        mCursor.moveToPosition(position);
-        // get data by index
-        //int weatherId = mCursor.getInt(MainActivity.INDEX_WEATHER_CONDITION_ID);
+
         super.onBindViewHolder(holder, position, payloads);
+        // TODO: bind the data
+//        if (mCursor!=null && !mCursor.isClosed()) {
+//            mCursor.moveToPosition(position);
+//            // get data by index
+//            //int weatherId = mCursor.getInt(MainActivity.INDEX_WEATHER_CONDITION_ID);
+//            super.onBindViewHolder(holder, position, payloads);
+//        } else {
+//
+//
+//                Log.e(TAG,"onBindViewHolder - cursor is closed");
+//
+//        }
     }
 
     @Override
