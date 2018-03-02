@@ -360,9 +360,9 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
             // set the favorite flag = 1
             contentValues.put(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE,1);
             // TODO: update the AllExercise table's favorite flag
-            // Uri updateURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
-            Uri uri = ExerciseContract.ExerciseEntry.buildAllExerciseUriWithId(id);
-            updateAllExerciseFavoriteCol(uri,contentValues);
+             Uri uri = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
+            // Uri uri = ExerciseContract.ExerciseEntry.buildAllExerciseUriWithId(id);
+            updateAllExerciseFavoriteCol(uri,contentValues,exeID);
             //updateAllExerciseFavoriteCol(exeID, contentValues);
             return true;
         }
@@ -440,9 +440,9 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         String[] selectionArgs = {exerciseID};
         try {
             Cursor cursor = getActivity().getContentResolver().query(uri,projections,selection,selectionArgs,null);
-            if (cursor.getCount() == 1) {
+            //if (cursor.getCount() == 1) {
+            if (cursor.getCount() > 0) {
                 Log.d(TAG,"Assert if favorite is added ::: checkAlreadyInsertAsFavorite:" + cursor.getCount());
-
                 return true;
             }  else {
                 Log.d(TAG,"Error:::unable to query the added favorite exercise!");
@@ -461,14 +461,14 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 
     // TODO: should we move to an Util class
    // public void updateAllExerciseFavoriteCol(Uri updateURI,String exerciseID, ContentValues contentValues){
-    public void updateAllExerciseFavoriteCol(Uri updateURI, ContentValues contentValues){
+    public void updateAllExerciseFavoriteCol(Uri updateURI, ContentValues contentValues, String exeID){
         // TODO: need to refresh the list after a list is deleted
         Log.e(TAG, "reload the list after removal of the item!");
         // Uri updateURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
         String whereClause = ExerciseContract.ExerciseEntry._ID + " = ?";
         //String whereClause = ExerciseContract.ExerciseEntry.EXERCISE_ID + " = ?";
         //int updateRow = getActivity().getContentResolver().update(updateURI, contentValues, whereClause, new String[]{id});
-        int updateRow = getActivity().getContentResolver().update(updateURI, contentValues, whereClause, null);
+        int updateRow = getActivity().getContentResolver().update(updateURI, contentValues, whereClause, new String[]{exeID});
         Log.e(TAG, "updateAllExerciseFavoriteCol #of row:" + updateRow);
     }
 }

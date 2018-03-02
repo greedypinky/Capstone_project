@@ -11,7 +11,7 @@ import android.util.Log;
 public class DBHelper extends SQLiteOpenHelper {
 
     private static final String TAG = DBHelper.class.getSimpleName();
-    private static final String DB_NAME = "exercise.db";
+    public static final String DB_NAME = "exercise.db";
     private static final String ALL_TABLE = ExerciseContract.ExerciseEntry.TABLE_ALL;
     private static final String FAV_TABLE = ExerciseContract.ExerciseEntry.TABLE_EXERCISE;
     private static final int VERSION = 1;

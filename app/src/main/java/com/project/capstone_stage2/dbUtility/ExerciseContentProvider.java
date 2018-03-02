@@ -139,8 +139,8 @@ public class ExerciseContentProvider extends ContentProvider {
 
         switch (match) {
            case FAV_EXERCISE:
-             //  db.beginTransaction();
-             //  try {
+               db.beginTransaction();
+               try {
                    // use the insert method to insert
                    long id = db.insert(ExerciseContract.ExerciseEntry.TABLE_EXERCISE, null,
                            contentValues);
@@ -148,15 +148,16 @@ public class ExerciseContentProvider extends ContentProvider {
                    if (id > 0) {
                        // build the insert URI with the returned ID
                        insertUri = ExerciseContract.ExerciseEntry.buildFavoriteExerciseUriWithId(id);
+                       db.setTransactionSuccessful();
                        //return insertUri;
                    } else {
                        throw new android.database.SQLException("unable to insert into table:" +
                                ExerciseContract.ExerciseEntry.TABLE_EXERCISE);
                    }
-                   //db.setTransactionSuccessful();
-             //  } finally {
-             //      db.endTransaction();
-             //  }
+
+               } finally {
+                   db.endTransaction();
+               }
                break;
            default:
                throw new UnsupportedOperationException("insert fail-unsupported url");
@@ -357,7 +358,7 @@ public class ExerciseContentProvider extends ContentProvider {
                             contentValues,
                             ExerciseContract.ExerciseEntry._ID + " =?", // baseColumn's ID
                             new String[]{String.valueOf(ContentUris.parseId(uri))});
-                    //db.setTransactionSuccessful();
+                    db.setTransactionSuccessful();
                 } finally {
 
                     db.endTransaction();
@@ -369,17 +370,21 @@ public class ExerciseContentProvider extends ContentProvider {
                     Log.d(TAG, "update all exercise");
                     Log.d(TAG, "contentValues:" + contentValues.toString());
                     Log.d(TAG, "where " + ExerciseContract.ExerciseEntry.EXERCISE_ID + " = " + whereArgs[0]);
-//                    updatedRowsNum = db.update(ExerciseContract.ExerciseEntry.TABLE_ALL,
-//                            contentValues,
-//                            ExerciseContract.ExerciseEntry.EXERCISE_ID + " =?", // baseColumn's ExerciseID, not _id
-//                             whereArgs);
+
                     updatedRowsNum = db.update(ExerciseContract.ExerciseEntry.TABLE_ALL,
                             contentValues,
-                            ExerciseContract.ExerciseEntry.EXERCISE_ID + " =?", // baseColumn's ExerciseID, not _id
-                            new String[]{String.valueOf(ContentUris.parseId(uri))});
-                    //db.setTransactionSuccessful();
+                            ExerciseContract.ExerciseEntry.EXERCISE_ID + " = ?", // baseColumn's ExerciseID, not _id
+                            new String[]{whereArgs[0]});
+                    
+                    // try to execute the SQL directly
+//                   int fav = contentValues.getAsInteger(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE);
+//                   // update AllExercise set favorite = '1'  where exerciseID = '1';
+//                   String command =
+//                           "update " + ExerciseContract.ExerciseEntry.TABLE_ALL + " set " + ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE + " = '" + Integer.toString(fav) + "' "+ " where " + ExerciseContract.ExerciseEntry.EXERCISE_ID + " = '" + whereArgs[0] + "'";
+//                   Log.d(TAG,">>>>>>> Update sql command is:" + command);
+//                    db.execSQL(command);
+                    db.setTransactionSuccessful();
                 } finally {
-
                     db.endTransaction();
                 }
                 break;
