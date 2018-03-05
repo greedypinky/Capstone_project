@@ -48,6 +48,7 @@ public class ExerciseDetailFragment extends Fragment {
     public static String CURRENT_EXERCISE_VIDEO = "current_exerciseVideo";
     public static String CURRENT_VIDEO_POSITION_KEY = "video_position";
     public static String CURRENT_WINDOW_POSITION_KEY = "current_window_position";
+    public static String SHOW_VIDEO = "show_video";
 
     private TextView mPlaceHolder;
     private TextView mNoVideo;
@@ -63,6 +64,9 @@ public class ExerciseDetailFragment extends Fragment {
     private String DUMMY_URL = "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffddf0_-intro-yellow-cake/-intro-yellow-cake.mp4";
 
     private OnFragmentInteractionListener mListener;
+
+    private boolean mDetailViewInitState = true;
+
 
     /**
      * This interface must be implemented by activities that contain this
@@ -93,7 +97,7 @@ public class ExerciseDetailFragment extends Fragment {
 
         String exerciseID = bundle.getString(ExerciseDetailActivity.EXERCISE_KEY);
         mExerciseSteps.setText(bundle.getString(ExerciseDetailActivity.EXERCISE_STEPS));
-        mVideoURI = Uri.parse(bundle.getString(ExerciseDetailActivity.EXERCISE_VIDEO_URL));
+        //mVideoURI = Uri.parse(bundle.getString(ExerciseDetailActivity.EXERCISE_VIDEO_URL));
         Log.d(TAG, "setFragmentData:" + mExerciseSteps.getText());
         Log.d(TAG, "setFragmentData:" +  mVideoURI.toString());
 // Use the DUMMY URL for now because no URL
@@ -167,6 +171,9 @@ public class ExerciseDetailFragment extends Fragment {
             if (savedInstanceState.containsKey(CURRENT_WINDOW_POSITION_KEY)) {
                 mCurrentwindowIndex = savedInstanceState.getInt(CURRENT_WINDOW_POSITION_KEY);
             }
+            if (savedInstanceState.containsKey(SHOW_VIDEO)) {
+                mDetailViewInitState = savedInstanceState.getBoolean(SHOW_VIDEO);
+            }
             // Restore the previous states if we have savedInstanceState
             initializePlayer(mVideoURI);
         } else {
@@ -183,12 +190,13 @@ public class ExerciseDetailFragment extends Fragment {
             mPlaceHolder.setVisibility(View.GONE);
             mStepVideoView.setVisibility(View.VISIBLE);
             mExerciseSteps.setVisibility(View.VISIBLE);
+            mDetailViewInitState = false;
         } else {
-            // if no video for the exercise
+            // if no video for the exercise, only show steps
             mNoVideo.setVisibility(View.VISIBLE);
-            mStepVideoView.setVisibility(View.GONE);
-            mStepVideoView.setVisibility(View.GONE);
+            mExerciseSteps.setVisibility(View.VISIBLE);
             mPlaceHolder.setVisibility(View.GONE);
+            mStepVideoView.setVisibility(View.GONE);
         }
     }
 
@@ -197,7 +205,7 @@ public class ExerciseDetailFragment extends Fragment {
             mPlaceHolder.setVisibility(View.VISIBLE); // No Exercise is selected!
             // Not show video until the video is clicked
 //            mNoVideo.setVisibility(View.GONE);
-//            mStepVideoView.setVisibility(View.GONE);
+            mStepVideoView.setVisibility(View.GONE);
 //            mExerciseSteps.setVisibility(View.GONE);
 
 
@@ -352,5 +360,6 @@ public class ExerciseDetailFragment extends Fragment {
         outState.putString(CURRENT_EXERCISE_KEY, mExerciseID);
         outState.putString(CURRENT_EXERCISE_STEPS, (String)mExerciseSteps.getText());
         outState.putString(CURRENT_EXERCISE_VIDEO, mVideoURI.toString());
+        outState.putBoolean(SHOW_VIDEO,mDetailViewInitState); // remember the state of the detail view
     }
 }

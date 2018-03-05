@@ -193,6 +193,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
         if (mInterstitial!=null && mInterstitial.isLoaded()) {
             mInterstitial.show();
         } else {
+            // init the Ads
             initAds();
             if ( mInterstitial!=null && mInterstitial.isLoaded()) {
                 mInterstitial.show();
@@ -200,11 +201,13 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
         }
     }
 
+    // TODO: add the ads
+    // initialize the apps
     private void initAds () {
         // initialize Mobile Ads SDK with the AdMob App ID
         MobileAds.initialize(this, AD_MOB_APP_ID);
         mInterstitial = new InterstitialAd(this);
-        mInterstitial.setAdUnitId(AD_MOB_UNIT_ID); // TODO: replace ID please
+        mInterstitial.setAdUnitId(AD_MOB_UNIT_ID); // TODO: replace valid ads ID please
 
         // AdView mAdView = (AdView) root.findViewById(R.id.adView);
         // Create an ad request. Check logcat output for the hashed device ID to

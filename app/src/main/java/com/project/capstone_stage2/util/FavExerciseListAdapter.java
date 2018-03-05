@@ -39,7 +39,7 @@ public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseList
 
     public interface ExerciseItemOnClickHandler {
         // callback to handle when VH is clicked
-        public void onClickExercise();
+        public void onClickExercise(Cursor cursor);
 
         public void onShareClick(Cursor cursor);
 
@@ -225,7 +225,7 @@ public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseList
 
                             boolean removeFavorite = exerciseItemOnClickHandler.onRemoveFavClick(cursor);
                             //mAddFavButton.setEnabled(!addFavorite);
-                            toggleButtonDisable(removeFavorite);
+                            //toggleButtonDisable(removeFavorite);
 
                         }
                     }
@@ -242,26 +242,21 @@ public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseList
             // Use Call back to pass information back to the activity
             //long dateInMillis = mCursor.getLong(MainActivity.INDEX_WEATHER_DATE);
             // mClickHandler.onClick(dateInMillis);
-            exerciseItemOnClickHandler.onClickExercise();
-
+            exerciseItemOnClickHandler.onClickExercise(mCursor);
         }
 
-        public void toggleButtonDisable(boolean disable){
-
-            if (disable) {
-                mRemoveFavButton.setAlpha(0.5f);
-                mRemoveFavButton.setEnabled(!disable);
-            } else {
-                mRemoveFavButton.setAlpha(1f);
-                mRemoveFavButton.setEnabled(!disable);
-            }
-
-
-        }
+//        public void toggleButtonDisable(boolean disable){
+//
+//            if (disable) {
+//                mRemoveFavButton.setAlpha(0.5f);
+//                mRemoveFavButton.setEnabled(!disable);
+//            } else {
+//                mRemoveFavButton.setAlpha(1f);
+//                mRemoveFavButton.setEnabled(!disable);
+//            }
+//        }
 
         // adb shell content query --uri content://settings/secure --projection name:value --where "name='new_setting'" --sort "name ASC"
         // adb shell content query --uri content://com.project.capstone_stage2.app.provider/FavoriteExercise --projection _id:category:name --where "category=squat" --sort "_id DESC"
-
-
     }
 }

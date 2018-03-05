@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     signingConfigs {
+        // keystore location is the relative path
         release {
             keyAlias 'capstonekey1'
             keyPassword 'testing'
@@ -88,3 +89,17 @@ dependencies {
 //    }
 //
 //}
+
+// TODO: add the installRelease gradle task
+/*
+task installRelease(dependsOn:startAppEngine) {
+
+    dependsOn {
+        "assembleRelease"
+    }
+    doLast {
+
+        println "installRelease task is executed! The apps is installed!"
+    }
+}
+*/

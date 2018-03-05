@@ -39,12 +39,13 @@
         android:id="@+id/fragment_steps_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:name="com.project.capstone_stage2.ExerciseDetailFragment" />
+        android:name="com.project.capstone_stage2.ExerciseDetailFragment"
+        android:layout_gravity="center"/>
 
     </android.support.v4.widget.NestedScrollView>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/detail_fab_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"

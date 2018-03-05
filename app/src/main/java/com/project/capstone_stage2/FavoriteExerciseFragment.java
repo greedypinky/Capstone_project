@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.project.capstone_stage2.dbUtility.ExerciseContract;
 import com.project.capstone_stage2.util.CategoryListAdapter;
 import com.project.capstone_stage2.util.ExerciseListAdapter;
+import com.project.capstone_stage2.util.ExerciseUtil;
 import com.project.capstone_stage2.util.FavExerciseListAdapter;
 
 import java.util.function.LongFunction;
@@ -189,8 +190,44 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
 //    }
 
     @Override
-    public void onClickExercise() {
+    public void onClickExercise(Cursor cursor) {
         Toast.makeText(getContext(), "navigate to Detail view", Toast.LENGTH_LONG).show();
+        Log.d(TAG, "onClickExercise:check 2 Pane mode is:" + mTwoPane);
+        Toast.makeText(getContext(), "2 pane mode:" + mTwoPane, Toast.LENGTH_LONG).show();
+        String exeCategory = null;
+        String exeName = null;
+        String exeID = null;
+        String exeVideoURL = null;
+        String exeSteps = null;
+
+        if (cursor!=null && !cursor.isClosed()) {
+            exeCategory = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.CATEGORY));
+            exeName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
+            exeID = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID));
+            exeVideoURL = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO));
+            exeSteps = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_STEPS));
+        }
+
+        // One-Pane
+        if (!mTwoPane ) {
+            Toast.makeText(getContext(), "navigate to Detail view", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(getContext(), ExerciseDetailActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString(ExerciseDetailActivity.EXERCISE_CATEGORY, exeCategory);
+            bundle.putString(ExerciseDetailActivity.EXERCISE_KEY, exeID);
+            bundle.putString(ExerciseDetailActivity.EXERCISE_NAME, exeName);
+            bundle.putString(ExerciseDetailActivity.EXERCISE_STEPS, exeSteps);
+            bundle.putString(ExerciseDetailActivity.EXERCISE_VIDEO_URL, exeVideoURL);
+            intent.putExtras(bundle);
+            startActivity(intent);
+            // Two-Pane
+        } else {
+            // when in Two pane!
+            // Activity need to implement the Fragment listener to pass back the information to show the video
+            // show the video on the right pane
+            // mListener.twoPaneModeOnClick(exeID,exeSteps,exeVideoURL);
+            Toast.makeText(getContext(), "Callback action for 2pane mode, what the hell!", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -241,6 +278,8 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         contentValues.put(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE, 0);
         // TODO: not sure why but unable to update the flag
         //updateAllExerciseFavoriteCol(exeID, contentValues);
+        Uri updateALlExerciseURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
+        ExerciseUtil.updateAllExerciseFavoriteCol(this,updateALlExerciseURI,contentValues,exeID,catName);
 
         if (deleteRow > 0) {
             return true;
@@ -273,16 +312,16 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         }
     }
 
-    public void updateAllExerciseFavoriteCol(String exerciseID, ContentValues contentValues){
-        // TODO: need to refresh the list after a list is deleted
-        Log.e(TAG, "reload the list after removal of the item!");
-        Uri updateURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
-                /* Sort order: Ascending by exercise id */
-        String favSortOrder = ExerciseContract.ExerciseEntry.EXERCISE_ID + " ASC";
-        String whereClause = ExerciseContract.ExerciseEntry.EXERCISE_ID + " = ?";
-        int updateRow = getActivity().getContentResolver().update(updateURI, contentValues, whereClause, new String[]{exerciseID});
-
-    }
+//    public void updateAllExerciseFavoriteCol(String exerciseID, ContentValues contentValues){
+//        // TODO: need to refresh the list after a list is deleted
+//        Log.e(TAG, "reload the list after removal of the item!");
+//        Uri updateURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
+//                /* Sort order: Ascending by exercise id */
+//        String favSortOrder = ExerciseContract.ExerciseEntry.EXERCISE_ID + " ASC";
+//        String whereClause = ExerciseContract.ExerciseEntry.EXERCISE_ID + " = ?";
+//        int updateRow = getActivity().getContentResolver().update(updateURI, contentValues, whereClause, new String[]{exerciseID});
+//
+//    }
 
 
     /**

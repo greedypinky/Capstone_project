@@ -23,13 +23,24 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.project.capstone_stage2.util.ExerciseUtil;
 
 public class ExerciseDetailActivity extends AppCompatActivity {
 
     public static final String TAG = ExerciseDetailActivity.class.getSimpleName();
+    public static final String EXERCISE_CATEGORY = "exerciseCategory";
+    public static final String EXERCISE_NAME = "exerciseName";
     public static final String EXERCISE_KEY = "exerciseID";
     public static final String EXERCISE_STEPS = "exerciseSteps";
     public static final String EXERCISE_VIDEO_URL = "exerciseVideoURL";
+
+    private FloatingActionButton mFAB = null;
+    private String mExerciseCategory = null;
+    private String mExerciseID = null;
+    private String mExerciseName = null;
+    private String mExerciseSteps = null;
+    private String mExerciseVideoUrl = null;
+    ExerciseDetailFragment mDetailFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,25 +49,38 @@ public class ExerciseDetailActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
         // TODO: need to implement the detail view
         // Detail view is defined in a fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
-        ExerciseDetailFragment detailFragment = (ExerciseDetailFragment)fragmentManager.findFragmentById(R.id.fragment_steps_detail);
+        mDetailFragment = (ExerciseDetailFragment)fragmentManager.findFragmentById(R.id.fragment_steps_detail);
         // retrieve data from the intent
         Intent intent = getIntent();
         // Add this check to avoid exception
         if (intent != null && intent.getExtras() != null) {
-            detailFragment.setFragmentData(intent.getExtras());
+            mDetailFragment.setFragmentData(intent.getExtras());
             //mVideoStepFragment.setStepData(mCurrentStep);
             // TODO: Set the ExerciseID !
-            String exerciseID = intent.getExtras().getString(EXERCISE_KEY);
-            String exerciseSteps = intent.getExtras().getString(EXERCISE_STEPS);
-            String exerciseVideoUrl = intent.getExtras().getString(EXERCISE_VIDEO_URL);
+            mExerciseCategory = intent.getExtras().getString(EXERCISE_CATEGORY);
+            mExerciseID = intent.getExtras().getString(EXERCISE_KEY);
+            mExerciseName = intent.getExtras().getString(EXERCISE_NAME);
+            mExerciseSteps = intent.getExtras().getString(EXERCISE_STEPS);
+            mExerciseVideoUrl = intent.getExtras().getString(EXERCISE_VIDEO_URL);
             Log.d(TAG, "From intent-Get the current ExerciseID");
+            // Alternative way is to test the local mp4 files stored under the assets/raw
+            // String localUrlPath="android.resource://"+getPackageName()+"/"+R.raw.ur file name;
         }
 
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        mFAB = (FloatingActionButton) findViewById(R.id.detail_fab_btn);
+        mFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO: add the share action here
+                ExerciseUtil.onShareClick(mExerciseCategory,mExerciseName,mExerciseSteps,mExerciseVideoUrl,getApplicationContext(),mDetailFragment);
+            }
+        });
     }
 
     @Override

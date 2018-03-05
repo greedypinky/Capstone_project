@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +25,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.project.capstone_stage2.dbUtility.ExerciseContract;
 import com.project.capstone_stage2.util.ExerciseListAdapter;
+import com.project.capstone_stage2.util.ExerciseUtil;
 
 
 /**
@@ -122,6 +124,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.all_execise_loading_indicator);
         //showLoading();
 
+
         return rootView;
     }
 
@@ -155,6 +158,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
      */
     public void updateAdapterData(Cursor cursor) {
         if(cursor != null) {
+            Log.d(TAG,">>>>>updateAdapterData!!");
             // TODO: how come quickly click on tab page the mAdapter is not ready ??
             if (cursor != null && !cursor.isClosed() && cursor.getCount() > 0) {
                 Log.d(TAG,"Cursor has data!");
@@ -162,7 +166,10 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
                     mCursor = cursor;
                     mAdapter.setAdapterData(mCursor);
                     mHasData = true;
+                    // Show the Recycler view
                     showData(true);
+                    // Set the Add Favorite button state
+                    // checkIsFavorite(cursor);
 
                 } else {
                     Log.e(TAG,"Error:Adapter is null ? why?");
@@ -217,34 +224,43 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     // when click it will launch the Exercise Detail Activity
     @Override
     public void onClickExercise(Cursor cursor) {
-        // TODO: implement how to handle when the Exercise Item is selected!
-        // If one pane - start the Detail Activity
+        Toast.makeText(getContext(), "navigate to Detail view", Toast.LENGTH_LONG).show();
         Log.d(TAG, "onClickExercise:check 2 Pane mode is:" + mTwoPane);
         Toast.makeText(getContext(), "2 pane mode:" + mTwoPane, Toast.LENGTH_LONG).show();
-       if (!mTwoPane ) {
-           Toast.makeText(getContext(), "navigate to Detail view", Toast.LENGTH_LONG).show();
-           Intent intent = new Intent(getContext(), ExerciseDetailActivity.class);
-           Bundle bundle = new Bundle();
-           String exeID = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID));
-           String exeVideoURL = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO));
-           String exeSteps = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_STEPS));
-           bundle.putString(ExerciseDetailActivity.EXERCISE_KEY, exeID);
-           bundle.putString(ExerciseDetailActivity.EXERCISE_STEPS, exeSteps);
-           bundle.putString(ExerciseDetailActivity.EXERCISE_VIDEO_URL, exeVideoURL);
-           intent.putExtras(bundle);
-           startActivity(intent);
-       } else {
-           // when in Two pane!
-           // Activity need to implement the Fragment listener to pass back the information to show the video
-           // show the video on the right pane
-           String exeID = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID));
-           String exeVideoURL = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO));
-           String exeSteps = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_STEPS));
-           mListener.twoPaneModeOnClick(exeID,exeSteps,exeVideoURL);
+        String exeCategory = null;
+        String exeName = null;
+        String exeID = null;
+        String exeVideoURL = null;
+        String exeSteps = null;
 
-           Toast.makeText(getContext(), "Callback action for 2pane mode, what the hell!", Toast.LENGTH_LONG).show();
+        if (cursor!=null && !cursor.isClosed()) {
+            exeCategory = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.CATEGORY));
+            exeName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
+            exeID = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID));
+            exeVideoURL = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO));
+            exeSteps = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_STEPS));
+        }
 
-       }
+        // One-Pane
+        if (!mTwoPane) {
+            Toast.makeText(getContext(), "navigate to Detail view", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(getContext(), ExerciseDetailActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString(ExerciseDetailActivity.EXERCISE_CATEGORY, exeCategory);
+            bundle.putString(ExerciseDetailActivity.EXERCISE_KEY, exeID);
+            bundle.putString(ExerciseDetailActivity.EXERCISE_NAME, exeName);
+            bundle.putString(ExerciseDetailActivity.EXERCISE_STEPS, exeSteps);
+            bundle.putString(ExerciseDetailActivity.EXERCISE_VIDEO_URL, exeVideoURL);
+            intent.putExtras(bundle);
+            startActivity(intent);
+            // Two-Pane
+        } else {
+            // when in Two pane!
+            // Activity need to implement the Fragment listener to pass back the information to show the video
+            // show the video on the right pane
+             mListener.twoPaneModeOnClick(exeID,exeSteps,exeVideoURL);
+            Toast.makeText(getContext(), "Callback action for 2pane mode, what the hell!", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -284,6 +300,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         int name_index = cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME);
         String exeID = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID));
         String exeName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
+        String category = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.CATEGORY));
 
         // Add analytics to track which exercise is add as favorite
 /*
@@ -362,7 +379,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
             // TODO: update the AllExercise table's favorite flag
              Uri uri = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
             // Uri uri = ExerciseContract.ExerciseEntry.buildAllExerciseUriWithId(id);
-            updateAllExerciseFavoriteCol(uri,contentValues,exeID);
+            updateAllExerciseFavoriteCol(uri,contentValues,exeID,category);
             //updateAllExerciseFavoriteCol(exeID, contentValues);
             return true;
         }
@@ -461,14 +478,52 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 
     // TODO: should we move to an Util class
    // public void updateAllExerciseFavoriteCol(Uri updateURI,String exerciseID, ContentValues contentValues){
-    public void updateAllExerciseFavoriteCol(Uri updateURI, ContentValues contentValues, String exeID){
+    public void updateAllExerciseFavoriteCol(Uri updateURI, ContentValues contentValues, String exeID, String category){
         // TODO: need to refresh the list after a list is deleted
         Log.e(TAG, "reload the list after removal of the item!");
         // Uri updateURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
-        String whereClause = ExerciseContract.ExerciseEntry._ID + " = ?";
+        //String whereClause = ExerciseContract.ExerciseEntry._ID + " = ?";
+        String whereClause = ExerciseContract.ExerciseEntry.EXERCISE_ID + " = ? AND " + ExerciseContract.ExerciseEntry.CATEGORY + " = ?";
         //String whereClause = ExerciseContract.ExerciseEntry.EXERCISE_ID + " = ?";
         //int updateRow = getActivity().getContentResolver().update(updateURI, contentValues, whereClause, new String[]{id});
-        int updateRow = getActivity().getContentResolver().update(updateURI, contentValues, whereClause, new String[]{exeID});
+        //int updateRow = getActivity().getContentResolver().update(updateURI, contentValues, whereClause, new String[]{exeID});
+
+        int updateRow = getActivity().getContentResolver().update(updateURI, contentValues, whereClause, new String[]{exeID,category});
         Log.e(TAG, "updateAllExerciseFavoriteCol #of row:" + updateRow);
+    }
+
+    private ExerciseListAdapter getAdapter() {
+        return mAdapter;
+    }
+
+    public void checkIsFavorite(Cursor cursor) {
+        while (cursor.moveToNext()) {
+            String exerciseName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
+            int favorite = cursor.getInt(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE));
+            Log.e(TAG, ">>>>> checkIsFavorite ExerciseName:" + exerciseName);
+            Log.e(TAG, ">>>>> checkIsFavorite favorite flag:" + favorite);
+            boolean toggle = (favorite == 1)? true:false;
+
+            updateButtonState(toggle);
+        }
+    }
+
+    private void updateButtonState(boolean toggle){
+        if (mRecyclerView!=null && mRecyclerView.getAdapter()!=null) {
+            int itemCount = mRecyclerView.getAdapter().getItemCount();
+            for (int i=0; i<itemCount;i++) {
+                ExerciseListAdapter.ExerciseViewHolder vh = (ExerciseListAdapter.ExerciseViewHolder)mRecyclerView.findViewHolderForAdapterPosition(i);
+                if (vh!=null) {
+                    Button addFavoriteBtn = vh.mAddFavButton;
+                    if (addFavoriteBtn != null) {
+                        Log.e(TAG, ">>>>> UpdateButtonState:" + toggle);
+                        ExerciseUtil.toggleButtonDisable(toggle, addFavoriteBtn);
+                    }
+                } else {
+
+                    Log.e(TAG,"updateButtonState() is called but VH is null!");
+                }
+            }
+        }
     }
 }

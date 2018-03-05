@@ -9,9 +9,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/fragment_exercise_detail"
         android:orientation="vertical"
-        android:paddingTop="24dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
+        android:padding="24dp"
         >
             <TextView
                 android:id="@+id/text_no_video"
@@ -19,26 +17,33 @@
                 android:layout_height="wrap_content"
                 android:textSize="22sp"
                 android:text="@string/error_no_video"
+                android:textAppearance="@style/TextAppearance.CondensedFontPath"
+                android:textColor="@color/content_text_color"
                 android:visibility="gone"
                 android:layout_marginTop="40dp"
-                android:gravity="center"/>
+                android:layout_gravity="center"/>
 
             <!-- Recipe Video -->
             <com.google.android.exoplayer2.ui.SimpleExoPlayerView
                 android:id="@+id/exercise_video"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:paddingTop="8dp"
+                android:layout_height="500dp"
+                android:layout_marginTop="40dp"
+                android:layout_gravity="right"
                 android:gravity="center"
+
                 />
 
             <!-- Step instructions: get from Step's description -->
             <TextView
                 android:id="@+id/exercise_steps"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.CondensedFontPath"
+                android:textColor="@color/content_text_color"
                 android:textSize="22sp"
                 android:padding="8dp"
+                android:layout_gravity="right"
                 android:gravity="center"/>
 
         <TextView
@@ -47,6 +52,8 @@
             android:layout_height="wrap_content"
             android:textSize="22sp"
             android:text="@string/get_start"
+            android:textAppearance="@style/TextAppearance.CondensedFontPath"
+            android:textColor="@color/content_text_color"
             android:visibility="gone"
             android:layout_marginTop="40dp"
             android:gravity="center"/>

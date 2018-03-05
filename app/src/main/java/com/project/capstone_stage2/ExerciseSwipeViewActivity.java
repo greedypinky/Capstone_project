@@ -155,15 +155,11 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
             mTwoPaneMode = true;
             // Right pane - Show the Place holder string when no exercise is selected
             mDetailFragment.showGetStartPlaceHolderStr(true);
+
         } else {
             mTwoPaneMode = false;
             Log.d(TAG, "Only one pane is detected!");
-            // will use the default image for now
-            int defaultImage = R.drawable.exercise_default;
-            //Picasso.with(getApplicationContext()).load(mExceriseCategoryImage).into(mToolBarImage);
-            if (mToolBarImage != null) {
-                Picasso.with(getApplicationContext()).load(defaultImage).into(mToolBarImage);
-            }
+
         }
 
         // init the ViewPager
@@ -217,6 +213,15 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                 mExceriseCategoryImage = bundle.getInt("image");
                 Log.d(TAG, String.format("Category name:%s CategoryDesc:%s CategoryImage:%s",
                         mExceriseCategoryName, mExceriseCategoryDesc, mExceriseCategoryImage));
+
+                // will use the default image for now
+                int defaultImage = R.drawable.exercise_default;
+                //Picasso.with(getApplicationContext()).load(mExceriseCategoryImage).into(mToolBarImage);
+                if (mToolBarImage != null) {
+                    // Picasso.with(getApplicationContext()).load(defaultImage).into(mToolBarImage);
+                    Log.d(TAG,"Load the Toolbar image by resource ID:" + mExceriseCategoryImage);
+                    Picasso.with(getApplicationContext()).load(mExceriseCategoryImage).into(mToolBarImage);
+                }
             }
 
         }
@@ -241,8 +246,6 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                         Log.d(TAG, "when Fragment1 tab again!");
                         // not only do we need to load the data but also need to get the fragment instance?
                         if (mFragment1 == null) {
-
-
                             mFragment1 = (AllExerciseFragment) mAdapterViewPager.getItem(0);
                             if(mFragment1!=null) {
                                 Log.d(TAG, ">>> onTabSelected()getFragment and Load the all data!!");
@@ -252,6 +255,8 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                             Log.d(TAG, ">>> onTabSelected() Fragment is not null - Load the all data!!");
                             getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
                         }
+
+                        mFragment1.checkIsFavorite(mDataCursor);
                         break;
                     case 1:
                         Log.d(TAG, "when Fragment2 tab again!");
@@ -468,6 +473,8 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                     Log.d(TAG, "onLoadFinished:Update Adapter for All Fragment if mFragment1 is not null!");
                     mFragment1.updateAdapterData(mDataCursor);
                     mFragment1.setPaneMode(mTwoPaneMode);
+                    // Set the Add Favorite button state
+                   // mFragment1.checkIsFavorite(mDataCursor);
                 } else {
                     mFragment1.showData(false);
                 }
@@ -492,6 +499,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                     //mFragment2.reloadData(mExceriseCategoryName);
                     mFragment2.setPaneMode(mTwoPaneMode);
                   } else {
+                    Log.d(TAG, "onLoadFinish - reload the list");
                     // TRY an alternative method which is to reload the list.
                     mFragment2.reloadData(mExceriseCategoryName);
                   }

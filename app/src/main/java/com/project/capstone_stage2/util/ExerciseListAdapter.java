@@ -99,6 +99,7 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
      */
     @Override
     public void onBindViewHolder(ExerciseViewHolder holder, int position) {
+        Log.d(TAG,">>>>>> DEBUG::: onBindViewHolder is called! ");
         // TODO: so before that we need to pass the cursor by setAdapterData
         if (mCursor != null && !mCursor.isClosed()) {
             mCursor.moveToPosition(position);
@@ -139,7 +140,7 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
 
     @Override
     public long getItemId(int position) {
-
+        Log.e(TAG,">>>> getItemId:" + position);
         if (mCursor != null){
             if (mCursor.moveToPosition(position)) {
                 return mCursor.getLong(Integer.getInteger(ExerciseContract.ExerciseEntry._ID));
@@ -149,7 +150,6 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
         } else {
             return RecyclerView.NO_ID;
         }
-
     }
 
     @Override
@@ -184,9 +184,12 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
             mDataValid = false;
             // notify the observers about the lack of a data set
             notifyItemRangeRemoved(0, getItemCount());
+
         }
         return oldCursor;
     }
+
+
 
     /**
      * ExerciseViewHolder
@@ -302,6 +305,8 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
                 mAddFavButton.setEnabled(!disable);
             }
         }
+
+
     }
 
 

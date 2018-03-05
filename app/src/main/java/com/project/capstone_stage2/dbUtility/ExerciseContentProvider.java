@@ -315,12 +315,19 @@ public class ExerciseContentProvider extends ContentProvider {
                 deleteRowsNum  = db.delete(ExerciseContract.ExerciseEntry.TABLE_ALL, whereClause, whereArgs);
                 break;
             case FAV_EXERCISE_WITH_ID:
-                if (whereArgs != null) {
-                    Log.d(TAG, "delete row with id: " + whereArgs[0]);
-                    deleteRowsNum = db.delete(ExerciseContract.ExerciseEntry.TABLE_EXERCISE, whereClause,
-                            whereArgs);
-                } else {
-                    deleteRowsNum = 0;
+                db.beginTransaction();
+                try {
+                    if (whereArgs != null) {
+                        Log.d(TAG, "delete row with id: " + whereArgs[0]);
+                        deleteRowsNum = db.delete(ExerciseContract.ExerciseEntry.TABLE_EXERCISE, whereClause,
+                                whereArgs);
+                        db.setTransactionSuccessful();
+                    } else {
+                        deleteRowsNum = 0;
+                    }
+
+                } finally {
+                    db.endTransaction();
                 }
                 break;
             default:
@@ -371,11 +378,16 @@ public class ExerciseContentProvider extends ContentProvider {
                     Log.d(TAG, "contentValues:" + contentValues.toString());
                     Log.d(TAG, "where " + ExerciseContract.ExerciseEntry.EXERCISE_ID + " = " + whereArgs[0]);
 
+//                    updatedRowsNum = db.update(ExerciseContract.ExerciseEntry.TABLE_ALL,
+//                            contentValues,
+//                            ExerciseContract.ExerciseEntry.EXERCISE_ID + " = ?", // baseColumn's ExerciseID, not _id
+//                            new String[]{whereArgs[0], whereArgs[1]});
+
                     updatedRowsNum = db.update(ExerciseContract.ExerciseEntry.TABLE_ALL,
                             contentValues,
-                            ExerciseContract.ExerciseEntry.EXERCISE_ID + " = ?", // baseColumn's ExerciseID, not _id
-                            new String[]{whereArgs[0]});
-                    
+                            whereClause, // baseColumn's ExerciseID, not _id
+                            whereArgs);
+
                     // try to execute the SQL directly
 //                   int fav = contentValues.getAsInteger(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE);
 //                   // update AllExercise set favorite = '1'  where exerciseID = '1';
