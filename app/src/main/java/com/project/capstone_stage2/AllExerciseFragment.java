@@ -42,6 +42,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     private String title;
     private int page;
 
+    private static String TWO_PANE_KEY = "twoPaneMode";
     private RecyclerView mRecyclerView;
     private TextView mNoDataText;
     private ProgressBar mProgressIndicator;
@@ -81,6 +82,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     // TODO: Rename and change types and number of parameter
 
     public static AllExerciseFragment newInstance(int page, String title,boolean twoPane) {
+        Log.d(TAG,"when new fragment newInstance, what is the paneMode?" + twoPane);
         AllExerciseFragment fragment = new AllExerciseFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_PAGE, page);
@@ -104,6 +106,10 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+
+        mTwoPane = getResources().getBoolean(R.bool.has_two_panes);
+        Log.d(TAG, "###### onCreateView IS IT TWO PANE ?? #### " + mTwoPane);
+
         // Obtain the shared Tracker instance.
         //AnalyticsApplication application = (AnalyticsApplication) getApplication();
         //mTracker = application.getDefaultTracker();
@@ -123,7 +129,6 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         mNoDataText = (TextView) rootView.findViewById(R.id.all_execise_no_data_error_text);
         mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.all_execise_loading_indicator);
         //showLoading();
-
 
         return rootView;
     }
@@ -191,6 +196,8 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     }
 
     public void setPaneMode(boolean mode) {
+        Log.d(TAG,"HOW COME WE DO NOT SET THE PANE MODE AFTER ROTATE??");
+        Log.d(TAG,">>>> DEBUG::: setPaneMode:" + mode);
         mTwoPane = mode;
     }
 
@@ -224,6 +231,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     // when click it will launch the Exercise Detail Activity
     @Override
     public void onClickExercise(Cursor cursor) {
+        Log.d(TAG, "onClickExercise: what is the pane mode?" + mTwoPane);
         Toast.makeText(getContext(), "navigate to Detail view", Toast.LENGTH_LONG).show();
         Log.d(TAG, "onClickExercise:check 2 Pane mode is:" + mTwoPane);
         Toast.makeText(getContext(), "2 pane mode:" + mTwoPane, Toast.LENGTH_LONG).show();
@@ -258,6 +266,8 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
             // when in Two pane!
             // Activity need to implement the Fragment listener to pass back the information to show the video
             // show the video on the right pane
+            // Pass the information back to the Parent Activity to play the video on the Right pane.
+            // but now we cannot play this because we dont know when it is a 2 pane mode!
              mListener.twoPaneModeOnClick(exeID,exeSteps,exeVideoURL);
             Toast.makeText(getContext(), "Callback action for 2pane mode, what the hell!", Toast.LENGTH_LONG).show();
         }
@@ -472,8 +482,10 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(Bundle outState)
+    {
         super.onSaveInstanceState(outState);
+
     }
 
     // TODO: should we move to an Util class
@@ -497,14 +509,18 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     }
 
     public void checkIsFavorite(Cursor cursor) {
-        while (cursor.moveToNext()) {
-            String exerciseName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
-            int favorite = cursor.getInt(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE));
-            Log.e(TAG, ">>>>> checkIsFavorite ExerciseName:" + exerciseName);
-            Log.e(TAG, ">>>>> checkIsFavorite favorite flag:" + favorite);
-            boolean toggle = (favorite == 1)? true:false;
-
-            updateButtonState(toggle);
+        if (cursor!=null && !cursor.isClosed()) {
+            Log.d(TAG, "checkIsFavorite - what is the cursor size?" + cursor.getCount());
+            cursor.moveToPosition(-1);
+            while (cursor.moveToNext()) {
+                String exerciseName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
+                int favorite = cursor.getInt(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE));
+                Log.e(TAG, ">>>>> checkIsFavorite ExerciseName:" + exerciseName);
+                Log.e(TAG, ">>>>> checkIsFavorite favorite flag:" + favorite);
+                boolean toggle = (favorite == 1) ? true : false;
+                Log.e(TAG, ">>>>> checkIsFavorite - TOGGLE BUTTON based on the flag");
+                updateButtonState(toggle);
+            }
         }
     }
 
@@ -514,13 +530,13 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
             for (int i=0; i<itemCount;i++) {
                 ExerciseListAdapter.ExerciseViewHolder vh = (ExerciseListAdapter.ExerciseViewHolder)mRecyclerView.findViewHolderForAdapterPosition(i);
                 if (vh!=null) {
+                    Log.e(TAG,"updateButtonState() is called but VH is NOT Null - get the button and toggle it!");
                     Button addFavoriteBtn = vh.mAddFavButton;
                     if (addFavoriteBtn != null) {
                         Log.e(TAG, ">>>>> UpdateButtonState:" + toggle);
                         ExerciseUtil.toggleButtonDisable(toggle, addFavoriteBtn);
                     }
                 } else {
-
                     Log.e(TAG,"updateButtonState() is called but VH is null!");
                 }
             }

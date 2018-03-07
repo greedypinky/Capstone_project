@@ -50,10 +50,12 @@ public class ExerciseDetailFragment extends Fragment {
     public static String CURRENT_WINDOW_POSITION_KEY = "current_window_position";
     public static String SHOW_VIDEO = "show_video";
 
+    private boolean mTwoPaneMode = false;
     private TextView mPlaceHolder;
     private TextView mNoVideo;
     private TextView mExerciseSteps;
     private Uri mVideoURI;
+    private String mVideoURIStr = null;
     private SimpleExoPlayerView mStepVideoView;
     private SimpleExoPlayer mExoPlayer;
     private ImageView mThumbNailImage;
@@ -97,19 +99,23 @@ public class ExerciseDetailFragment extends Fragment {
 
         String exerciseID = bundle.getString(ExerciseDetailActivity.EXERCISE_KEY);
         mExerciseSteps.setText(bundle.getString(ExerciseDetailActivity.EXERCISE_STEPS));
+        mVideoURIStr = bundle.getString(ExerciseDetailActivity.EXERCISE_VIDEO_URL);
+        // Use the DUMMY URL for now because no URL
+        mVideoURI = Uri.parse(DUMMY_URL);
         //mVideoURI = Uri.parse(bundle.getString(ExerciseDetailActivity.EXERCISE_VIDEO_URL));
         Log.d(TAG, "setFragmentData:" + mExerciseSteps.getText());
-        Log.d(TAG, "setFragmentData:" +  mVideoURI.toString());
-// Use the DUMMY URL for now because no URL
-        mVideoURI = Uri.parse(DUMMY_URL);
-
+        //Log.d(TAG, "setFragmentData:" +  mVideoURI.toString());
         if (mVideoURI != null) {
            initializePlayer(mVideoURI);
            showVideo(true);
         } else {
             showVideo(false);
         }
+    }
 
+    public void setTwoPaneMode(boolean isTwoPane){
+
+        mTwoPaneMode = isTwoPane;
     }
 
 
@@ -163,7 +169,9 @@ public class ExerciseDetailFragment extends Fragment {
                 mExerciseSteps.setText(savedInstanceState.getString(CURRENT_EXERCISE_STEPS));
             }
             if (savedInstanceState.containsKey(CURRENT_EXERCISE_VIDEO)) {
-                mVideoURI = Uri.parse(savedInstanceState.getString(CURRENT_EXERCISE_VIDEO));
+                // TODO: Remember to replace the real video URL
+               // mVideoURI = Uri.parse(savedInstanceState.getString(CURRENT_EXERCISE_VIDEO));
+                mVideoURI = Uri.parse(DUMMY_URL);
             }
             if (savedInstanceState.containsKey(CURRENT_VIDEO_POSITION_KEY)) {
                 mVideoPosition = savedInstanceState.getLong(CURRENT_VIDEO_POSITION_KEY);
@@ -176,9 +184,13 @@ public class ExerciseDetailFragment extends Fragment {
             }
             // Restore the previous states if we have savedInstanceState
             initializePlayer(mVideoURI);
+
         } else {
             // reset position for exoPlayer's window index and position
             resetPosition();
+        }
+        if (mDetailViewInitState) {
+            showGetStartPlaceHolderStr(mDetailViewInitState);
         }
         return fragmentRootView;
     }
@@ -200,15 +212,16 @@ public class ExerciseDetailFragment extends Fragment {
         }
     }
 
-    public void showGetStartPlaceHolderStr(boolean show) {
-        if (show) {
+    public void showGetStartPlaceHolderStr(boolean isInit) {
+        if (isInit) {
+            Log.d(TAG," Init is true so show the Initial place holder string!");
             mPlaceHolder.setVisibility(View.VISIBLE); // No Exercise is selected!
             // Not show video until the video is clicked
 //            mNoVideo.setVisibility(View.GONE);
             mStepVideoView.setVisibility(View.GONE);
 //            mExerciseSteps.setVisibility(View.GONE);
-
-
+        } else {
+            Log.d(TAG,"Not in the initial state!");
         }
     }
 
@@ -359,7 +372,9 @@ public class ExerciseDetailFragment extends Fragment {
         outState.putInt(CURRENT_WINDOW_POSITION_KEY, mCurrentwindowIndex);
         outState.putString(CURRENT_EXERCISE_KEY, mExerciseID);
         outState.putString(CURRENT_EXERCISE_STEPS, (String)mExerciseSteps.getText());
-        outState.putString(CURRENT_EXERCISE_VIDEO, mVideoURI.toString());
+        if (mVideoURI !=null) {
+            outState.putString(CURRENT_EXERCISE_VIDEO, mVideoURIStr);
+        }
         outState.putBoolean(SHOW_VIDEO,mDetailViewInitState); // remember the state of the detail view
     }
 }

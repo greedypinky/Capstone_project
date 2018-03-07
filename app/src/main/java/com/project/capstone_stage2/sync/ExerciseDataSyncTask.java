@@ -29,14 +29,18 @@ public class ExerciseDataSyncTask  {
     * Interval at which to sync with the weather. Use TimeUnit for convenience, rather than
     * writing out a bunch of multiplication ourselves and risk making a silly mistake.
     */
-    private static final int SYNC_INTERVAL_HOURS = 3;
-    private static final int SYNC_INTERVAL_SECONDS = (int) TimeUnit.HOURS.toSeconds(SYNC_INTERVAL_HOURS);
+//    private static final int SYNC_INTERVAL_HOURS = 3;
+//    private static final int SYNC_INTERVAL_SECONDS = (int) TimeUnit.HOURS.toSeconds(SYNC_INTERVAL_HOURS);
+//    private static final int SYNC_FLEXTIME_SECONDS = SYNC_INTERVAL_SECONDS / 3;
+
+
+    private static final int SYNC_INTERVAL_MINS = 1;
+    private static final int SYNC_INTERVAL_SECONDS = (int) TimeUnit.MINUTES.toSeconds(SYNC_INTERVAL_MINS);
     private static final int SYNC_FLEXTIME_SECONDS = SYNC_INTERVAL_SECONDS / 3;
 
     private static boolean sInitialized = false;
     private static final String SYNC_TAG = "exercise-sync";
     public static final String SYNC_EXERCISE_DATA = "exercise-json";
-
 
     // add Synchronized
     // synchronized public static void syncData(Context context,boolean alreadyHasData)
@@ -57,8 +61,6 @@ public class ExerciseDataSyncTask  {
                     contentResolver.bulkInsert(ExerciseContract.ExerciseEntry.CONTENT_URI_ALL, contentValues);
 
                 }
-
-
             } catch (Exception e) {
 
                 e.printStackTrace();
@@ -76,15 +78,15 @@ public class ExerciseDataSyncTask  {
         Driver driver = new GooglePlayDriver(context);
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(driver);
 
-        /* Create the Job to periodically sync Sunshine */
-        Job syncSunshineJob = dispatcher.newJobBuilder()
+        // Create the Job to periodically sync the exercise data from the endpoint server
+        Job syncExerciseDataJob = dispatcher.newJobBuilder()
                 .setService(ExerciseFireBaseJobservice.class) // use the JobService to sync the data
                 .setTag(SYNC_TAG) // job's identifier
                 .setConstraints(Constraint.ON_ANY_NETWORK) // job can run on any network
                 .setLifetime(Lifetime.FOREVER) // run forever
                 .setRecurring(true) // tell the job to recur so that it will run again to sync the data again
                 /*
-                 * We want the weather data to be synced every 3 to 4 hours. The first argument for
+                 * We want the data to be synced every 3 to 4 hours. The first argument for
                  * Trigger's static executionWindow method is the start of the time frame when the
                  * sync should be performed. The second argument is the latest point in time at
                  * which the data should be synced. Please note that this end time is not
@@ -96,8 +98,8 @@ public class ExerciseDataSyncTask  {
                 .setReplaceCurrent(true) // replace the job if one already exists.
                 .build(); // build the job when job configurations are set
 
-        //schedule the Job
-        dispatcher.schedule(syncSunshineJob);
+        //schedule the Job to get Exercise Data from the backend
+        dispatcher.schedule(syncExerciseDataJob);
     }
     /**
      * Creates periodic sync tasks and checks to see if an immediate sync is required. If an

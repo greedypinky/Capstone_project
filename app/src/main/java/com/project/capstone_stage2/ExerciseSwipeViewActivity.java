@@ -131,6 +131,8 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Log.d(TAG, "===========onCreate()===========");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise_swipe_view);
 
@@ -154,7 +156,8 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
             Log.d(TAG, "sw600dp Two pane mode is detected!");
             mTwoPaneMode = true;
             // Right pane - Show the Place holder string when no exercise is selected
-            mDetailFragment.showGetStartPlaceHolderStr(true);
+            // mDetailFragment.showGetStartPlaceHolderStr(true);
+            mDetailFragment.setTwoPaneMode(mTwoPaneMode);
 
         } else {
             mTwoPaneMode = false;
@@ -474,7 +477,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                     mFragment1.updateAdapterData(mDataCursor);
                     mFragment1.setPaneMode(mTwoPaneMode);
                     // Set the Add Favorite button state
-                   // mFragment1.checkIsFavorite(mDataCursor);
+                    mFragment1.checkIsFavorite(mDataCursor);
                 } else {
                     mFragment1.showData(false);
                 }
@@ -556,13 +559,19 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        // TODO: add back the save state
-        outState.putString(CATEGORY_NAME_KEY, mExceriseCategoryName);
-        outState.putString(CATEGORY_DESC_KEY, mExceriseCategoryDesc);
-        outState.putInt(CATEGORY_IMAGE_KEY, mExceriseCategoryImage);
-        outState.putInt(CATEGORY_TAB_POS_KEY, mCurrentTabPosition);
-        // TODO: DO we save which tab is on focus before
+        try {
+            super.onSaveInstanceState(outState);
+            // TODO: add back the save state
+            outState.putString(CATEGORY_NAME_KEY, mExceriseCategoryName);
+            outState.putString(CATEGORY_DESC_KEY, mExceriseCategoryDesc);
+            outState.putInt(CATEGORY_IMAGE_KEY, mExceriseCategoryImage);
+            outState.putInt(CATEGORY_TAB_POS_KEY, mCurrentTabPosition);
+            // TODO: DO we save which tab is on focus before
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
 
     }
 

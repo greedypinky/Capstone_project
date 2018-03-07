@@ -86,6 +86,10 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        mTwoPane = getResources().getBoolean(R.bool.has_two_panes);
+        Log.d(TAG, "###### onCreateView IS IT TWO PANE ?? #### " + mTwoPane);
+
         Log.d(TAG,"onCreateView is called!");
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_favorite_exercise, container, false);
