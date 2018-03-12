@@ -41,13 +41,17 @@ public class ExerciseUtil {
 
     public static void toggleButtonDisable(boolean disable, Button favButton){
         if (disable) {
-            Log.d(TAG, "disable the Add Button!");
+            Log.d(TAG, "expect to setEnabled false!");
+            Log.d(TAG, "disable the Add Button by flag:- " + !disable);
             favButton.setAlpha(0.5f);
-            favButton.setEnabled(!disable);
+            favButton.setEnabled(!disable); // set false
+
+            Log.d(TAG, "what is the result , is the button Enabled?" + favButton.isEnabled());
+
         } else {
             Log.d(TAG, "Enable the Add Button!");
             favButton.setAlpha(1f);
-            favButton.setEnabled(!disable);
+            favButton.setEnabled(!disable); // set true
         }
     }
 

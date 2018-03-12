@@ -285,6 +285,8 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         Uri updateALlExerciseURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
         ExerciseUtil.updateAllExerciseFavoriteCol(this,updateALlExerciseURI,contentValues,exeID,catName);
 
+        ExerciseSwipeViewActivity.getFavMap().put(exeName,false);
+
         if (deleteRow > 0) {
             return true;
         } else {
@@ -296,23 +298,32 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
     public void reloadData(String catName){
 
         // TODO: need to refresh the list after a list is deleted
-        Log.e(TAG, "reload the list after removal of the item!");
+        Log.e(TAG, "reload the list!");
         Uri queryURI = ExerciseContract.ExerciseEntry.CONTENT_URI_FAV;
                 /* Sort order: Ascending by exercise id */
         String favSortOrder = ExerciseContract.ExerciseEntry.EXERCISE_ID + " ASC";
         String selectionByCategoryName = ExerciseContract.ExerciseEntry.CATEGORY + " = ?";
-        Cursor newCursor = getActivity().getContentResolver().query(queryURI, ExerciseSwipeViewActivity.FAV_EXERCISE_PROJECTION,selectionByCategoryName, new String[]{catName},favSortOrder);
-        if (newCursor != null) {
-            Log.d(TAG, "Assert latest data count:" + newCursor.getCount());
-            mAdapter.swapCursor(newCursor);
-            if (newCursor.getCount() == 0) {
-                // TODO: show no data
-                showData(false);
+        if (getContext() !=null && getContext().getContentResolver()!=null) {
+            Cursor newCursor = getActivity().getContentResolver().query(queryURI, ExerciseSwipeViewActivity.FAV_EXERCISE_PROJECTION, selectionByCategoryName, new String[]{catName}, favSortOrder);
+            if (newCursor != null) {
+                Log.d(TAG, "Assert latest data count:" + newCursor.getCount());
+                mAdapter.swapCursor(newCursor);
+                if (newCursor.getCount() == 0) {
+                    // TODO: show no data
+                    showData(false);
+                } else {
+                    showData(true);
+                }
             } else {
-                showData(true);
+
+                Log.e(TAG, "unable to get the cursor!");
             }
         } else {
-            Log.e(TAG, "unable to get the cursor!");
+
+            // TODO:- Need to show Error Message!
+            //Toast.makeText(getContext(),"Unable to get data! Please Try again!",Toast.LENGTH_LONG).show();
+            Log.e(TAG, "ERROR::: Why unable to get ContentResolver!");
+            // showData(false);
         }
     }
 

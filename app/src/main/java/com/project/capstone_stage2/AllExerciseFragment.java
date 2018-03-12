@@ -27,6 +27,8 @@ import com.project.capstone_stage2.dbUtility.ExerciseContract;
 import com.project.capstone_stage2.util.ExerciseListAdapter;
 import com.project.capstone_stage2.util.ExerciseUtil;
 
+import java.util.HashMap;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -43,6 +45,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     private int page;
 
     private static String TWO_PANE_KEY = "twoPaneMode";
+    private static String FAV_MAP_KEY = "favoriteHashMap";
     private RecyclerView mRecyclerView;
     private TextView mNoDataText;
     private ProgressBar mProgressIndicator;
@@ -51,6 +54,8 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     private Cursor mCursor = null;
     private boolean mTwoPane = false;
     private Tracker mTracker;
+
+
 
 
     private AllExerciseFragment.OnFragmentInteractionListener mListener = null;
@@ -105,6 +110,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
 
 
         mTwoPane = getResources().getBoolean(R.bool.has_two_panes);
@@ -196,7 +202,6 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     }
 
     public void setPaneMode(boolean mode) {
-        Log.d(TAG,"HOW COME WE DO NOT SET THE PANE MODE AFTER ROTATE??");
         Log.d(TAG,">>>> DEBUG::: setPaneMode:" + mode);
         mTwoPane = mode;
     }
@@ -382,6 +387,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         }
 
         if (checkAlreadyInsertAsFavorite(exeID)) {
+            //mFavMap.put(exeName,true);
             // TODO: disable the ADD Favorite button!
             ContentValues contentValues = new ContentValues();
             // set the favorite flag = 1
@@ -391,6 +397,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
             // Uri uri = ExerciseContract.ExerciseEntry.buildAllExerciseUriWithId(id);
             updateAllExerciseFavoriteCol(uri,contentValues,exeID,category);
             //updateAllExerciseFavoriteCol(exeID, contentValues);
+            ExerciseSwipeViewActivity.getFavMap().put(exeName,true);
             return true;
         }
 
@@ -486,13 +493,15 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     {
         super.onSaveInstanceState(outState);
 
+
     }
 
     // TODO: should we move to an Util class
    // public void updateAllExerciseFavoriteCol(Uri updateURI,String exerciseID, ContentValues contentValues){
     public void updateAllExerciseFavoriteCol(Uri updateURI, ContentValues contentValues, String exeID, String category){
         // TODO: need to refresh the list after a list is deleted
-        Log.e(TAG, "reload the list after removal of the item!");
+        Log.e(TAG, "update AllExercise Table's favorite flag!");
+        Log.e(TAG, "ContentValues:" + contentValues);
         // Uri updateURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
         //String whereClause = ExerciseContract.ExerciseEntry._ID + " = ?";
         String whereClause = ExerciseContract.ExerciseEntry.EXERCISE_ID + " = ? AND " + ExerciseContract.ExerciseEntry.CATEGORY + " = ?";
@@ -509,37 +518,159 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     }
 
     public void checkIsFavorite(Cursor cursor) {
+
         if (cursor!=null && !cursor.isClosed()) {
             Log.d(TAG, "checkIsFavorite - what is the cursor size?" + cursor.getCount());
+            Log.d(TAG, "Loop through cursor and toggle the button!");
             cursor.moveToPosition(-1);
+            Log.d(TAG, "while loop=====================================================");
             while (cursor.moveToNext()) {
+
                 String exerciseName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
                 int favorite = cursor.getInt(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE));
-                Log.e(TAG, ">>>>> checkIsFavorite ExerciseName:" + exerciseName);
-                Log.e(TAG, ">>>>> checkIsFavorite favorite flag:" + favorite);
+                Log.e(TAG, ">>>>> Curosr 's ExerciseName:" + exerciseName);
+                Log.e(TAG, ">>>>> Cursor 's favorite flag:" + favorite);
                 boolean toggle = (favorite == 1) ? true : false;
-                Log.e(TAG, ">>>>> checkIsFavorite - TOGGLE BUTTON based on the flag");
-                updateButtonState(toggle);
+                Log.e(TAG, ">>>>> if favorite ==1 set to true,else false:" + toggle);
+                updateButtonState(toggle,exerciseName);
+
             }
+            Log.d(TAG, "End of while loop=====================================================");
         }
     }
 
-    private void updateButtonState(boolean toggle){
+    public void checkIsFavorite2(String catName) {
+
+        Uri queryURI = ExerciseContract.ExerciseEntry.CONTENT_URI_FAV;
+                /* Sort order: Ascending by exercise id */
+        String favSortOrder = ExerciseContract.ExerciseEntry.EXERCISE_ID + " ASC";
+        String selectionByCategoryName = ExerciseContract.ExerciseEntry.CATEGORY + " = ?";
+        if (getActivity()!= null && getActivity().getContentResolver() != null) {
+            Cursor favCursor = getActivity().getContentResolver().query(queryURI, ExerciseSwipeViewActivity.FAV_EXERCISE_PROJECTION, selectionByCategoryName, new String[]{catName}, favSortOrder);
+            if (favCursor != null && favCursor.getCount() > 0) {
+                while (favCursor.moveToNext()) {
+
+                    String exeName = favCursor.getString(favCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
+                    // int favorite = favCursor.getInt(favCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE));
+                    Log.e(TAG, ">>>>> Favorite table Cursor 's ExerciseName:" + exeName);
+                    if (exeName != null) {
+                        updateButtonState(true, exeName);
+                    }
+                }
+            } else {
+                // Reset all the button to enable state
+                resetButtonStateToEnabled();
+            }
+        }
+
+    }
+
+    public void checkIsFavorite3(String catName) {
+
+        HashMap<String,Boolean> map = ExerciseSwipeViewActivity.getFavMap();
+        for(String key: map.keySet()) {
+            Boolean isFavorite = map.get(key);
+            updateButtonState(true, key);
+        }
+    }
+
+    private void resetButtonStateToEnabled() {
         if (mRecyclerView!=null && mRecyclerView.getAdapter()!=null) {
+            Log.e(TAG,"updateButtonState() is called!");
             int itemCount = mRecyclerView.getAdapter().getItemCount();
             for (int i=0; i<itemCount;i++) {
-                ExerciseListAdapter.ExerciseViewHolder vh = (ExerciseListAdapter.ExerciseViewHolder)mRecyclerView.findViewHolderForAdapterPosition(i);
-                if (vh!=null) {
-                    Log.e(TAG,"updateButtonState() is called but VH is NOT Null - get the button and toggle it!");
-                    Button addFavoriteBtn = vh.mAddFavButton;
-                    if (addFavoriteBtn != null) {
-                        Log.e(TAG, ">>>>> UpdateButtonState:" + toggle);
-                        ExerciseUtil.toggleButtonDisable(toggle, addFavoriteBtn);
+                ExerciseListAdapter.ExerciseViewHolder vh = (ExerciseListAdapter.ExerciseViewHolder) mRecyclerView.findViewHolderForAdapterPosition(i);
+
+                if (vh != null ) {
+
+                        Log.e(TAG, "=====================updateButtonState=====================");
+
+                        Button addFavoriteBtn = vh.mAddFavButton;
+                        if (addFavoriteBtn != null) {
+                            vh.toggleButtonDisable(false);
+
+                        } else {
+
+                            Log.e(TAG, "ERROR:::UpdateButtonState:" + "unable to get the addFavoriteButton?");
+                        }
+                } else {
+                    Log.e(TAG, "updateButtonState() is called but VH is null!");
+                }
+
+            }
+
+        } else {
+            Log.e(TAG,"ERROR:::updateButtonState() is called but adapter is null!");
+        }
+
+    }
+
+    private void updateButtonState(boolean toggle,String exerciseName){
+        if (mRecyclerView!=null && mRecyclerView.getAdapter()!=null) {
+            Log.e(TAG,"updateButtonState() is called!");
+            int itemCount = mRecyclerView.getAdapter().getItemCount();
+            for (int i=0; i<itemCount;i++) {
+                ExerciseListAdapter.ExerciseViewHolder vh = (ExerciseListAdapter.ExerciseViewHolder) mRecyclerView.findViewHolderForAdapterPosition(i);
+
+                if (vh != null ) {
+                    if (vh.mExerciseName.getText().toString().compareTo(exerciseName) == 0) {
+                        Log.e(TAG, "=====================updateButtonState=====================");
+                        Log.e(TAG, "=====findViewHolderForAdapterPosition?=====" + i);
+                        Log.e(TAG, "VH is NOT Null - get the button and toggle it!");
+                        Log.e(TAG, "Cursor passin's exercise name:" + exerciseName);
+                        Log.e(TAG, "VH properties:" + vh.mExerciseName.getText().toString());
+                        Log.e(TAG, "VH properties:" + vh.mExerciseDesc.getText().toString());
+                        Button addFavoriteBtn = vh.mAddFavButton;
+                        if (addFavoriteBtn != null) {
+                            Log.e(TAG, ">>>>> UpdateButtonState:" + toggle);
+                            //ExerciseUtil.toggleButtonDisable(toggle, addFavoriteBtn);
+                            //mRecyclerView.getAdapter().to
+                            vh.toggleButtonDisable(toggle);
+                            //found = true;
+                        } else {
+
+                            Log.e(TAG, "ERROR:::UpdateButtonState:" + "unable to get the addFavoriteButton?");
+                        }
                     }
                 } else {
-                    Log.e(TAG,"updateButtonState() is called but VH is null!");
+                    Log.e(TAG, "updateButtonState() is called but VH is null!");
                 }
             }
+
+        } else {
+            Log.e(TAG,"ERROR:::updateButtonState() is called but adapter is null!");
+        }
+    }
+
+    public void reloadData(String catName){
+
+        // TODO: need to refresh the list after a list is deleted
+        Log.e(TAG, "reload the list!");
+        Uri queryURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
+                /* Sort order: Ascending by exercise id */
+        String sortOrder = ExerciseContract.ExerciseEntry.EXERCISE_ID + " ASC";
+        String selectionByCategoryName = ExerciseContract.ExerciseEntry.CATEGORY + " = ?";
+        if (getContext() !=null && getContext().getContentResolver()!=null) {
+            Cursor newCursor = getActivity().getContentResolver().query(queryURI, ExerciseSwipeViewActivity.FAV_EXERCISE_PROJECTION, selectionByCategoryName, new String[]{catName}, sortOrder);
+            if (newCursor != null) {
+                Log.d(TAG, "Assert latest data count:" + newCursor.getCount());
+                mAdapter.swapCursor(newCursor);
+                if (newCursor.getCount() == 0) {
+                    // TODO: show no data
+                    showData(false);
+                } else {
+                    showData(true);
+                }
+            } else {
+
+                Log.e(TAG, "unable to get the cursor!");
+            }
+        } else {
+
+            // TODO:- Need to show Error Message!
+            //Toast.makeText(getContext(),"Unable to get data! Please Try again!",Toast.LENGTH_LONG).show();
+            Log.e(TAG, "ERROR::: Why unable to get ContentResolver!");
+            // showData(false);
         }
     }
 }

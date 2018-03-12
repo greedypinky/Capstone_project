@@ -36,6 +36,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+//import com.exercise.backend.Category;
 import com.google.android.gms.analytics.Tracker;
 import com.project.capstone_stage2.dbUtility.ExerciseContract;
 import com.project.capstone_stage2.sync.ExerciseDataSyncTask;
@@ -48,6 +49,8 @@ import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Hashtable;
 
 /**
  * ExerciseSwipeViewActivity
@@ -57,6 +60,7 @@ import java.io.InputStream;
 public class ExerciseSwipeViewActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
         EndPointsAsyncTask.AsyncResponse, AllExerciseFragment.OnFragmentInteractionListener {
 
+    private static final String FAV_MAP_KEY = "favoriteMap";
     private static final String TAG = ExerciseSwipeViewActivity.class.getSimpleName();
     private static final int ALL_EXERCISE_DB_DATA_LOADER_ID = 1000;
     private static final int FAVORITE_EXERCISE_DB_DATA_LOADER_ID = 2000;
@@ -84,6 +88,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
     FragmentPagerAdapter mAdapterViewPager;
     private final static int FRAGMENT_NUM = 2;
     private static Cursor mDataCursor;
+    private static HashMap<String,Boolean> mFavMap = null;
 
     private String mEXERCISE_DATA_FROM_ENDPOINT = null;
 
@@ -127,6 +132,10 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+        if( mFragment1!=null) {
+            //Log.d(TAG, "onPostCreate!");
+            //mFragment1.checkIsFavorite(mDataCursor);
+        }
     }
 
     @Override
@@ -136,6 +145,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise_swipe_view);
 
+        mFavMap = new HashMap<String,Boolean>();
 
         // Obtain the shared Tracker instance.
         //AnalyticsApplication application = (AnalyticsApplication) getApplication();
@@ -205,6 +215,9 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
             if (savedInstanceState.containsKey(CATEGORY_TAB_POS_KEY)) {
                 mCurrentTabPosition = savedInstanceState.getInt(CATEGORY_TAB_POS_KEY);
             }
+            if (savedInstanceState.containsKey(FAV_MAP_KEY)) {
+                mFavMap = (HashMap<String,Boolean>) savedInstanceState.getSerializable(FAV_MAP_KEY);
+            }
 
         } else {
             // get information from intent
@@ -233,6 +246,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(mViewPager);
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -259,7 +273,9 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                             getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
                         }
 
-                        mFragment1.checkIsFavorite(mDataCursor);
+                        //TODO: also try to add a reload method for AllExercise list.
+                        //mFragment1.reloadData(mExceriseCategoryName);
+                        //mFragment1.checkIsFavorite(mDataCursor);
                         break;
                     case 1:
                         Log.d(TAG, "when Fragment2 tab again!");
@@ -271,12 +287,16 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                             mFragment2 = (FavoriteExerciseFragment) mAdapterViewPager.getItem(1);
                             if (mFragment2 != null) {
                                 Log.d(TAG, ">>> onTabSelected() getFragment Load the favorite data!!");
-                                getSupportLoaderManager().initLoader(FAVORITE_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
+                               // getSupportLoaderManager().initLoader(FAVORITE_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
+
                             }
                         } else {
                             Log.d(TAG, ">>> onTabSelected() Fragment is not null - Load the favorite data!!");
-                            getSupportLoaderManager().initLoader(FAVORITE_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
+                            //getSupportLoaderManager().initLoader(FAVORITE_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
                         }
+
+                        // want to try use reload instead of cursorloader
+                        mFragment2.reloadData(mExceriseCategoryName);
                         break;
                     default:
                         Log.d(TAG, "invalid tab position!");
@@ -321,6 +341,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
         Log.d(TAG, "onCreate() mViewPager.getCurrentItem()" + mViewPager.getCurrentItem());
         if (mCurrentTabPosition == 0) {
             TabLayout.Tab tab = tabLayout.getTabAt(0);
+            Log.d(TAG,">>>> Tab position is 0, call tab.select()!");
             tab.select();
             Log.d(TAG,">>>> onCreate:- initial load the all exercise");
             getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
@@ -462,9 +483,10 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                 if (data != null && data.getCount() > 0) {
                     Log.e(TAG, "onLoadFinished - I got the data!");
                     Log.d(TAG,"All Exercise items in the cursor:" + data.getCount());
+                    data.moveToFirst();
                     mDataCursor = data;
                     Log.d(TAG, "onLoadFinished loader Get uri:- " + ((CursorLoader) loader).getUri());
-                    mDataCursor.moveToFirst();
+                    //mDataCursor.moveToFirst();
                     Log.d(TAG, "All items in the cursor:" + mDataCursor.getCount());
                     //data.moveToFirst();
                     //mFragment1.updateAdapterData(mDataCursor);
@@ -474,11 +496,21 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
 //                        mFragment1 = (AllExerciseFragment) mAdapterViewPager.getItem(0);
 //                    }
                     Log.d(TAG, "onLoadFinished:Update Adapter for All Fragment if mFragment1 is not null!");
-                    mFragment1.updateAdapterData(mDataCursor);
+                    mFragment1.updateAdapterData(data);
                     mFragment1.setPaneMode(mTwoPaneMode);
                     // Set the Add Favorite button state
-                    mFragment1.checkIsFavorite(mDataCursor);
-                } else {
+                    // since we cannot trust the data here we use the favorite list to disable instead.
+                    //mFragment1.checkIsFavorite(data);
+                    Log.d(TAG,"=======DEBUG::: lets debug why the cursor does not have the updated flag!======");
+                    String catName = data.getString(data.getColumnIndex(ExerciseContract.ExerciseEntry.CATEGORY));
+                    String exeName = data.getString(data.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
+                    String exeDesc = data.getString(data.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION));
+                    int favFlag = data.getInt(data.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE));
+                    Log.d(TAG,String.format("Category %s, ExerciseName %s, Desc %s, Favorite %d",catName,exeName,exeDesc,favFlag));
+                    mFragment1.checkIsFavorite2(catName);
+                }
+
+                else {
                     mFragment1.showData(false);
                 }
             } else if (loaderID == FAVORITE_EXERCISE_DB_DATA_LOADER_ID) {
@@ -488,6 +520,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                     Log.e(TAG, "onLoadFinished - I got the data!");
                     Log.d(TAG,"Update Adapter for Favorite Fragment");
                     Log.d(TAG,"Favorite items in the cursor:" + data.getCount());
+                    data.moveToFirst();
                     mDataCursor = data;
                     Log.d(TAG, "onLoadFinished loader Get uri:- " + ((CursorLoader) loader).getUri());
                     mDataCursor.moveToFirst();
@@ -501,11 +534,12 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                     mFragment2.updateAdapterData(data);
                     //mFragment2.reloadData(mExceriseCategoryName);
                     mFragment2.setPaneMode(mTwoPaneMode);
-                  } else {
-                    Log.d(TAG, "onLoadFinish - reload the list");
-                    // TRY an alternative method which is to reload the list.
-                    mFragment2.reloadData(mExceriseCategoryName);
                   }
+                  //else {
+                    Log.d(TAG, "onLoadFinish - try a force reload the list");
+                    // TRY an alternative method which is to force a reload to occur
+                    //mFragment2.reloadData(mExceriseCategoryName);
+                  //}
 // else {
 //                    if(mFragment2!=null) {
 //                        mFragment2.showData(false);
@@ -567,6 +601,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
             outState.putInt(CATEGORY_IMAGE_KEY, mExceriseCategoryImage);
             outState.putInt(CATEGORY_TAB_POS_KEY, mCurrentTabPosition);
             // TODO: DO we save which tab is on focus before
+            outState.putSerializable(FAV_MAP_KEY, mFavMap);
 
         } catch (Exception e) {
 
@@ -575,6 +610,10 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
 
     }
 
+    public static HashMap<String,Boolean> getFavMap() {
+
+        return mFavMap;
+    }
     /**
      * checkNetworkConnectivity
      * @return

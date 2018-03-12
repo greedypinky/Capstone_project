@@ -21,7 +21,7 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
 
     private static int CATEGORY_COUNT = 3;
     private static HashMap<String,String> category = new HashMap<String,String>();
-    private static ArrayList<ExerciseCategory> catArrayList = new ArrayList<ExerciseCategory>();
+    private static ArrayList<ExerciseCategory> catArrayList = null;
     private static CardViewOnClickListener cardViewOnClickListener;
     private Context mContext;
 
@@ -65,6 +65,7 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
 
     private void initData(Context context) {
 
+        catArrayList = new ArrayList<ExerciseCategory>();
         String[] category_array = context.getResources().getStringArray(R.array.category_array);
         String[] category_desc_array = context.getResources().getStringArray(R.array.category_desc_array);
 

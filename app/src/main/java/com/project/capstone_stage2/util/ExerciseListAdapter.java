@@ -295,14 +295,20 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
         }
 
         public void toggleButtonDisable(boolean disable){
+            Log.d("ExerciseListAdapter","toogleButtonDisable method is called");
+            Log.d("ExerciseListAdapter","Disable Flag is?" + disable);
             if (disable) {
-                Log.d(TAG, "disable the Add Button!");
+                Log.d("ExerciseListAdapter", "disable the Add Button by:" + !disable);
                 mAddFavButton.setAlpha(0.5f);
                 mAddFavButton.setEnabled(!disable);
+
+                Log.d("ExerciseListAdapter","isEnabled() check:" + mAddFavButton.isEnabled());
             } else {
                 Log.d(TAG, "Enable the Add Button!");
+                Log.d(TAG, "===========================================================");
                 mAddFavButton.setAlpha(1f);
                 mAddFavButton.setEnabled(!disable);
+                Log.d("ExerciseListAdapter","isEnabled() check:" + mAddFavButton.isEnabled());
             }
         }
 

@@ -2,6 +2,8 @@ package com.project.capstone_stage2;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
@@ -61,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
     private ProgressBar mProgressBar = null;
     private InterstitialAd mInterstitial;
     private Tracker mTracker; // https://developers.google.com/analytics/devguides/collection/android/v4/
+    private static final String PREF_GETENDPOINT="getendpoint";
 
 
     @Override
@@ -91,7 +94,10 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
             noNetworkSnackBar.show();
         } else {
             showProgressBar(true);
+            // Lets check the Preferences if we get data from the Endpoint before?
+
             getResponseFromEndPoint(useEndPoint);
+
         }
     }
 
@@ -137,6 +143,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
         // [END]
 
         // before showing the Exercise, lets show the ads here
+        Log.d(TAG,"onClickCategory --> Call ShowAds() to show the Ads");
         showAds();
 
         // TODO: please add back the Intent and StartActivity with the intent!!
@@ -160,8 +167,19 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
             Make the button kick off a task to retrieve a joke,
             then launch the activity from your Android Library to display it.
           */
-            new EndPointsAsyncTask(this).execute(new Pair<Context, String>(this, "Manfred"));
 
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            if (!prefs.contains(PREF_GETENDPOINT)) {
+                // first time to get the data from EndPoint
+                Log.d(TAG, "onCreate()-Get Data from EndPoint!");
+                new EndPointsAsyncTask(this).execute(new Pair<Context, String>(this, "Manfred"));
+                SharedPreferences.Editor editor =  prefs.edit();
+                editor.putBoolean(PREF_GETENDPOINT,true);
+                editor.commit();
+            } else {
+                Log.d(TAG, "No need to get the endpoint when rotate...");
+                showProgressBar(false);
+            }
 
         } else {
 
@@ -220,5 +238,4 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
         // mAdView.loadAd(adRequest);
         mInterstitial.loadAd(adRequest);
     }
-
 }
