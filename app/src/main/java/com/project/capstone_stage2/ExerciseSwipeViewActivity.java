@@ -12,7 +12,6 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -26,7 +25,6 @@ import android.support.v4.content.Loader;
 import android.support.v4.util.Pair;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -40,27 +38,20 @@ import android.widget.Toast;
 import com.google.android.gms.analytics.Tracker;
 import com.project.capstone_stage2.dbUtility.ExerciseContract;
 import com.project.capstone_stage2.sync.ExerciseDataSyncTask;
-import com.project.capstone_stage2.util.CategoryListAdapter;
 import com.project.capstone_stage2.util.EndPointsAsyncTask;
-import com.project.capstone_stage2.util.ExerciseListAdapter;
-import com.project.capstone_stage2.util.FavExerciseListAdapter;
 import com.project.capstone_stage2.util.NetworkUtil;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Hashtable;
 
 /**
  * ExerciseSwipeViewActivity
- * includes the TabView layout: All and Favorite execise
- *
+ * includes the TabView layout: All and Favorite exercise
  */
 public class ExerciseSwipeViewActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
         EndPointsAsyncTask.AsyncResponse, AllExerciseFragment.OnFragmentInteractionListener {
 
-    private static final String FAV_MAP_KEY = "favoriteMap";
     private static final String TAG = ExerciseSwipeViewActivity.class.getSimpleName();
     private static final int ALL_EXERCISE_DB_DATA_LOADER_ID = 1000;
     private static final int FAVORITE_EXERCISE_DB_DATA_LOADER_ID = 2000;
@@ -69,7 +60,6 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
     private static String mExceriseCategoryDesc = "";
     private static int mExceriseCategoryImage = -1;
     private static int mCurrentTabPosition = 0; // default position is always the ALL tab, else the Favorite tab
-    private Fragment mFragmentSwipeView;
     public static final String CATEGORY_NAME_KEY = "name";
     public static final String CATEGORY_DESC_KEY = "desc";
     public static final String CATEGORY_IMAGE_KEY = "image";
@@ -88,8 +78,6 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
     FragmentPagerAdapter mAdapterViewPager;
     private final static int FRAGMENT_NUM = 2;
     private static Cursor mDataCursor;
-    private static HashMap<String,Boolean> mFavMap = null;
-
     private String mEXERCISE_DATA_FROM_ENDPOINT = null;
 
     @Override
@@ -144,8 +132,6 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
         Log.d(TAG, "===========onCreate()===========");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise_swipe_view);
-
-        mFavMap = new HashMap<String,Boolean>();
 
         // Obtain the shared Tracker instance.
         //AnalyticsApplication application = (AnalyticsApplication) getApplication();
@@ -215,9 +201,6 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
             if (savedInstanceState.containsKey(CATEGORY_TAB_POS_KEY)) {
                 mCurrentTabPosition = savedInstanceState.getInt(CATEGORY_TAB_POS_KEY);
             }
-            if (savedInstanceState.containsKey(FAV_MAP_KEY)) {
-                mFavMap = (HashMap<String,Boolean>) savedInstanceState.getSerializable(FAV_MAP_KEY);
-            }
 
         } else {
             // get information from intent
@@ -266,19 +249,20 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                             mFragment1 = (AllExerciseFragment) mAdapterViewPager.getItem(0);
                             if(mFragment1!=null) {
                                 Log.d(TAG, ">>> onTabSelected()getFragment and Load the all data!!");
-                                getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
+                                //getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
                             }
                         } else {
                             Log.d(TAG, ">>> onTabSelected() Fragment is not null - Load the all data!!");
-                            getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
+                            //getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
                         }
 
+                        getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
                         //TODO: also try to add a reload method for AllExercise list.
                         //mFragment1.reloadData(mExceriseCategoryName);
                         //mFragment1.checkIsFavorite(mDataCursor);
                         break;
                     case 1:
-                        Log.d(TAG, "when Fragment2 tab again!");
+                        Log.d(TAG, "=======when Fragment2 tab again!===========");
                         // query the favorite
                         //# Select "name" and "value" columns from secure settings where "name" is equal to "new_setting" and sort the result by name in ascending order.
                         //adb shell content query --uri content://settings/secure --projection name:value --where "name='new_setting'" --sort "name ASC"
@@ -295,7 +279,8 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                             //getSupportLoaderManager().initLoader(FAVORITE_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
                         }
 
-                        // want to try use reload instead of cursorloader
+                        getSupportLoaderManager().initLoader(FAVORITE_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
+                        // TODO: sometimes cursorLoader results is not correct- want to try use reload instead of cursorloader
                         mFragment2.reloadData(mExceriseCategoryName);
                         break;
                     default:
@@ -346,6 +331,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
             Log.d(TAG,">>>> onCreate:- initial load the all exercise");
             getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
         } else if (mCurrentTabPosition == 1){
+            Log.d(TAG, "onCreate()-> Current Tab is Favorite Tab");
             Log.d(TAG,">>>> onCreate:- initial load the favorite exercise");
             TabLayout.Tab tab = tabLayout.getTabAt(1);
             tab.select();
@@ -469,7 +455,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         int loaderID = loader.getId();
-        Log.d(TAG,"onLoadFinished by loader ID:-" + loaderID);
+        Log.d(TAG,"========== onLoadFinished by loader ID:-" + loaderID + "==============");
         if (mFragment1 == null) {
             Log.d(TAG, "when tab again, the fragment1 is null!");
             mFragment1 = (AllExerciseFragment) mAdapterViewPager.getItem(0);
@@ -508,10 +494,11 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                     int favFlag = data.getInt(data.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE));
                     Log.d(TAG,String.format("Category %s, ExerciseName %s, Desc %s, Favorite %d",catName,exeName,exeDesc,favFlag));
                     mFragment1.checkIsFavorite2(catName);
-                }
 
+                }
                 else {
-                    mFragment1.showData(false);
+                    // mFragment1.showData(false);
+                    Log.e(TAG, "ERROR:::onLoadFinish - No data!! ");
                 }
             } else if (loaderID == FAVORITE_EXERCISE_DB_DATA_LOADER_ID) {
 
@@ -534,12 +521,14 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                     mFragment2.updateAdapterData(data);
                     //mFragment2.reloadData(mExceriseCategoryName);
                     mFragment2.setPaneMode(mTwoPaneMode);
+
                   }
-                  //else {
-                    Log.d(TAG, "onLoadFinish - try a force reload the list");
+                  else {
+                    Log.e(TAG, "ERROR:::onLoadFinish - No data!! ");
+                    //Log.d(TAG, "onLoadFinish - try a force reload the list");
                     // TRY an alternative method which is to force a reload to occur
                     //mFragment2.reloadData(mExceriseCategoryName);
-                  //}
+                  }
 // else {
 //                    if(mFragment2!=null) {
 //                        mFragment2.showData(false);
@@ -549,7 +538,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
 //                }
             }
 
-
+        Log.d(TAG,"================= onLoadFinished Ended ===============");
 
     }
     // Loader's Callback method
@@ -593,27 +582,11 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        try {
+
             super.onSaveInstanceState(outState);
-            // TODO: add back the save state
-            outState.putString(CATEGORY_NAME_KEY, mExceriseCategoryName);
-            outState.putString(CATEGORY_DESC_KEY, mExceriseCategoryDesc);
-            outState.putInt(CATEGORY_IMAGE_KEY, mExceriseCategoryImage);
-            outState.putInt(CATEGORY_TAB_POS_KEY, mCurrentTabPosition);
-            // TODO: DO we save which tab is on focus before
-            outState.putSerializable(FAV_MAP_KEY, mFavMap);
-
-        } catch (Exception e) {
-
-            e.printStackTrace();
-        }
 
     }
 
-    public static HashMap<String,Boolean> getFavMap() {
-
-        return mFavMap;
-    }
     /**
      * checkNetworkConnectivity
      * @return

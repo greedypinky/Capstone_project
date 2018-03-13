@@ -40,10 +40,10 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     private static final String TAG = AllExerciseFragment.class.getSimpleName();
     private static final String ARG_PAGE = "page";
     private static final String ARG_TITLE = "page_title";
+    private static final String HAS_DATA_KEY= "has_data";
 
     private String title;
     private int page;
-
     private static String TWO_PANE_KEY = "twoPaneMode";
     private static String FAV_MAP_KEY = "favoriteHashMap";
     private RecyclerView mRecyclerView;
@@ -134,31 +134,34 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         mRecyclerView.setAdapter(mAdapter);
         mNoDataText = (TextView) rootView.findViewById(R.id.all_execise_no_data_error_text);
         mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.all_execise_loading_indicator);
-        //showLoading();
+
+        if (savedInstanceState!=null) {
+            if(savedInstanceState.containsKey(HAS_DATA_KEY)) {
+                mHasData = savedInstanceState.getBoolean(HAS_DATA_KEY);
+            }
+        }
+        if (mHasData) {
+            showData(true);
+        } else {
+            showData(false);
+        }
 
         return rootView;
     }
-
-    public void showLoading() {
-        Log.d(TAG,"showLoading...");
-        /* Then, hide the weather data */
-        mRecyclerView.setVisibility(View.GONE);
-        mNoDataText.setVisibility(View.GONE);
-        /* Finally, show the loading indicator */
-        mProgressIndicator.setVisibility(View.VISIBLE);
-    }
-
+    
     public void showData(boolean hasData) {
         if(hasData) {
             Log.d(TAG, "show the recycler view!");
             mProgressIndicator.setVisibility(View.GONE);
             mNoDataText.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
+            mHasData = true;
         } else {
             Log.d(TAG, "hide the recycler view!");
             mProgressIndicator.setVisibility(View.GONE);
             mNoDataText.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.INVISIBLE);
+            mHasData = false;
         }
 
     }
@@ -325,20 +328,6 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
                 .build());
 */
 
-        //long dateInMillis = mCursor.getLong(MainActivity.INDEX_WEATHER_DATE);
-
-
-//        Log.d(TAG,"insert favorite index0: " + cursor.getColumnIndex(ExerciseContract.ExerciseEntry.CATEGORY));
-//        Log.d(TAG,"insert favorite index1: " + cursor.getColumnIndex(ExerciseContract.ExerciseEntry.CATEGORY_DESC));
-//        Log.d(TAG,"insert favorite index2: " + cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID));
-//        Log.d(TAG,"insert favorite index3: " + cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
-//        Log.d(TAG,"insert favorite index4: " + cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION));
-//
-//        Log.d(TAG,"insert favorite index5: " + cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE));
-//        Log.d(TAG,"insert favorite index6: " + cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO));
-//        Log.d(TAG,"insert favorite index7: " + cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_STEPS));
-
-
         Log.d(TAG,"insert favorite index0: " + cursor.getString(0) );
         Log.d(TAG,"insert favorite index1: " + cursor.getString(1) );
         Log.d(TAG,"insert favorite index2: " + cursor.getString(2) );
@@ -349,24 +338,12 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         Log.d(TAG,"insert favorite index0: " + cursor.getString(7) );
         Log.d(TAG,"insert favorite index0: " + cursor.getString(8) );
 
-
-
         Toast.makeText(getContext(), "add favorite:- " + exeID + ":" + exeName, Toast.LENGTH_LONG).show();
         // CREATE TABLE AllExercise (_id INTEGER PRIMARY KEY AUTOINCREMENT,category TEXT NOT NULL,categoryDesc TEXT NOT NULL,exerciseID TEXT NOT NULL,name TEXT NOT NULL,description TEXT NOT NULL,steps TEXT NOT NULL,image TEXT NOT NULL,video TEXT NOT NULL);
 
         if (cursor != null || !cursor.isClosed()) {
             // Defines an object to contain the new values to insert
             ContentValues mNewValues = new ContentValues();
-
-//            mNewValues.put(ExerciseContract.ExerciseEntry.CATEGORY, cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.CATEGORY)));
-//            mNewValues.put(ExerciseContract.ExerciseEntry.CATEGORY_DESC, cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.CATEGORY_DESC)));
-//            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_ID, cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID)));
-//            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_NAME, cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME)));
-//            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION, cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION)));
-//            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_STEPS, cursor.getString(5));
-//            //mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_STEPS, "no steps");
-//            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE, cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE)));
-//            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO, cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO)));
 
 /// 01-23 00:07:05.885 2637-2637/com.project.capstone_stage2 E/CursorWindow: Failed to read row 0, column 7 from a CursorWindow which has 2 rows, 7 columns.
             mNewValues.put(ExerciseContract.ExerciseEntry.CATEGORY, cursor.getString(1));
@@ -397,7 +374,6 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
             // Uri uri = ExerciseContract.ExerciseEntry.buildAllExerciseUriWithId(id);
             updateAllExerciseFavoriteCol(uri,contentValues,exeID,category);
             //updateAllExerciseFavoriteCol(exeID, contentValues);
-            ExerciseSwipeViewActivity.getFavMap().put(exeName,true);
             return true;
         }
 
@@ -408,40 +384,6 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     public boolean onRemoveFavClick(Cursor cursor) {
         return false;
     }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-//    public interface OnFragmentInteractionListener {
-//        // TODO: Update argument type and name
-//        void onFragmentInteraction(Uri uri);
-//    }
-
-//    public void showErrorMessage() {
-//        mNoDataText.setVisibility(View.VISIBLE);
-//        mRecyclerView.setVisibility(View.GONE);
-//        showProgress(false);
-//    }
-//
-//    public void hideErrorMessage() {
-//        mNoDataText.setVisibility(View.GONE);
-//        mRecyclerView.setVisibility(View.VISIBLE);
-//    }
-//
-//    public void showProgress(boolean showProgress) {
-//        if(showProgress) {
-//            mProgressIndicator.setVisibility(View.VISIBLE);
-//        } else {
-//            mProgressIndicator.setVisibility(View.GONE);
-//        }
-//    }
 
     // LoaderManager's Callback methods
     // TODO: 1) add back the login to get the data from backend API!
@@ -492,7 +434,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-
+        outState.putBoolean(HAS_DATA_KEY,mHasData);
 
     }
 
@@ -539,8 +481,9 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         }
     }
 
+    // Use another method which is to check the Favorite Table instead!!
     public void checkIsFavorite2(String catName) {
-
+        Log.d(TAG, "========checkFavorite2========");
         Uri queryURI = ExerciseContract.ExerciseEntry.CONTENT_URI_FAV;
                 /* Sort order: Ascending by exercise id */
         String favSortOrder = ExerciseContract.ExerciseEntry.EXERCISE_ID + " ASC";
@@ -552,7 +495,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 
                     String exeName = favCursor.getString(favCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
                     // int favorite = favCursor.getInt(favCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE));
-                    Log.e(TAG, ">>>>> Favorite table Cursor 's ExerciseName:" + exeName);
+                    Log.e(TAG, "checkFavorite2's -> Favorite table Cursor 's ExerciseName:" + exeName);
                     if (exeName != null) {
                         updateButtonState(true, exeName);
                     }
@@ -565,14 +508,6 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 
     }
 
-    public void checkIsFavorite3(String catName) {
-
-        HashMap<String,Boolean> map = ExerciseSwipeViewActivity.getFavMap();
-        for(String key: map.keySet()) {
-            Boolean isFavorite = map.get(key);
-            updateButtonState(true, key);
-        }
-    }
 
     private void resetButtonStateToEnabled() {
         if (mRecyclerView!=null && mRecyclerView.getAdapter()!=null) {

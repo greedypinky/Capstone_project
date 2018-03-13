@@ -40,18 +40,20 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
     private static final String TAG = FavoriteExerciseFragment.class.getSimpleName();
     private static final String ARG_PAGE = "page";
     private static final String ARG_TITLE = "page_title";
+    private static final String HAS_DATA_KEY= "has_data";
+
 
     private String title;
     private int page;
     private RecyclerView mRecyclerView;
     private TextView mNoDataText;
     private ProgressBar mProgressIndicator;
-    private boolean mHasData = false;
     private FavExerciseListAdapter mAdapter;
     // Try to use the same adapter instead of 2
     // private ExerciseListAdapter mAdapter;
     private boolean mTwoPane = false;
     private Cursor mCursor = null;
+    private boolean mHasData = false;
 
 
     private OnFragmentInteractionListener mListener;
@@ -86,24 +88,34 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        Log.d(TAG,"===========onCreateView is called! ============");
         mTwoPane = getResources().getBoolean(R.bool.has_two_panes);
         Log.d(TAG, "###### onCreateView IS IT TWO PANE ?? #### " + mTwoPane);
 
-        Log.d(TAG,"onCreateView is called!");
+
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_favorite_exercise, container, false);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.fav_execise_recyclerview);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
         mRecyclerView.setHasFixedSize(true);
         // fixed the nullpointerException by pass in context from constructor
-         mAdapter = new FavExerciseListAdapter(getContext(),this);
+         mAdapter = new FavExerciseListAdapter(getActivity().getApplicationContext(),this);
         // mAdapter = new ExerciseListAdapter(getContext(), this, false);
         mRecyclerView.setAdapter(mAdapter);
         mNoDataText = (TextView) rootView.findViewById(R.id.fav_execise_no_data_error_text);
         mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.fav_execise_loading_indicator);
 
-        showData(false);
+        if(savedInstanceState!=null) {
+            if(savedInstanceState.containsKey(HAS_DATA_KEY)) {
+                mHasData = savedInstanceState.getBoolean(HAS_DATA_KEY);
+            }
+        }
+
+        if (mHasData) {
+            showData(true);
+        } else {
+            showData(false);
+        }
         return rootView;
     }
 
@@ -154,6 +166,7 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        Log.d(TAG,"onAttach()");
         // TODO: uncomment the callback listener if it is needed !
 //        if (context instanceof OnFragmentInteractionListener) {
 //            mListener = (OnFragmentInteractionListener) context;
@@ -166,6 +179,7 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
     @Override
     public void onDetach() {
         super.onDetach();
+        Log.d(TAG,"onDetach()");
         mListener = null;
     }
 
@@ -260,6 +274,12 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(HAS_DATA_KEY,mHasData);
+    }
+
+    @Override
     public boolean onRemoveFavClick(Cursor cursor) {
         Log.d(TAG,"callback onRemoveFavClick");
         String id = cursor.getString(cursor.getColumnIndex("_id"));
@@ -284,9 +304,6 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         //updateAllExerciseFavoriteCol(exeID, contentValues);
         Uri updateALlExerciseURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
         ExerciseUtil.updateAllExerciseFavoriteCol(this,updateALlExerciseURI,contentValues,exeID,catName);
-
-        ExerciseSwipeViewActivity.getFavMap().put(exeName,false);
-
         if (deleteRow > 0) {
             return true;
         } else {
@@ -357,25 +374,17 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
 
     public void showData(boolean hasData){
         if (hasData) {
-            Log.d(TAG,"show the recycler view!");
+            Log.d(TAG,"=========show the recycler view!==========");
             mProgressIndicator.setVisibility(View.GONE);
             mNoDataText.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
+            mHasData = true;
         } else {
             Log.d(TAG,"hide the recycler view!");
             mProgressIndicator.setVisibility(View.GONE);
             mNoDataText.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.INVISIBLE);
+            mHasData = false;
         }
     }
-
-    public void showLoading() {
-        /* Then, hide the weather data */
-        mRecyclerView.setVisibility(View.GONE);
-        mNoDataText.setVisibility(View.GONE);
-        /* Finally, show the loading indicator */
-        mProgressIndicator.setVisibility(View.VISIBLE);
-    }
-
-
 }

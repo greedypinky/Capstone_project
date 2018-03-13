@@ -3,6 +3,7 @@ package com.project.capstone_stage2;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.util.Pair;
@@ -178,7 +179,13 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
                 editor.commit();
             } else {
                 Log.d(TAG, "No need to get the endpoint when rotate...");
-                showProgressBar(false);
+                // Need to wait sometime to dismiss the ProgressBar otherwise, it will show the empty card view
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        showProgressBar(false);
+                    }
+                }, 2000);
             }
 
         } else {
