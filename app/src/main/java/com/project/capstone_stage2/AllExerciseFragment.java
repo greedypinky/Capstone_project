@@ -132,8 +132,8 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         boolean isAllFragment = true;
         mAdapter = new ExerciseListAdapter(getContext(),this, isAllFragment);
         mRecyclerView.setAdapter(mAdapter);
-        mNoDataText = (TextView) rootView.findViewById(R.id.all_execise_no_data_error_text);
-        mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.all_execise_loading_indicator);
+        mNoDataText = (TextView) rootView.findViewById(R.id.all_exercise_no_data_error_text);
+        mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.all_exercise_loading_indicator);
 
         if (savedInstanceState!=null) {
             if(savedInstanceState.containsKey(HAS_DATA_KEY)) {
@@ -148,7 +148,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 
         return rootView;
     }
-    
+
     public void showData(boolean hasData) {
         if(hasData) {
             Log.d(TAG, "show the recycler view!");

@@ -4,10 +4,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/swipe_view_coordinateLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context="com.project.capstone_stage2.ExerciseSwipeViewActivity"
+    android:id="@+id/swipe_view_coordinateLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.project.capstone_stage2.ExerciseSwipeViewActivity"
         >
 
         <android.support.design.widget.AppBarLayout
@@ -27,44 +27,44 @@
 
         </android.support.design.widget.AppBarLayout>
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
-
-        <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/exercise_pager"
-            android:layout_width="0dp"
-            android:layout_weight="1"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="?attr/actionBarSize"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            android:orientation="horizontal">
 
-            <!-- use TabLayout -->
-            <android.support.design.widget.TabLayout
-                android:id="@+id/sliding_tabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top" />
+                <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/exercise_pager"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="?attr/actionBarSize"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        </android.support.v4.view.ViewPager>
-    <View
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:background="@android:color/darker_gray" />
+                    <!-- use TabLayout -->
+                    <android.support.design.widget.TabLayout
+                        android:id="@+id/sliding_tabs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top" />
 
-    <!-- right pane layout -->
+                </android.support.v4.view.ViewPager>
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@android:color/darker_gray" />
 
-    <fragment
-        android:id="@+id/fragment_steps_detail_land"
-        android:layout_width="0dp"
-        android:layout_weight="2"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:name="com.project.capstone_stage2.ExerciseDetailFragment">
-    </fragment>
-</LinearLayout>
+            <!-- right pane layout -->
+
+            <fragment
+                android:id="@+id/fragment_steps_detail_land"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="match_parent"
+                android:layout_marginTop="?attr/actionBarSize"
+                android:name="com.project.capstone_stage2.ExerciseDetailFragment">
+            </fragment>
+        </LinearLayout>
     </android.support.design.widget.CoordinatorLayout>
 
     <!-- this xml includes the right pane fragment-->

@@ -16,7 +16,7 @@
 
     <!-- No Data Text -->
     <TextView
-        android:id="@+id/fav_execise_no_data_error_text"
+        android:id="@+id/fav_exercise_no_data_error_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="22sp"
@@ -27,7 +27,7 @@
         android:padding="20dp"/>
 
     <ProgressBar
-        android:id="@+id/fav_execise_loading_indicator"
+        android:id="@+id/fav_exercise_loading_indicator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

@@ -102,8 +102,8 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
          mAdapter = new FavExerciseListAdapter(getActivity().getApplicationContext(),this);
         // mAdapter = new ExerciseListAdapter(getContext(), this, false);
         mRecyclerView.setAdapter(mAdapter);
-        mNoDataText = (TextView) rootView.findViewById(R.id.fav_execise_no_data_error_text);
-        mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.fav_execise_loading_indicator);
+        mNoDataText = (TextView) rootView.findViewById(R.id.fav_exercise_no_data_error_text);
+        mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.fav_exercise_loading_indicator);
 
         if(savedInstanceState!=null) {
             if(savedInstanceState.containsKey(HAS_DATA_KEY)) {

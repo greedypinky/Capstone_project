@@ -20,7 +20,7 @@
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/swipe_view_collapsingtoolbarlayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
             app:contentScrim="@color/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
@@ -30,8 +30,8 @@
             <ImageView
                 android:id="@+id/swipe_view_category_image"
                 android:layout_width="match_parent"
-                android:layout_height="400dp"
-                android:scaleType="centerCrop"
+                android:layout_height="200dp"
+                android:scaleType="centerInside"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.8"
                 />

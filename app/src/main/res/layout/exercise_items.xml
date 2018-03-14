@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<ScrollView
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
@@ -13,7 +13,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/exercise_card_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         card_view:cardCornerRadius="4dp"
         card_view:cardElevation="@dimen/cardview_default_elevation"
         card_view:cardUseCompatPadding="true"
@@ -26,6 +26,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+
+
             <TextView
                 android:id="@+id/execise_name"
                 android:layout_width="match_parent"
@@ -33,7 +35,7 @@
                 android:background="@android:color/holo_blue_dark"
                 android:text="@string/default_category_name"
                 android:textAppearance="@style/TextAppearance.CondensedAndBoldFontPath"
-                android:gravity="center_vertical"
+                android:gravity="center"
                 android:textColor="@color/content_text_color"
                 android:textSize="22dp"
                 android:padding="16dp"
@@ -47,7 +49,7 @@
                 android:text="@string/default_category_desc"
                 android:textAppearance="@style/TextAppearance.CondensedAndBoldFontPath"
                 android:textColor="@color/content_text_color"
-                android:gravity="center_vertical"
+                android:gravity="center"
                 android:textSize="18dp"
                 android:padding="16dp"
                 />
@@ -61,33 +63,38 @@
                 android:scaleType="fitCenter"
                 />
 
+            <!-- unable to see this if placed in last -->
+            <LinearLayout
+                android:id="@+id/execise_category_card_options"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+
+                <Button
+                    android:id="@+id/share_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/btn_share"
+                    android:textSize="@dimen/btn_text_size"
+                    android:textColor="@color/colorPrimaryDark"/>
+                <Button
+                    android:id="@+id/add_fav_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/btn_addFavorite"
+                    android:textSize="@dimen/btn_text_size"
+                    android:textColor="@color/colorPrimaryDark"/>
+
+            </LinearLayout>
+
         </LinearLayout>
+
+
 
     </android.support.v7.widget.CardView>
 
-    <LinearLayout
-        android:id="@+id/execise_category_card_options"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
-
-        <Button
-            android:id="@+id/share_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/btn_share"
-            android:textSize="@dimen/btn_text_size"
-            android:textColor="@color/colorPrimaryDark"/>
-        <Button
-            android:id="@+id/add_fav_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/btn_addFavorite"
-            android:textSize="@dimen/btn_text_size"
-            android:textColor="@color/colorPrimaryDark"/>
-
-    </LinearLayout>
 
 
-</LinearLayout>
+
+</ScrollView>
