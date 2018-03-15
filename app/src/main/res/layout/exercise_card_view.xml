@@ -6,8 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    tools:context="com.project.capstone_stage2.MainActivity"
-    android:layout_gravity="center">
+    tools:context="com.project.capstone_stage2.MainActivity">
 
     <android.support.v7.widget.CardView
         xmlns:tools="http://schemas.android.com/tools"
@@ -21,14 +20,13 @@
         android:layout_gravity="center"
         >
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             >
 
             <TextView
-                android:id="@+id/execise_category_name"
+                android:id="@+id/exercise_category_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/holo_blue_dark"
@@ -41,7 +39,7 @@
                 />
 
             <TextView
-                android:id="@+id/execise_category_desc"
+                android:id="@+id/exercise_category_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/holo_blue_light"
@@ -51,6 +49,7 @@
                 android:gravity="center"
                 android:textSize="20dp"
                 android:padding="16dp"
+                android:layout_below="@+id/exercise_category_name"
                 />
 
             <!-- TODO:Add back the proper image view -->
@@ -62,10 +61,11 @@
                 android:gravity="center"
                 android:scaleType="fitCenter"
                 android:padding="16dp"
+                android:layout_below="@+id/exercise_category_desc"
                 />
 
 
-        </LinearLayout>
+        </RelativeLayout>
 
 
 

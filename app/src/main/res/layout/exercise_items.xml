@@ -13,23 +13,22 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/exercise_card_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         card_view:cardCornerRadius="4dp"
         card_view:cardElevation="@dimen/cardview_default_elevation"
         card_view:cardUseCompatPadding="true"
         android:layout_margin="5dp"
         >
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/card_view_top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-
+            android:padding="16dp"
+            >
 
             <TextView
-                android:id="@+id/execise_name"
+                android:id="@+id/exercise_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/holo_blue_dark"
@@ -42,7 +41,7 @@
                 />
 
             <TextView
-                android:id="@+id/execise_desc"
+                android:id="@+id/exercise_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/holo_blue_light"
@@ -52,23 +51,26 @@
                 android:gravity="center"
                 android:textSize="18dp"
                 android:padding="16dp"
+                android:layout_below="@+id/exercise_name"
                 />
 
             <!-- TODO:Add back the proper image view png, vector? -->
 
             <ImageView
-                android:id="@+id/execise_image"
+                android:id="@+id/exercise_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:scaleType="fitCenter"
+                android:layout_below="@+id/exercise_desc"
                 />
 
-            <!-- unable to see this if placed in last -->
+            <!-- unable to see this in landscape mode ? -->
             <LinearLayout
-                android:id="@+id/execise_category_card_options"
+                android:id="@+id/exercise_category_card_options"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_below="@+id/exercise_image"
                 >
 
                 <Button
@@ -88,7 +90,7 @@
 
             </LinearLayout>
 
-        </LinearLayout>
+        </RelativeLayout>
 
 
 

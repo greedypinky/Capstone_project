@@ -136,8 +136,8 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
             super(itemView);
             mCardView = (CardView)itemView.findViewById(R.id.category_card_view);
             mCardView.setOnClickListener(this); // must set the OnClickListener,otherwise it will not react to the click
-            mTitle = (TextView) itemView.findViewById(R.id.execise_category_name);
-            mDesc = (TextView) itemView.findViewById(R.id.execise_category_desc);
+            mTitle = (TextView) itemView.findViewById(R.id.exercise_category_name);
+            mDesc = (TextView) itemView.findViewById(R.id.exercise_category_desc);
             mImage = (ImageView) itemView.findViewById(R.id.execise_category_image);
 
         }

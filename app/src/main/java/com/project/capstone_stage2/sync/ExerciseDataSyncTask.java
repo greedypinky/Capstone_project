@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.Driver;
@@ -16,6 +17,7 @@ import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.RetryStrategy;
 import com.firebase.jobdispatcher.Trigger;
 import com.project.capstone_stage2.dbUtility.ExerciseContract;
 import com.project.capstone_stage2.util.EndPointsAsyncTask;
@@ -33,7 +35,7 @@ public class ExerciseDataSyncTask  {
 //    private static final int SYNC_INTERVAL_SECONDS = (int) TimeUnit.HOURS.toSeconds(SYNC_INTERVAL_HOURS);
 //    private static final int SYNC_FLEXTIME_SECONDS = SYNC_INTERVAL_SECONDS / 3;
 
-
+    private static final String TAG =  ExerciseDataSyncTask.class.getSimpleName();
     private static final int SYNC_INTERVAL_MINS = 1;
     private static final int SYNC_INTERVAL_SECONDS = (int) TimeUnit.MINUTES.toSeconds(SYNC_INTERVAL_MINS);
     private static final int SYNC_FLEXTIME_SECONDS = SYNC_INTERVAL_SECONDS / 3;
@@ -93,12 +95,14 @@ public class ExerciseDataSyncTask  {
                  * guaranteed, but is more of a guideline for FirebaseJobDispatcher to go off of.
                  */
                 .setTrigger(Trigger.executionWindow(
-                        SYNC_INTERVAL_SECONDS,
-                        SYNC_INTERVAL_SECONDS + SYNC_FLEXTIME_SECONDS))
+                        10,
+                        30))
+                .setRetryStrategy(RetryStrategy.DEFAULT_LINEAR)
                 .setReplaceCurrent(true) // replace the job if one already exists.
                 .build(); // build the job when job configurations are set
 
         //schedule the Job to get Exercise Data from the backend
+        Log.d(TAG," dispatcher.schedule(syncExerciseDataJob)!");
         dispatcher.schedule(syncExerciseDataJob);
     }
     /**
@@ -122,6 +126,8 @@ public class ExerciseDataSyncTask  {
          * This method call triggers Sunshine to create its task to synchronize weather data
          * periodically.
          */
+        Log.d(TAG,"scheduleFirebaseJobDispatcherSync!");
+        // Context is the MainActivity
         scheduleFirebaseJobDispatcherSync(context);
 
         /*

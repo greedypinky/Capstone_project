@@ -4,6 +4,7 @@ package com.project.capstone_stage2.util;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v4.util.Pair;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.exercise.backend.myApi.MyApi;
@@ -14,11 +15,13 @@ import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
 import java.io.IOException;
 
 public class EndPointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
+    private static String TAG = EndPointsAsyncTask.class.getSimpleName();
     private static MyApi myApiService = null;
     private Context context;
     private boolean runLocal = false;
     // class that implement GCE_EndpointsAsyncTask.AsyncResponse to get the result of the AsyncTask
     public AsyncResponse delegate = null; // activity will implement this method
+    private boolean isFromJobSchedule = false;
 
     // callback interface
     public interface AsyncResponse {
@@ -29,6 +32,10 @@ public class EndPointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, S
     public EndPointsAsyncTask(AsyncResponse asyncResponse) {
 
         delegate = asyncResponse;
+    }
+
+    public EndPointsAsyncTask(boolean jobschedule) {
+        isFromJobSchedule = jobschedule;
     }
 
     @Override
@@ -79,8 +86,12 @@ public class EndPointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, S
 
     @Override
     protected void onPostExecute(String result) {
-        Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+        // Toast.makeText(context, result, Toast.LENGTH_LONG).show();
         // TODO: add back passing result to the AsyncResponse (delegate)
-        delegate.processFinish(result);
+        if (delegate != null) {
+            delegate.processFinish(result);
+        } else {
+            Log.d(TAG,"EndPointAPI JSON Response:- " + result);
+        }
     }
 }
