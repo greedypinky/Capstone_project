@@ -1,6 +1,7 @@
 package com.project.capstone_stage2;
 
 import android.app.Application;
+import android.support.multidex.MultiDexApplication;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;

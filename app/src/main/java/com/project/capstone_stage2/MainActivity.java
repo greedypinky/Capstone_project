@@ -73,8 +73,11 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
         setContentView(R.layout.activity_main);
 
         // Obtain the shared Tracker instance.
-        //AnalyticsApplication application = (AnalyticsApplication) getApplication();
-        //mTracker = application.getDefaultTracker();
+        Log.d(TAG,"onCreate:- getApplication:" + getApplication().getApplicationInfo());
+        AnalyticsApplication application = (AnalyticsApplication) getApplication();
+        mTracker = application.getDefaultTracker();
+
+        Log.d(TAG,"onCreate:- get Analytics Tracker:" + mTracker);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.category_recycler_view);
         mListAdapter = new CategoryListAdapter(this, this.getApplicationContext());
