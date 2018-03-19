@@ -101,8 +101,9 @@ public class ExerciseDetailFragment extends Fragment {
         mExerciseSteps.setText(bundle.getString(ExerciseDetailActivity.EXERCISE_STEPS));
         mVideoURIStr = bundle.getString(ExerciseDetailActivity.EXERCISE_VIDEO_URL);
         // Use the DUMMY URL for now because no URL
-        mVideoURI = Uri.parse(DUMMY_URL);
-        //mVideoURI = Uri.parse(bundle.getString(ExerciseDetailActivity.EXERCISE_VIDEO_URL));
+        //mVideoURI = Uri.parse(DUMMY_URL);
+        // TODO: Use the REAL Video !
+        mVideoURI = Uri.parse(bundle.getString(ExerciseDetailActivity.EXERCISE_VIDEO_URL));
         Log.d(TAG, "setFragmentData:" + mExerciseSteps.getText());
         //Log.d(TAG, "setFragmentData:" +  mVideoURI.toString());
         if (mVideoURI != null) {

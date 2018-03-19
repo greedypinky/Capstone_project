@@ -110,9 +110,9 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
             // TODO: StaleException - after going back to MainActivity the cursor is destroyed!
             holder.mExerciseName.setText(mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME)));
             // TODO: add back the Backend JSON with exercise description
-            // holder.mExerciseDesc.setText(mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION)));
+            holder.mExerciseDesc.setText(mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION)));
             // set the DUMMY data for now
-            holder.mExerciseDesc.setText("<exercise description here...>");
+            // holder.mExerciseDesc.setText("<exercise description here...>");
             String imageURL = mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE));
 
             holder.toggleButtonDisable(isFavorite);
@@ -125,7 +125,11 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
 
             // TODO: will use the default image for now - need to load a real image !
             int defaultImage = R.drawable.exercise_default;
-            Picasso.with(mContext).load(defaultImage).into(holder.mExerciseImage);
+            // "http://atlasonlinefitness.com/wp-content/uploads/2018/03/nao-push01.png"
+            //Picasso.with(mContext).load(defaultImage).into(holder.mExerciseImage);
+            Picasso.with(mContext)
+                    .load("http://atlasonlinefitness.com/wp-content/uploads/2018/03/nao-push01.png")
+                    .into(holder.mExerciseImage);
         } else {
 
             Log.e(TAG,"onBindViewHolder - cursor is closed");
