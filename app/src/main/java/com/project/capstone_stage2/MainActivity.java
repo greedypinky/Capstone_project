@@ -72,10 +72,17 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // https://developers.google.com/analytics/devguides/collection/android/v4/?hl=ja
+        // https://github.com/googlesamples/google-services/blob/master/android/analytics/app/src/main/java/com/google/samples/quickstart/analytics/MainActivity.java#L72-L74
         // Obtain the shared Tracker instance.
         Log.d(TAG,"onCreate:- getApplication:" + getApplication().getApplicationInfo());
         AnalyticsApplication application = (AnalyticsApplication) getApplication();
         mTracker = application.getDefaultTracker();
+
+        if (mTracker!=null) {
+            mTracker.setScreenName("Activity:"  + TAG);
+            mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+        }
 
         Log.d(TAG,"onCreate:- get Analytics Tracker:" + mTracker);
 
@@ -219,11 +226,13 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
         Log.d(TAG,"Show the TestAds from AdMob");
         // Only show when it is a FREE application
         if (mInterstitial!=null && mInterstitial.isLoaded()) {
+            Log.d(TAG,"showAds > mInterstitial.show()");
             mInterstitial.show();
         } else {
             // init the Ads
             initAds();
             if ( mInterstitial!=null && mInterstitial.isLoaded()) {
+                Log.d(TAG,"showAds > mInterstitial.show()");
                 mInterstitial.show();
             }
         }
@@ -233,6 +242,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
     // initialize the apps
     private void initAds () {
         // initialize Mobile Ads SDK with the AdMob App ID
+        Log.d(TAG,"initAds: initialize Mobile Ads SDK with the AdMob App ID");
         MobileAds.initialize(this, AD_MOB_APP_ID);
         mInterstitial = new InterstitialAd(this);
         mInterstitial.setAdUnitId(AD_MOB_UNIT_ID); // TODO: replace valid ads ID please

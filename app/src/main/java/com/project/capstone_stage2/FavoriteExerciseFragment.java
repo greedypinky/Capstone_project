@@ -19,6 +19,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.project.capstone_stage2.dbUtility.ExerciseContract;
 import com.project.capstone_stage2.util.CategoryListAdapter;
 import com.project.capstone_stage2.util.ExerciseListAdapter;
@@ -54,6 +56,7 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
     private boolean mTwoPane = false;
     private Cursor mCursor = null;
     private boolean mHasData = false;
+    private Tracker mTracker;
 
 
     private OnFragmentInteractionListener mListener;
@@ -91,6 +94,10 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         Log.d(TAG,"===========onCreateView is called! ============");
         mTwoPane = getResources().getBoolean(R.bool.has_two_panes);
         Log.d(TAG, "###### onCreateView IS IT TWO PANE ?? #### " + mTwoPane);
+
+        // Obtain the shared Tracker instance.
+        AnalyticsApplication application = (AnalyticsApplication) getActivity().getApplication();
+        mTracker = application.getDefaultTracker();
 
 
         // Inflate the layout for this fragment
@@ -258,6 +265,12 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         String exeName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
         String exeVideoURL = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO));
         String exeSteps = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_STEPS));
+
+        // Add analytics to track which exercise is shared
+        mTracker.send(new HitBuilders.EventBuilder()
+                .setCategory("Exercise Name:" + exeName)
+                .setAction("Share")
+                .build());
 
         StringBuilder builder = new StringBuilder();
         builder.append("Exercise Name:" + exeName + "\n")

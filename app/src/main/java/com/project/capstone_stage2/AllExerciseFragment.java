@@ -117,8 +117,8 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         Log.d(TAG, "###### onCreateView IS IT TWO PANE ?? #### " + mTwoPane);
 
         // Obtain the shared Tracker instance.
-        //AnalyticsApplication application = (AnalyticsApplication) getApplication();
-        //mTracker = application.getDefaultTracker();
+        AnalyticsApplication application = (AnalyticsApplication) getActivity().getApplication();
+        mTracker = application.getDefaultTracker();
 
         Log.d(TAG,"onCreateView is called!");
         // Inflate the layout for this fragment
@@ -283,17 +283,19 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 
     @Override
     public void onShareClick(Cursor cursor) {
-        // Add analytics to track which exercise is shared
-/*        mTracker.send(new HitBuilders.EventBuilder()
-                .setCategory("Exercise Name:" + exeName)
-                .setAction("Share")
-                .build());*/
+
 
         Toast.makeText(getContext(),"share content!", Toast.LENGTH_LONG).show();
         Bundle bundle = new Bundle();
         String exeName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
         String exeVideoURL = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO));
         String exeSteps = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_STEPS));
+
+        // Add analytics to track which exercise is shared
+        mTracker.send(new HitBuilders.EventBuilder()
+                .setCategory("Exercise Name:" + exeName)
+                .setAction("Share Exericse")
+                .build());
 
         StringBuilder builder = new StringBuilder();
         builder.append("Exercise Name:" + exeName + "\n")
@@ -321,12 +323,11 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         String category = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.CATEGORY));
 
         // Add analytics to track which exercise is add as favorite
-/*
         mTracker.send(new HitBuilders.EventBuilder()
                 .setCategory("Exercise Name:" + exeName)
-                .setAction("Add favorite")
+                .setAction("Add Exercise as favorite")
                 .build());
-*/
+
 
         Log.d(TAG,"insert favorite index0: " + cursor.getString(0) );
         Log.d(TAG,"insert favorite index1: " + cursor.getString(1) );
