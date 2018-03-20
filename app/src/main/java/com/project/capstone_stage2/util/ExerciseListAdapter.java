@@ -110,9 +110,9 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
             // TODO: StaleException - after going back to MainActivity the cursor is destroyed!
             holder.mExerciseName.setText(mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME)));
             // TODO: add back the Backend JSON with exercise description
-            holder.mExerciseDesc.setText(mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION)));
+            //holder.mExerciseDesc.setText(mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION)));
             // set the DUMMY data for now
-            // holder.mExerciseDesc.setText("<exercise description here...>");
+            holder.mExerciseDesc.setText("<exercise description here...>");
             String imageURL = mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE));
 
             holder.toggleButtonDisable(isFavorite);
