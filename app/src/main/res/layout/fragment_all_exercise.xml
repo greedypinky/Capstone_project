@@ -2,16 +2,17 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context="com.project.capstone_stage2.AllExerciseFragment">
 
     <!-- TODO: Add Recylcer View to show the exercise in a category -->
+    <!-- https://lab.getbase.com/nested-scrolling-with-coordinatorlayout-on-android/ -->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/all_execise_recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:padding="4dp"
-        android:scrollbars="vertical">
+        >
 
     </android.support.v7.widget.RecyclerView>
 

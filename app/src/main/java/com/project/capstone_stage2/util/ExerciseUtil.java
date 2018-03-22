@@ -12,6 +12,7 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.project.capstone_stage2.ExerciseDetailFragment;
 import com.project.capstone_stage2.R;
 import com.project.capstone_stage2.dbUtility.ExerciseContract;
 
@@ -77,7 +78,7 @@ public class ExerciseUtil {
     }
 
 
-    public static void onShareClick(String cat,String exeName,String exeSteps,String exeVideoURL,Context context,Fragment fragment) {
+    public static void onShareClick(String cat,String exeName,String exeSteps,String exeVideoURL,Context context, ExerciseDetailFragment fragment) {
         // Add analytics to track which exercise is shared
         //Toast.makeText(getContext(),"share content!", Toast.LENGTH_LONG).show();
         Bundle bundle = new Bundle();

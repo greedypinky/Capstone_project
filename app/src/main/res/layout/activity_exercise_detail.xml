@@ -40,7 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:name="com.project.capstone_stage2.ExerciseDetailFragment"
-        android:layout_gravity="center"/>
+        />
 
     </android.support.v4.widget.NestedScrollView>
 

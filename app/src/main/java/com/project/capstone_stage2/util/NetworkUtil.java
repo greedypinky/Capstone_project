@@ -10,17 +10,17 @@ import android.view.View;
 import android.widget.TextView;
 
 public class NetworkUtil {
-        /**
-         * Checks if the device is currently connected to the network.
-         * @param context Context this is being called from
-         * @return Whether the network state is connected or not
-         */
-        public static boolean isNetworkConnected(
-                Context context) {
-            ConnectivityManager connectivityManager = (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo currentNetwork = connectivityManager.getActiveNetworkInfo();
-            return currentNetwork != null && currentNetwork.isConnected();
-        }
+    /**
+     * Checks if the device is currently connected to the network.
+     * @param context Context this is being called from
+     * @return Whether the network state is connected or not
+     */
+    public static boolean isNetworkConnected(
+            Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo currentNetwork = connectivityManager.getActiveNetworkInfo();
+        return currentNetwork != null && currentNetwork.isConnected();
+    }
 
     public static Snackbar makeSnackbar(View view, String message, boolean dismissible) {
         final Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_INDEFINITE);

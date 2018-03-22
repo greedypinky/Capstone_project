@@ -93,7 +93,7 @@ public class RemoteEndPointUtil {
                //String stepDesc = "";
                for (int s = 0; s < stepsArray.length(); s++) {
                    JSONObject step = (JSONObject) stepsArray.get(s);
-                   stepDesc = stepDesc + step.getString(STEP_DESCRIPTION);
+                   stepDesc = stepDesc + step.getString(STEP_DESCRIPTION) + "\n";
                    Log.d(TAG,"Step Description is:" + stepDesc);
                }
 

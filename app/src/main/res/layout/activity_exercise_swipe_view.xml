@@ -70,7 +70,6 @@
         android:id="@+id/exercise_pager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <!-- use TabLayout -->

@@ -73,6 +73,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     // Dependency for the Android Cloud EndPoint project
     compile project(path: ':capstone_backend', configuration: 'android-endpoints')
+    implementation files('libs/YouTubeAndroidPlayerApi.jar')
 }
 
 // add back a Gradle task to install

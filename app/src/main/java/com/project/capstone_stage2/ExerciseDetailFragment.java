@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,13 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
+import com.google.android.youtube.player.YouTubeBaseActivity;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerFragment;
+import com.google.android.youtube.player.YouTubePlayerSupportFragment;
+import com.google.android.youtube.player.YouTubePlayerView;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,12 +44,14 @@ import com.google.android.exoplayer2.util.Util;
  * Use the {@link ExerciseDetailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+//public class ExerciseDetailFragment extends Fragment {
 public class ExerciseDetailFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    private static final String API_KEY="AIzaSyDy8aQ5OavXmxILBp_Oijz3O3VXlEcS7ys";
     private static String TAG = ExerciseDetailFragment.class.getSimpleName();
     public static String CURRENT_EXERCISE_KEY = "current_exercise";
     public static String CURRENT_EXERCISE_STEPS = "current_exerciseSteps";
@@ -56,18 +66,22 @@ public class ExerciseDetailFragment extends Fragment {
     private TextView mExerciseSteps;
     private Uri mVideoURI;
     private String mVideoURIStr = null;
-    private SimpleExoPlayerView mStepVideoView;
+    // private SimpleExoPlayerView mStepVideoView;
     private SimpleExoPlayer mExoPlayer;
+    private YouTubePlayerView mYouTubePlayerView;
     private ImageView mThumbNailImage;
     private boolean isVideoPlaying;
     private long mVideoPosition = -1;
     private int mCurrentwindowIndex = -1;
     private String mExerciseID = "-1";
-    private String DUMMY_URL = "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffddf0_-intro-yellow-cake/-intro-yellow-cake.mp4";
-
+    //private String DUMMY_URL = "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffddf0_-intro-yellow-cake/-intro-yellow-cake.mp4";
+    private String DUMMY_URL = "https://www.dropbox.com/s/9g2vw52a1pz2alc/nao-squat02.mp4";
     private OnFragmentInteractionListener mListener;
 
     private boolean mDetailViewInitState = true;
+    private YouTubePlayer mYoutubePlayer;
+
+
 
 
     /**
@@ -90,34 +104,6 @@ public class ExerciseDetailFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * when exercise is clicked, set the fragment data.
-     * setFragmentData
-     * @param bundle
-     */
-    public void setFragmentData(Bundle bundle) {
-
-        String exerciseID = bundle.getString(ExerciseDetailActivity.EXERCISE_KEY);
-        mExerciseSteps.setText(bundle.getString(ExerciseDetailActivity.EXERCISE_STEPS));
-        mVideoURIStr = bundle.getString(ExerciseDetailActivity.EXERCISE_VIDEO_URL);
-        // Use the DUMMY URL for now because no URL
-        //mVideoURI = Uri.parse(DUMMY_URL);
-        // TODO: Use the REAL Video !
-        mVideoURI = Uri.parse(bundle.getString(ExerciseDetailActivity.EXERCISE_VIDEO_URL));
-        Log.d(TAG, "setFragmentData:" + mExerciseSteps.getText());
-        //Log.d(TAG, "setFragmentData:" +  mVideoURI.toString());
-        if (mVideoURI != null) {
-           initializePlayer(mVideoURI);
-           showVideo(true);
-        } else {
-            showVideo(false);
-        }
-    }
-
-    public void setTwoPaneMode(boolean isTwoPane){
-
-        mTwoPaneMode = isTwoPane;
-    }
 
 
     /**
@@ -150,13 +136,19 @@ public class ExerciseDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-
-
         Log.d(TAG,"onCreateView!");
         // Inflate the layout for this fragment
-        View fragmentRootView = inflater.inflate(R.layout.fragment_exercise_detail, container, false);
-        mStepVideoView = (SimpleExoPlayerView) fragmentRootView.findViewById(R.id.exercise_video);
+        View fragmentRootView = inflater.inflate(R.layout.fragment_exercise_detail2, container, false);
+        // mStepVideoView = (SimpleExoPlayerView) fragmentRootView.findViewById(R.id.exercise_video);
+
+       // mYouTubePlayerView = (YouTubePlayerView) fragmentRootView.findViewById(R.id.youtube_view);
+
+        // FragmentManager fragmentManager = getSupportFragmentManager();
+        //
+        https://stackoverflow.com/questions/44000377/how-to-integrate-youtube-to-fragment?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
+
+        // https://stackoverflow.com/questions/44000377/how-to-integrate-youtube-to-fragment?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
+
         mExerciseSteps = (TextView) fragmentRootView.findViewById(R.id.exercise_steps);
         mNoVideo = (TextView) fragmentRootView.findViewById(R.id.text_no_video);
         mPlaceHolder = (TextView) fragmentRootView.findViewById(R.id.text_get_start);
@@ -184,7 +176,7 @@ public class ExerciseDetailFragment extends Fragment {
                 mDetailViewInitState = savedInstanceState.getBoolean(SHOW_VIDEO);
             }
             // Restore the previous states if we have savedInstanceState
-            initializePlayer(mVideoURI);
+            //initializePlayer(mVideoURI);
 
         } else {
             // reset position for exoPlayer's window index and position
@@ -201,7 +193,7 @@ public class ExerciseDetailFragment extends Fragment {
             // if there is video for the exercise
             mNoVideo.setVisibility(View.GONE);
             mPlaceHolder.setVisibility(View.GONE);
-            mStepVideoView.setVisibility(View.VISIBLE);
+            //mStepVideoView.setVisibility(View.VISIBLE);
             mExerciseSteps.setVisibility(View.VISIBLE);
             mDetailViewInitState = false;
         } else {
@@ -209,7 +201,7 @@ public class ExerciseDetailFragment extends Fragment {
             mNoVideo.setVisibility(View.VISIBLE);
             mExerciseSteps.setVisibility(View.VISIBLE);
             mPlaceHolder.setVisibility(View.GONE);
-            mStepVideoView.setVisibility(View.GONE);
+            //mStepVideoView.setVisibility(View.GONE);
         }
     }
 
@@ -219,7 +211,7 @@ public class ExerciseDetailFragment extends Fragment {
             mPlaceHolder.setVisibility(View.VISIBLE); // No Exercise is selected!
             // Not show video until the video is clicked
 //            mNoVideo.setVisibility(View.GONE);
-            mStepVideoView.setVisibility(View.GONE);
+           // mStepVideoView.setVisibility(View.GONE);
 //            mExerciseSteps.setVisibility(View.GONE);
         } else {
             Log.d(TAG,"Not in the initial state!");
@@ -252,6 +244,39 @@ public class ExerciseDetailFragment extends Fragment {
     }
 
 
+    // ====== Initialize the YouTubePlayerFragment Method =======
+    /**
+     * Initialize a YouTubePlayer, which can be used to play videos and control video playback.
+     * One of the callbacks in listener will be invoked when the initialization succeeds or fails.
+     */
+    //Call this method after getting mVideoId
+    private void initializeYoutubeFragment() {
+
+        YouTubePlayerSupportFragment youTubePlayerFragment = YouTubePlayerSupportFragment.newInstance();
+
+        youTubePlayerFragment.initialize(API_KEY, new YouTubePlayer.OnInitializedListener() {
+
+            @Override
+            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player, boolean wasRestored) {
+                if (!wasRestored) {
+                    mYoutubePlayer = player;
+                    mYoutubePlayer.setShowFullscreenButton(false);
+                    String mVideoId = "eUG3VWnXFtg";
+                    mYoutubePlayer.cueVideo(mVideoId);
+                }
+            }
+
+            @Override
+            public void onInitializationFailure(YouTubePlayer.Provider arg0, YouTubeInitializationResult arg1) {
+
+
+            }
+        });
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.add(R.id.youtube_fragment, youTubePlayerFragment).commit();
+    }
+    // ========================================================================
+
     /**
      * Initialize ExoPlayer.
      */
@@ -262,7 +287,7 @@ public class ExerciseDetailFragment extends Fragment {
             TrackSelector trackSelector = new DefaultTrackSelector();
             LoadControl loadControl = new DefaultLoadControl();
             mExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector, loadControl);
-            mStepVideoView.setPlayer(mExoPlayer);
+            // mStepVideoView.setPlayer(mExoPlayer);
             // Prepare the MediaSource the very first time after ExoPlayer is initialized
             MediaSource mediaSource = new ExtractorMediaSource(uri, new DefaultDataSourceFactory(
                     getContext(), userAgent), new DefaultExtractorsFactory(), null, null);
@@ -290,6 +315,38 @@ public class ExerciseDetailFragment extends Fragment {
 
         }
     }
+
+    /**
+     * when exercise is clicked, set the fragment data.
+     * setFragmentData
+     * @param bundle
+     */
+    public void setFragmentData(Bundle bundle) {
+
+        String exerciseID = bundle.getString(ExerciseDetailActivity.EXERCISE_KEY);
+        mExerciseSteps.setText(bundle.getString(ExerciseDetailActivity.EXERCISE_STEPS));
+        mVideoURIStr = bundle.getString(ExerciseDetailActivity.EXERCISE_VIDEO_URL);
+        // Use the DUMMY URL for now because no URL
+        mVideoURI = Uri.parse(DUMMY_URL);
+        // TODO: Use the REAL Video !
+        //mVideoURI = Uri.parse(bundle.getString(ExerciseDetailActivity.EXERCISE_VIDEO_URL));
+        Log.d(TAG, "setFragmentData:" + mExerciseSteps.getText());
+        //Log.d(TAG, "setFragmentData:" +  mVideoURI.toString());
+        if (mVideoURI != null) {
+            // initializePlayer(mVideoURI);
+            // initialize(API_KEY,this);
+            initializeYoutubeFragment();
+            showVideo(true);
+        } else {
+            showVideo(false);
+        }
+    }
+
+    public void setTwoPaneMode(boolean isTwoPane){
+
+        mTwoPaneMode = isTwoPane;
+    }
+
 
     @Override
     public void onPause() {
