@@ -203,9 +203,9 @@ public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseList
             super(itemView); // must be in the first line of constructor
             mCardView = (CardView) itemView.findViewById(R.id.exercise_card_view);
             mCardView.setOnClickListener(this); // adapter implements the OnClickListener
-            mExerciseName = (TextView) itemView.findViewById(R.id.execise_name);
-            mExerciseDesc = (TextView) itemView.findViewById(R.id.execise_desc);
-            mExerciseImage = (ImageView) itemView.findViewById(R.id.execise_image);
+            mExerciseName = (TextView) itemView.findViewById(R.id.exercise_name);
+            mExerciseDesc = (TextView) itemView.findViewById(R.id.exercise_desc);
+            mExerciseImage = (ImageView) itemView.findViewById(R.id.exercise_image);
             mShareButton = (Button) itemView.findViewById(R.id.share_btn);
             mRemoveFavButton = (Button) itemView.findViewById(R.id.remove_fav_btn);
 

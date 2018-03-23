@@ -185,9 +185,9 @@ public class WidgetExerciseListAdapter extends RecyclerView.Adapter<WidgetExerci
         public ExerciseViewHolder(View itemView) {
             // initialize the views inside the view holder
             super(itemView); // must be in the first line of constructor
-            mExerciseImage = (ImageView) itemView.findViewById(R.id.execise_image);
-            mExerciseName = (TextView) itemView.findViewById(R.id.execise_name);
-            mExerciseDesc = (TextView) itemView.findViewById(R.id.execise_desc);
+            mExerciseImage = (ImageView) itemView.findViewById(R.id.exercise_image);
+            mExerciseName = (TextView) itemView.findViewById(R.id.exercise_name);
+            mExerciseDesc = (TextView) itemView.findViewById(R.id.exercise_desc);
 
         }
 
