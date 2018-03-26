@@ -36,7 +36,7 @@ import java.io.InputStream;
 // https://github.com/udacity/AdvancedAndroid_MyGarden
 // image resource
 // çsapling-plant-growing-seedling-154734/ https://pixabay.com/en/cactus-cacti-plant-thorns-spiky-152378/ https://pixabay.com/en/the-background-background-design-352165/
-
+// https://developer.android.com/training/keyboard-input/navigation.html
 /**
 1. Add the google cloud module from Android Studio : but where is it??
 2. go to Google Developer Console to create a new project

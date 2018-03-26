@@ -41,7 +41,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/exercise_name"
-                app:layout_constraintVertical_chainStyle="packed" />
+                app:layout_constraintVertical_chainStyle="packed"
+                android:contentDescription="@string/content_exerciseImage"
+                android:nextFocusDown="@id/share_btn"/>
 
             <TextView
                 android:id="@+id/exercise_desc"
@@ -56,7 +58,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/exercise_image" />
+                app:layout_constraintTop_toBottomOf="@+id/exercise_image"
+                android:nextFocusRight="@id/share_btn"/>
 
             <!-- TODO:Add back the proper image view png, vector? -->
             //https://medium.com/@eugenebrusov/using-of-constraintlayout-to-build-out-cardview-with-material-design-e111e64575c2
@@ -75,7 +78,10 @@
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="@dimen/btn_text_size"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/exercise_desc" />
+                app:layout_constraintTop_toBottomOf="@+id/exercise_desc"
+                android:contentDescription="@string/content_shareButton"
+                android:nextFocusRight="@id/add_fav_btn"
+                android:nextFocusUp="@id/exercise_image"/>
 
             <Button
                 android:id="@+id/add_fav_btn"
@@ -90,6 +96,9 @@
                 android:textSize="@dimen/btn_text_size"
                 app:layout_constraintStart_toEndOf="@+id/share_btn"
                 app:layout_constraintTop_toTopOf="@+id/share_btn"
+                android:contentDescription="@string/content_addExerciseButton"
+                android:nextFocusLeft="@id/share_btn"
+                android:nextFocusUp="@id/exercise_image"
                 />
 
         </android.support.constraint.ConstraintLayout>

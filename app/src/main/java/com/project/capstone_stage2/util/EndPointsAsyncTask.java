@@ -56,6 +56,9 @@ public class EndPointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, S
             } else {
 
                 //  Go to https://console.cloud.google.com/ to check the deployed link
+                // check the API of the Endpoint
+                // https://capstoneproject-189106.appspot.com/_ah/api/myApi/v1/exercisedata (I could get back the data)
+                // https://apis-explorer.appspot.com/apis-explorer/?base=https://capstoneproject-189106.appspot.com/_ah/api#p/
                 builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
                         .setRootUrl("https://capstoneproject-189106.appspot.com/_ah/api/");
 

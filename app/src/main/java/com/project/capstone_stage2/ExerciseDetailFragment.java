@@ -64,7 +64,7 @@ public class ExerciseDetailFragment extends Fragment {
     private TextView mPlaceHolder;
     private TextView mNoVideo;
     private TextView mExerciseSteps;
-    private Uri mVideoURI;
+    private String mVideoURI = null;
     private String mVideoURIStr = null;
     // private SimpleExoPlayerView mStepVideoView;
     private SimpleExoPlayer mExoPlayer;
@@ -163,8 +163,8 @@ public class ExerciseDetailFragment extends Fragment {
             }
             if (savedInstanceState.containsKey(CURRENT_EXERCISE_VIDEO)) {
                 // TODO: Remember to replace the real video URL
-               // mVideoURI = Uri.parse(savedInstanceState.getString(CURRENT_EXERCISE_VIDEO));
-                mVideoURI = Uri.parse(DUMMY_URL);
+                // mVideoURI = Uri.parse(savedInstanceState.getString(CURRENT_EXERCISE_VIDEO));
+                mVideoURIStr = savedInstanceState.getString(CURRENT_EXERCISE_VIDEO);
             }
             if (savedInstanceState.containsKey(CURRENT_VIDEO_POSITION_KEY)) {
                 mVideoPosition = savedInstanceState.getLong(CURRENT_VIDEO_POSITION_KEY);
@@ -261,8 +261,9 @@ public class ExerciseDetailFragment extends Fragment {
                 if (!wasRestored) {
                     mYoutubePlayer = player;
                     mYoutubePlayer.setShowFullscreenButton(false);
-                    String mVideoId = "eUG3VWnXFtg";
-                    mYoutubePlayer.cueVideo(mVideoId);
+                    //String mVideoId = "eUG3VWnXFtg";
+                    //mYoutubePlayer.cueVideo(mVideoURIStr);
+                    mYoutubePlayer.cueVideo("-wcbHny056c");
                 }
             }
 
@@ -327,12 +328,12 @@ public class ExerciseDetailFragment extends Fragment {
         mExerciseSteps.setText(bundle.getString(ExerciseDetailActivity.EXERCISE_STEPS));
         mVideoURIStr = bundle.getString(ExerciseDetailActivity.EXERCISE_VIDEO_URL);
         // Use the DUMMY URL for now because no URL
-        mVideoURI = Uri.parse(DUMMY_URL);
+        // mVideoURI = Uri.parse(DUMMY_URL);
         // TODO: Use the REAL Video !
         //mVideoURI = Uri.parse(bundle.getString(ExerciseDetailActivity.EXERCISE_VIDEO_URL));
         Log.d(TAG, "setFragmentData:" + mExerciseSteps.getText());
         //Log.d(TAG, "setFragmentData:" +  mVideoURI.toString());
-        if (mVideoURI != null) {
+        if (mVideoURIStr != null) {
             // initializePlayer(mVideoURI);
             // initialize(API_KEY,this);
             initializeYoutubeFragment();
@@ -391,7 +392,7 @@ public class ExerciseDetailFragment extends Fragment {
         Log.d(TAG, "onResume - initialize the player");
         // TODO: get the video url again
         if (mVideoURI !=null) {
-            initializePlayer(mVideoURI);
+            //initializePlayer(mVideoURI);
         }
     }
 
@@ -430,7 +431,7 @@ public class ExerciseDetailFragment extends Fragment {
         outState.putInt(CURRENT_WINDOW_POSITION_KEY, mCurrentwindowIndex);
         outState.putString(CURRENT_EXERCISE_KEY, mExerciseID);
         outState.putString(CURRENT_EXERCISE_STEPS, (String)mExerciseSteps.getText());
-        if (mVideoURI !=null) {
+        if (mVideoURIStr !=null) {
             outState.putString(CURRENT_EXERCISE_VIDEO, mVideoURIStr);
         }
         outState.putBoolean(SHOW_VIDEO,mDetailViewInitState); // remember the state of the detail view

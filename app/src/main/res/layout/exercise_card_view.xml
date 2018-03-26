@@ -62,6 +62,7 @@
                 android:scaleType="fitCenter"
                 android:padding="16dp"
                 android:layout_below="@+id/exercise_category_desc"
+                android:contentDescription="@string/content_exercise_category"
                 />
 
 

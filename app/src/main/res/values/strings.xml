@@ -31,4 +31,13 @@
     <string name="widget_no_data">No Exercise Data</string>
     <string name="no_network_connection">No Network Connection</string>
 
+    <!-- Content description String -->
+    <string name="content_exerciseImage">Selected Exercise Image</string>
+    <string name="content_exerciseVideo">Selected Exercise Video</string>
+    <string name="content_shareButton">Share Exercise</string>
+    <string name="content_removeExerciseButton">Remove Exercise</string>
+    <string name="content_addExerciseButton">Add Exercise</string>
+    <string name="content_exercise_category">Exericse Category Image</string>
+
+
 </resources>
