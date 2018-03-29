@@ -2,10 +2,12 @@ package com.project.capstone_stage2;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -24,6 +26,7 @@ import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.project.capstone_stage2.util.ExerciseUtil;
+import com.project.capstone_stage2.util.NetworkUtil;
 
 public class ExerciseDetailActivity extends AppCompatActivity {
 
@@ -41,6 +44,8 @@ public class ExerciseDetailActivity extends AppCompatActivity {
     private String mExerciseSteps = null;
     private String mExerciseVideoUrl = null;
     ExerciseDetailFragment mDetailFragment;
+    private CoordinatorLayout mCoordinatorLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +54,7 @@ public class ExerciseDetailActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.detail_coordinateLayout);
 
         // TODO: need to implement the detail view
         // Detail view is defined in a fragment
@@ -73,14 +79,28 @@ public class ExerciseDetailActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+
         mFAB = (FloatingActionButton) findViewById(R.id.detail_fab_btn);
         mFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // TODO: add the share action here
-                ExerciseUtil.onShareClick(mExerciseCategory,mExerciseName,mExerciseSteps,mExerciseVideoUrl,getApplicationContext(),mDetailFragment);
+                if (!NetworkUtil.isNetworkConnected(ExerciseDetailActivity.this)) {
+//                    Snackbar sb = Snackbar.make(mCoordinatorLayout, getString(R.string.no_network), Snackbar.LENGTH_LONG);
+//                    View sbView = sb.getView();
+//                    sbView.setElevation(getResources().getDimension(R.dimen.sb_elevation));
+//                    sb.show();
+
+                    Snackbar noNetworkSnackBar = NetworkUtil.makeSnackbar(mCoordinatorLayout, getString(R.string.no_network_connection), true);
+                     noNetworkSnackBar.getView().setElevation(getResources().getDimension(R.dimen.sb_elevation));
+                    noNetworkSnackBar.show();
+
+                } else {
+                    ExerciseUtil.onShareClick(mExerciseCategory, mExerciseName, mExerciseSteps, mExerciseVideoUrl, getApplicationContext(), mDetailFragment);
+                }
             }
         });
+
     }
 
     @Override

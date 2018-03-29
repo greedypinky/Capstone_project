@@ -19,7 +19,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.project.capstone_stage2"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"

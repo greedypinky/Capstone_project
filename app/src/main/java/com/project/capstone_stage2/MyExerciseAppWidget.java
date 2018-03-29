@@ -106,7 +106,7 @@ public class MyExerciseAppWidget extends AppWidgetProvider {
     //https://www.sitepoint.com/killer-way-to-show-a-list-of-items-in-android-collection-widget/
 //    public static void updateExerciseAppWidget(Context context,AppWidgetManager appWidgetManager,
 //                                               int appWidgetId, ArrayList<Exercise> exercises) {
-        public static void updateExerciseAppWidget(Context context,AppWidgetManager appWidgetManager,
+        public static void  updateExerciseAppWidget(Context context,AppWidgetManager appWidgetManager,
         int appWidgetId, ArrayList<HashMap<String,String>> exercises) {
 
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(),R.layout.content_widget);

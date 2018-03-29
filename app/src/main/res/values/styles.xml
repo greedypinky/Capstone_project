@@ -44,6 +44,24 @@
         <item name="android:textSize">18dp</item>
     </style>
 
+
+    <style name="WidgetExerciseTitleStyle">
+        android:background="@android:color/holo_orange_light"
+        android:baselineAligned="false"
+        android:gravity="center_vertical"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textColor="@color/colorPrimary"
+        android:textSize="20dp"
+    </style>
+
+    <style name="WidgetExerciseDescriptionStyle">
+        <item name="android:lineSpacingExtra">8dp</item>
+        <item name="android:layout_margin">16dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body1</item>
+        <item name="android:textColor">@color/content_text_color</item>
+        <item name="android:textSize">14dp</item>
+    </style>
+
     <style name="ButtonStyle">
         <item name="android:minWidth">0dp</item>
         <item name="android:paddingEnd">8dp</item>

@@ -29,6 +29,7 @@
         android:padding="8dp"
         >
 
+        <!--
         <TextView
             android:id="@+id/widget_execise_name"
             android:layout_width="match_parent"
@@ -39,9 +40,17 @@
             android:text="@string/default_category_name"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textColor="@color/colorPrimary"
-            android:textSize="20dp" />
+            android:textSize="20dp" /> -->
+
+        <TextView
+            android:id="@+id/widget_execise_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/default_category_name"
+            style="@style/WidgetExerciseTitleStyle" />
 
         <!-- wrap the text if the text is too long -->
+        <!--
         <TextView
             android:id="@+id/widget_execise_desc"
             android:layout_width="match_parent"
@@ -52,6 +61,15 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="@android:color/black"
             android:textSize="14dp" />
+            -->
+
+        <TextView
+            android:id="@+id/widget_execise_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/default_category_desc"
+            style="@style/WidgetExerciseDescriptionStyle"
+            />
     </LinearLayout>
 
 
