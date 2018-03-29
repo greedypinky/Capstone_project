@@ -106,20 +106,18 @@ public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseList
             mCursor.moveToPosition(position);
             holder.mExerciseName.setText(mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME)));
             // TODO: add back the Backend JSON with exercise description
-            // holder.mExerciseDesc.setText(mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION)));
-            // set the DUMMY data for now
-            holder.mExerciseDesc.setText("<exercise description here...>");
+            holder.mExerciseDesc.setText(mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION)));
             String imageURL = mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE));
 
             // holder.mExerciseImage.setImageResource(mCursor.getInt(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE)));
-//        if(!imageURL.isEmpty() && imageURL != null) {
-//            // Picasso will handle loading the images on a background thread, image decompression and caching the images.
-//            Picasso.with(mContext).load(imageURL).into(holder.mExerciseImage);
-//        }
-
-            // will use the default image for now
-            int defaultImage = R.drawable.exercise_default;
-            Picasso.with(mContext).load(defaultImage).into(holder.mExerciseImage);
+            if(!imageURL.isEmpty() && imageURL != null) {
+                // Picasso will handle loading the images on a background thread, image decompression and caching the images.
+                Picasso.with(mContext).load(imageURL).into(holder.mExerciseImage);
+            } else {
+                // will use the default image
+                int defaultImage = R.drawable.exercise_default;
+                Picasso.with(mContext).load(defaultImage).into(holder.mExerciseImage);
+            }
         } else {
             Log.e(TAG,"onBindViewHolder - cursor is closed!");
         }
@@ -222,11 +220,7 @@ public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseList
                             // mCursor.moveToPosition(adapterPosition);
                             Cursor cursor = mCursor;
                             cursor.moveToPosition(adapterPosition);
-
                             boolean removeFavorite = exerciseItemOnClickHandler.onRemoveFavClick(cursor);
-                            //mAddFavButton.setEnabled(!addFavorite);
-                            //toggleButtonDisable(removeFavorite);
-
                         }
                     }
                 });
@@ -240,21 +234,8 @@ public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseList
             int adapterPosition = getAdapterPosition();
              mCursor.moveToPosition(adapterPosition);
             // Use Call back to pass information back to the activity
-            //long dateInMillis = mCursor.getLong(MainActivity.INDEX_WEATHER_DATE);
-            // mClickHandler.onClick(dateInMillis);
             exerciseItemOnClickHandler.onClickExercise(mCursor);
         }
-
-//        public void toggleButtonDisable(boolean disable){
-//
-//            if (disable) {
-//                mRemoveFavButton.setAlpha(0.5f);
-//                mRemoveFavButton.setEnabled(!disable);
-//            } else {
-//                mRemoveFavButton.setAlpha(1f);
-//                mRemoveFavButton.setEnabled(!disable);
-//            }
-//        }
 
         // adb shell content query --uri content://settings/secure --projection name:value --where "name='new_setting'" --sort "name ASC"
         // adb shell content query --uri content://com.project.capstone_stage2.app.provider/FavoriteExercise --projection _id:category:name --where "category=squat" --sort "_id DESC"

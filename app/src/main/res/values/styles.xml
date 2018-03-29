@@ -36,4 +36,20 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="ExerciseDescriptionStyle">
+        <item name="android:lineSpacingExtra">8dp</item>
+        <item name="android:layout_margin">16dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body1</item>
+        <item name="android:textColor">@color/content_text_color</item>
+        <item name="android:textSize">18dp</item>
+    </style>
+
+    <style name="ButtonStyle">
+        <item name="android:minWidth">0dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:textSize">@dimen/btn_text_size</item>
+    </style>
+
 </resources>

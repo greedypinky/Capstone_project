@@ -262,8 +262,8 @@ public class ExerciseDetailFragment extends Fragment {
                     mYoutubePlayer = player;
                     mYoutubePlayer.setShowFullscreenButton(false);
                     //String mVideoId = "eUG3VWnXFtg";
-                    //mYoutubePlayer.cueVideo(mVideoURIStr);
-                    mYoutubePlayer.cueVideo("-wcbHny056c");
+                    mYoutubePlayer.cueVideo(mVideoURIStr);
+                    //mYoutubePlayer.cueVideo("-wcbHny056c");
                 }
             }
 
@@ -281,41 +281,41 @@ public class ExerciseDetailFragment extends Fragment {
     /**
      * Initialize ExoPlayer.
      */
-    private void initializePlayer(Uri uri) {
-        String userAgent = Util.getUserAgent(getContext(), ExerciseDetailFragment.class.getName());
-        if (mExoPlayer == null) {
-
-            TrackSelector trackSelector = new DefaultTrackSelector();
-            LoadControl loadControl = new DefaultLoadControl();
-            mExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector, loadControl);
-            // mStepVideoView.setPlayer(mExoPlayer);
-            // Prepare the MediaSource the very first time after ExoPlayer is initialized
-            MediaSource mediaSource = new ExtractorMediaSource(uri, new DefaultDataSourceFactory(
-                    getContext(), userAgent), new DefaultExtractorsFactory(), null, null);
-
-            // add back the code to set the previous state of the player if previous state exists
-            boolean haveResumePosition = mCurrentwindowIndex != C.INDEX_UNSET;
-            if (haveResumePosition) {
-                mExoPlayer.seekTo(mCurrentwindowIndex, mVideoPosition);
-            }
-            mExoPlayer.prepare(mediaSource, !haveResumePosition, false);
-            // mExoPlayer.prepare(mediaSource);
-            mExoPlayer.setPlayWhenReady(true);
-
-        } else {
-            // Prepare the MediaSource after Exoplayer is already initialized
-            MediaSource mediaSource = new ExtractorMediaSource(uri, new DefaultDataSourceFactory(
-                   getContext(), userAgent), new DefaultExtractorsFactory(), null, null);
-            boolean haveResumePosition = mCurrentwindowIndex != C.INDEX_UNSET;
-            if (haveResumePosition) {
-                mExoPlayer.seekTo(mCurrentwindowIndex, mVideoPosition);
-            }
-            mExoPlayer.prepare(mediaSource, !haveResumePosition, false);
-            // mExoPlayer.prepare(mediaSource);
-            mExoPlayer.setPlayWhenReady(true);
-
-        }
-    }
+//    private void initializePlayer(Uri uri) {
+//        String userAgent = Util.getUserAgent(getContext(), ExerciseDetailFragment.class.getName());
+//        if (mExoPlayer == null) {
+//
+//            TrackSelector trackSelector = new DefaultTrackSelector();
+//            LoadControl loadControl = new DefaultLoadControl();
+//            mExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector, loadControl);
+//            // mStepVideoView.setPlayer(mExoPlayer);
+//            // Prepare the MediaSource the very first time after ExoPlayer is initialized
+//            MediaSource mediaSource = new ExtractorMediaSource(uri, new DefaultDataSourceFactory(
+//                    getContext(), userAgent), new DefaultExtractorsFactory(), null, null);
+//
+//            // add back the code to set the previous state of the player if previous state exists
+//            boolean haveResumePosition = mCurrentwindowIndex != C.INDEX_UNSET;
+//            if (haveResumePosition) {
+//                mExoPlayer.seekTo(mCurrentwindowIndex, mVideoPosition);
+//            }
+//            mExoPlayer.prepare(mediaSource, !haveResumePosition, false);
+//            // mExoPlayer.prepare(mediaSource);
+//            mExoPlayer.setPlayWhenReady(true);
+//
+//        } else {
+//            // Prepare the MediaSource after Exoplayer is already initialized
+//            MediaSource mediaSource = new ExtractorMediaSource(uri, new DefaultDataSourceFactory(
+//                   getContext(), userAgent), new DefaultExtractorsFactory(), null, null);
+//            boolean haveResumePosition = mCurrentwindowIndex != C.INDEX_UNSET;
+//            if (haveResumePosition) {
+//                mExoPlayer.seekTo(mCurrentwindowIndex, mVideoPosition);
+//            }
+//            mExoPlayer.prepare(mediaSource, !haveResumePosition, false);
+//            // mExoPlayer.prepare(mediaSource);
+//            mExoPlayer.setPlayWhenReady(true);
+//
+//        }
+//    }
 
     /**
      * when exercise is clicked, set the fragment data.

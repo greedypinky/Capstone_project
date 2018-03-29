@@ -24,6 +24,7 @@ import static android.content.ContentValues.TAG;
 
 public class ExerciseUtil {
 
+    private final static String YOUTUBE_URL_PREFIX = "https://www.youtube.com/watch?v=";
 
     // public void updateAllExerciseFavoriteCol(Uri updateURI,String exerciseID, ContentValues contentValues){
     public static void updateAllExerciseFavoriteCol(Fragment fragment, Uri updateURI, ContentValues contentValues, String exeID, String category){
@@ -88,7 +89,8 @@ public class ExerciseUtil {
                .append("Exercise Name:" + exeName + "\n")
                 .append("Exercise Steps:" + exeSteps + "\n");
         if (exeVideoURL!=null && !exeVideoURL.isEmpty()) {
-            builder.append("Please check out our exercise by this link: " + exeVideoURL + "\n");
+            String youtubeURL = YOUTUBE_URL_PREFIX + exeVideoURL;
+            builder.append("Please check out our exercise by this link: " + youtubeURL + "\n");
         }
 
         // TODO: add analytics when share button is clicked

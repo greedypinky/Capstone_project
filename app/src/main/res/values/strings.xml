@@ -39,5 +39,7 @@
     <string name="content_addExerciseButton">Add Exercise</string>
     <string name="content_exercise_category">Exericse Category Image</string>
 
+    <string name="youtube_url">https://www.youtube.com/watch?v=</string>
+
 
 </resources>
