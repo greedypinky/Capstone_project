@@ -209,13 +209,6 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         mTwoPane = mode;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
-    }
-
     @Override
     public void onAttach(Context context) {
 
@@ -240,7 +233,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     @Override
     public void onClickExercise(Cursor cursor) {
         Log.d(TAG, "onClickExercise: what is the pane mode?" + mTwoPane);
-        Toast.makeText(getContext(), "navigate to Detail view", Toast.LENGTH_LONG).show();
+        //Toast.makeText(getContext(), "navigate to Detail view", Toast.LENGTH_LONG).show();
         Log.d(TAG, "onClickExercise:check 2 Pane mode is:" + mTwoPane);
         Toast.makeText(getContext(), "2 pane mode:" + mTwoPane, Toast.LENGTH_LONG).show();
         String exeCategory = null;
@@ -259,7 +252,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 
         // One-Pane
         if (!mTwoPane) {
-            Toast.makeText(getContext(), "navigate to Detail view", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "One Pane - navigate to Detail view after click", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(getContext(), ExerciseDetailActivity.class);
             Bundle bundle = new Bundle();
             bundle.putString(ExerciseDetailActivity.EXERCISE_CATEGORY, exeCategory);
@@ -276,6 +269,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
             // show the video on the right pane
             // Pass the information back to the Parent Activity to play the video on the Right pane.
             // but now we cannot play this because we dont know when it is a 2 pane mode!
+            Toast.makeText(getContext(), "Two Pane - OnClick exercise", Toast.LENGTH_LONG).show();
              mListener.twoPaneModeOnClick(exeID,exeSteps,exeVideoURL);
             Toast.makeText(getContext(), "Callback action for 2pane mode, what the hell!", Toast.LENGTH_LONG).show();
         }

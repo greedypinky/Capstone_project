@@ -51,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="22sp"
-            android:text="@string/get_start"
+            android:text="@string/detailview_placeholderStr"
             android:textAppearance="@style/TextAppearance.CondensedFontPath"
             android:textColor="@color/content_text_color"
             android:visibility="gone"

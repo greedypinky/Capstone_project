@@ -50,7 +50,7 @@ import java.io.InputStream;
  * includes the TabView layout: All and Favorite exercise
  */
 public class ExerciseSwipeViewActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
-        EndPointsAsyncTask.AsyncResponse, AllExerciseFragment.OnFragmentInteractionListener {
+        EndPointsAsyncTask.AsyncResponse, AllExerciseFragment.OnFragmentInteractionListener, FavoriteExerciseFragment.OnFragmentInteractionListener {
 
     private static final String TAG = ExerciseSwipeViewActivity.class.getSimpleName();
     private static final int ALL_EXERCISE_DB_DATA_LOADER_ID = 1000;
@@ -230,6 +230,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(mViewPager);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -239,7 +240,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                 mCurrentTabPosition = tabPosition;
                 String tabText = (String) tab.getText();
                 CharSequence debugmsg = "tab position:" + tabPosition + " tab text:" + tabText;
-                Toast.makeText(getApplicationContext(), debugmsg, Toast.LENGTH_LONG).show();
+                // Toast.makeText(getApplicationContext(), debugmsg, Toast.LENGTH_LONG).show();
                 mViewPager.setCurrentItem(tab.getPosition());
                 switch (tabPosition) {
                     case 0:
@@ -262,8 +263,8 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                         //mFragment1.checkIsFavorite(mDataCursor);
                         break;
                     case 1:
-                        Log.d(TAG, "=======when Fragment2 tab again!===========");
-                        // query the favorite
+                        Log.d(TAG, "EASTER =======when Fragment2 tab again!===========");
+                        // query the favorite by adb command line
                         //# Select "name" and "value" columns from secure settings where "name" is equal to "new_setting" and sort the result by name in ascending order.
                         //adb shell content query --uri content://settings/secure --projection name:value --where "name='new_setting'" --sort "name ASC"
                         if (mFragment2 == null) {
@@ -280,8 +281,8 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                         }
 
                         getSupportLoaderManager().initLoader(FAVORITE_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
-                        // TODO: sometimes cursorLoader results is not correct- want to try use reload instead of cursorloader
-                        mFragment2.reloadData(mExceriseCategoryName);
+                        // TODO: sometimes cursorLoader results is not correct - want to try use reload instead of cursorloader
+                        //mFragment2.reloadData(mExceriseCategoryName);
                         break;
                     default:
                         Log.d(TAG, "invalid tab position!");
@@ -297,28 +298,8 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
             public void onTabReselected(TabLayout.Tab tab) {
 
             }
+
         });
-
-
-        // https://www.grokkingandroid.com/using-loaders-in-android/
-        //loaderCallbacks = ExerciseSwipeViewActivity.this;
-        //getSupportLoaderManager().initLoader(LOADER_ID, null, loaderCallbacks);
-
-        // get the fragment that includes the ViewPager for AllExercise and FavoriteExercise
-        // mFragmentSwipeView = fragmentManager.findFragmentById(R.id.swipe_view_fragment);
-
-
-        // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        // TODO: add back the data initialization from web to the DB
-
-        //ExerciseDataSyncTask.initialize(this);
-
-        // TODO: 1) call the EndPoint to get back the JSON String!
-        // getResponseFromEndPoint(true);
-
-        // String response = "";
-        // Log.d(TAG,"Google Endpoint API response:-" + response);
 
         // TODO: get the JSON data, then starts the Sync task
         Log.d(TAG, ">>>>>>onCreate() initLoader to get the DB Cursor for all exercises");
@@ -522,6 +503,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                     //mFragment2.reloadData(mExceriseCategoryName);
                     mFragment2.setPaneMode(mTwoPaneMode);
 
+
                   }
                   else {
                     Log.e(TAG, "ERROR:::onLoadFinish - No data!! ");
@@ -583,7 +565,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
     @Override
     protected void onSaveInstanceState(Bundle outState) {
 
-            super.onSaveInstanceState(outState);
+        super.onSaveInstanceState(outState);
 
     }
 
@@ -625,7 +607,6 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
 //        loaderCallbacks =  ExerciseSwipeViewActivity.this;
 //        Log.d(TAG,"initLoader to get the DB Cursor for all exercises");
 //        getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
-
     }
 
     // Fragment callback to pass back the exercise details to start the video
@@ -636,11 +617,25 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
         bundle.putString(ExerciseDetailActivity.EXERCISE_KEY, exerciseID);
         bundle.putString(ExerciseDetailActivity.EXERCISE_STEPS, steps);
         bundle.putString(ExerciseDetailActivity.EXERCISE_VIDEO_URL, videoURL);
-        if (mDetailFragment!=null) {
+        if (mDetailFragment != null) {
             mDetailFragment.setFragmentData(bundle);
+            mDetailFragment.initializeYoutubeFragment();
             mDetailFragment.showVideo(true);
         }
+    }
 
+    @Override
+    public void favTwoPaneModeOnClick(String exerciseID, String steps, String videoURL) {
+        Log.d(TAG, "twoPaneModeOnClick - will call the  mDetailFragment.setFragmentData");
+        Bundle bundle = new Bundle();
+        bundle.putString(ExerciseDetailActivity.EXERCISE_KEY, exerciseID);
+        bundle.putString(ExerciseDetailActivity.EXERCISE_STEPS, steps);
+        bundle.putString(ExerciseDetailActivity.EXERCISE_VIDEO_URL, videoURL);
+        if (mDetailFragment != null) {
+            mDetailFragment.setFragmentData(bundle);
+            mDetailFragment.initializeYoutubeFragment();
+            mDetailFragment.showVideo(true);
+        }
     }
 
     // swipe across a collection of Fragment objects

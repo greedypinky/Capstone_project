@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.project.capstone_stage2.ExerciseDetailFragment">
-
+    <!--android:layout_marginTop="?attr/actionBarSize" -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -11,57 +11,51 @@
         android:orientation="vertical"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
+
         android:layout_marginTop="?attr/actionBarSize"
         >
-            <TextView
-                android:id="@+id/text_no_video"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="22sp"
-                android:text="@string/error_no_video"
-                android:textAppearance="@style/TextAppearance.CondensedFontPath"
-                android:textColor="@color/content_text_color"
-                android:visibility="gone"
-                android:layout_marginTop="40dp"
-                android:layout_gravity="center"/>
-
-            <!-- Exercise Video -->
-        <!--
-        <com.google.android.youtube.player.YouTubePlayerView
-            android:id="@+id/youtube_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-             -->
 
         <FrameLayout
             android:id="@+id/youtube_fragment"
             android:layout_width="match_parent"
             android:layout_height="450dp"
-            android:visibility="visible"/>
+            android:visibility="gone"/>
 
-
-            <!-- Step instructions: get from Step's description -->
-            <TextView
-                android:id="@+id/exercise_steps"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.CondensedFontPath"
-                android:textColor="@color/content_text_color"
-                android:textSize="22sp"
-                android:padding="8dp"
-                android:layout_gravity="right"
-                android:gravity="center"/>
+        <TextView
+            android:id="@+id/text_no_video"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:text="@string/error_no_video"
+            android:textAppearance="@style/TextAppearance.CondensedAndBoldFontPath"
+            android:textColor="@color/content_text_color"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:padding="20dp"/>
 
         <TextView
             android:id="@+id/text_get_start"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="22sp"
-            android:text="@string/get_start"
-            android:textAppearance="@style/TextAppearance.CondensedFontPath"
+            android:textSize="24sp"
+            android:text="@string/detailview_placeholderStr"
+            android:textAppearance="@style/TextAppearance.CondensedAndBoldFontPath"
             android:textColor="@color/content_text_color"
             android:visibility="gone"
-            android:layout_marginTop="40dp"
+            android:gravity="center_horizontal"
+            android:padding="20dp"/>
+
+
+        <!-- Step instructions: get from Step's description -->
+        <TextView
+            android:id="@+id/exercise_steps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.CondensedFontPath"
+            android:textColor="@color/content_text_color"
+            android:textSize="22sp"
+            android:padding="8dp"
+            android:layout_gravity="right"
             android:gravity="center"/>
 
     </LinearLayout>

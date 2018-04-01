@@ -44,6 +44,52 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
     private static final String ARG_TITLE = "page_title";
     private static final String HAS_DATA_KEY= "has_data";
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onAttachFragment(Fragment childFragment) {
+        super.onAttachFragment(childFragment);
+        Log.d(TAG, "onAttachFragment!");
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        Log.d(TAG, "onLowMemory!");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy!");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause!");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop!");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart!");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume!");
+    }
 
     private String title;
     private int page;
@@ -59,7 +105,22 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
     private Tracker mTracker;
 
 
-    private OnFragmentInteractionListener mListener;
+    private OnFragmentInteractionListener mListener = null;
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void favTwoPaneModeOnClick(String exerciseID, String steps, String videoURL);
+    }
 
     public FavoriteExerciseFragment() {
         // Required empty public constructor
@@ -139,11 +200,14 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         if (cursor != null && !cursor.isClosed() && cursor.getCount() > 0) {
             Log.d(TAG,"Cursor is not null and has data -> updateAdapterData!");
             if (mAdapter != null) {
+                Log.d(TAG,"data Adapter is not null!");
                 mCursor = cursor;
                 mAdapter.setAdapterData(mCursor);
                 mHasData = true;
                 showData(true);
             } else {
+                // how about mRecyclerView ? Recycler view is also null ?
+                Log.d(TAG, "what is mRecyclerView?" + mRecyclerView);
                 Log.d(TAG,"Adapter is null! Why?");
             }
         } else {
@@ -163,24 +227,16 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         mTwoPane = mode;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         Log.d(TAG,"onAttach()");
-        // TODO: uncomment the callback listener if it is needed !
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
     }
 
     @Override
@@ -190,29 +246,6 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         mListener = null;
     }
 
-    // Implement the Callback methods
-//    @Override
-//    public void onClickExercise(Cursor cursor) {
-//
-//        Toast.makeText(getContext(),"FavoriteExercise - onClickExercise", Toast.LENGTH_LONG).show();
-//
-//    }
-//
-//    @Override
-//    public void onShareClick() {
-//        Toast.makeText(getContext(),"share content!", Toast.LENGTH_LONG).show();
-//    }
-//
-//    @Override
-//    public boolean onAddFavClick(Cursor cursor) {
-//        return false;
-//    }
-//
-//    @Override
-//    public boolean onRemoveFavClick(Cursor cursor) {
-//        Toast.makeText(getContext(),"Remove ", Toast.LENGTH_LONG).show();
-//        return false;
-//    }
 
     @Override
     public void onClickExercise(Cursor cursor) {
@@ -235,7 +268,7 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
 
         // One-Pane
         if (!mTwoPane ) {
-            Toast.makeText(getContext(), "navigate to Detail view", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "One Pane-navigate to Detail view", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(getContext(), ExerciseDetailActivity.class);
             Bundle bundle = new Bundle();
             bundle.putString(ExerciseDetailActivity.EXERCISE_CATEGORY, exeCategory);
@@ -250,8 +283,8 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
             // when in Two pane!
             // Activity need to implement the Fragment listener to pass back the information to show the video
             // show the video on the right pane
-            // mListener.twoPaneModeOnClick(exeID,exeSteps,exeVideoURL);
-            Toast.makeText(getContext(), "Callback action for 2pane mode, what the hell!", Toast.LENGTH_LONG).show();
+            mListener.favTwoPaneModeOnClick(exeID,exeSteps,exeVideoURL);
+            Toast.makeText(getContext(), "twoPaneModeOnClick Callback method is called for 2pane mode!", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -306,6 +339,7 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         Log.e(TAG, "deleted item count:" + deleteRow);
         // TODO: need to refresh the list after a list is deleted
         Log.e(TAG, "reload the list after removal of the item!");
+        // After row deletion, we have to reload the list
         reloadData(catName);
 
         Log.e(TAG, "update the favorite flag in the All table!");
@@ -325,6 +359,7 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
     }
 
 
+    // After data changes, we need to reload the list
     public void reloadData(String catName){
 
         // TODO: need to refresh the list after a list is deleted
@@ -333,7 +368,11 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
                 /* Sort order: Ascending by exercise id */
         String favSortOrder = ExerciseContract.ExerciseEntry.EXERCISE_ID + " ASC";
         String selectionByCategoryName = ExerciseContract.ExerciseEntry.CATEGORY + " = ?";
-        if (getContext() !=null && getContext().getContentResolver()!=null) {
+//        Log.e(TAG, "getApplicationContent?" + getActivity());
+//        Log.e(TAG, "getApplicationContent?" + getActivity().getContentResolver());
+//        Log.e(TAG, "getContent resolver?" + getActivity().getContentResolver());
+        if (getActivity() !=null && getActivity().getContentResolver()!=null) {
+        //if (getContext() !=null && getContext().getContentResolver()!=null) {
             Cursor newCursor = getActivity().getContentResolver().query(queryURI, ExerciseSwipeViewActivity.FAV_EXERCISE_PROJECTION, selectionByCategoryName, new String[]{catName}, favSortOrder);
             if (newCursor != null) {
                 Log.d(TAG, "Assert latest data count:" + newCursor.getCount());
@@ -356,34 +395,6 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
             // showData(false);
         }
     }
-
-//    public void updateAllExerciseFavoriteCol(String exerciseID, ContentValues contentValues){
-//        // TODO: need to refresh the list after a list is deleted
-//        Log.e(TAG, "reload the list after removal of the item!");
-//        Uri updateURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
-//                /* Sort order: Ascending by exercise id */
-//        String favSortOrder = ExerciseContract.ExerciseEntry.EXERCISE_ID + " ASC";
-//        String whereClause = ExerciseContract.ExerciseEntry.EXERCISE_ID + " = ?";
-//        int updateRow = getActivity().getContentResolver().update(updateURI, contentValues, whereClause, new String[]{exerciseID});
-//
-//    }
-
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
 
     public void showData(boolean hasData){
         if (hasData) {

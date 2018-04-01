@@ -51,6 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_menu_share" />
+        app:srcCompat="@android:drawable/ic_menu_share"
+        app:layout_behavior="com.project.capstone_stage2.util.FabButtonBehavior"/>
 
 </android.support.design.widget.CoordinatorLayout>

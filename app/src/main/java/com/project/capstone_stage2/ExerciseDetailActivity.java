@@ -135,12 +135,16 @@ public class ExerciseDetailActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        Log.d(TAG, "onPause");
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume - initialize the player");
+        Log.d(TAG, "onResume");
+        // mDetailFragment.setData(mExerciseVideoUrl);
+        // mDetailFragment.setData(mExerciseVideoUrl);
     }
 
 
