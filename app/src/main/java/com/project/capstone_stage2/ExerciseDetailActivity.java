@@ -92,7 +92,7 @@ public class ExerciseDetailActivity extends AppCompatActivity {
 //                    sb.show();
 
                     Snackbar noNetworkSnackBar = NetworkUtil.makeSnackbar(mCoordinatorLayout, getString(R.string.no_network_connection), true);
-                     noNetworkSnackBar.getView().setElevation(getResources().getDimension(R.dimen.sb_elevation));
+                    noNetworkSnackBar.getView().setElevation(getResources().getDimension(R.dimen.sb_elevation));
                     noNetworkSnackBar.show();
 
                 } else {

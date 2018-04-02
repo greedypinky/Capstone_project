@@ -328,6 +328,7 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
     @Override
     public boolean onRemoveFavClick(Cursor cursor) {
         Log.d(TAG,"callback onRemoveFavClick");
+        // cursor is stale and could cause StaleDataException
         String id = cursor.getString(cursor.getColumnIndex("_id"));
         String exeID = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID));
         String exeName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));

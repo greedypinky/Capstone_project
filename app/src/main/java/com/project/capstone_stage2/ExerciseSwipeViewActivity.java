@@ -253,11 +253,14 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                                 //getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
                             }
                         } else {
-                            Log.d(TAG, ">>> onTabSelected() Fragment is not null - Load the all data!!");
+                            Log.d(TAG, ">>> onTabSelected() Fragment1 is not null!");
                             //getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
                         }
 
                         getSupportLoaderManager().initLoader(ALL_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
+
+                        // https://developer.android.com/guide/components/loaders.html
+                        //getSupportLoaderManager().restartLoader(ALL_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
                         //TODO: also try to add a reload method for AllExercise list.
                         //mFragment1.reloadData(mExceriseCategoryName);
                         //mFragment1.checkIsFavorite(mDataCursor);
@@ -276,13 +279,15 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
 
                             }
                         } else {
-                            Log.d(TAG, ">>> onTabSelected() Fragment is not null - Load the favorite data!!");
+                            Log.d(TAG, ">>> onTabSelected() Fragment2 is not null!");
                             //getSupportLoaderManager().initLoader(FAVORITE_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
                         }
 
                         getSupportLoaderManager().initLoader(FAVORITE_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
+                        // https://stackoverflow.com/questions/32986615/save-fragments-state-in-viewpager-on-screen-rotation?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
+                        //getSupportLoaderManager().restartLoader(FAVORITE_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
                         // TODO: sometimes cursorLoader results is not correct - want to try use reload instead of cursorloader
-                        //mFragment2.reloadData(mExceriseCategoryName);
+                        mFragment2.reloadData(mExceriseCategoryName);
                         break;
                     default:
                         Log.d(TAG, "invalid tab position!");
@@ -479,7 +484,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                 }
                 else {
                     // mFragment1.showData(false);
-                    Log.e(TAG, "ERROR:::onLoadFinish - No data!! ");
+                    Log.e(TAG, "ERROR:::Fragment1 onLoadFinish - No data!! ");
                 }
             } else if (loaderID == FAVORITE_EXERCISE_DB_DATA_LOADER_ID) {
 
@@ -506,7 +511,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
 
                   }
                   else {
-                    Log.e(TAG, "ERROR:::onLoadFinish - No data!! ");
+                    Log.e(TAG, "ERROR:::Fragment2 onLoadFinish - No data!! ");
                     //Log.d(TAG, "onLoadFinish - try a force reload the list");
                     // TRY an alternative method which is to force a reload to occur
                     //mFragment2.reloadData(mExceriseCategoryName);
@@ -692,7 +697,6 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                     // TODO : assign the result to mDataCursor
                     //fragment2.updateAdapterData(mDataCursor);
                     return mFragment2;
-
                 default:
                     return null;
             }
@@ -713,35 +717,37 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
         }
     }
 
-    public class MyPagerAdapter extends FragmentStatePagerAdapter {
-
-        public MyPagerAdapter(FragmentManager fm){
-          super(fm);
-        }
-        @Override
-        public Fragment getItem(int position) {
-            switch (position) {
-                case 0: // Fragment # 0 - This will show FirstFragment
-                    mFragment1 = AllExerciseFragment.newInstance(0, getString(R.string.all_exercise), mTwoPaneMode);
-                    // TODO : assign the result to mDataCursor
-                    //fragment1.updateAdapterData(mDataCursor);
-                    return mFragment1;
-                case 1: // Fragment # 1 - This will show second Fragment different title
-                    mFragment2 = FavoriteExerciseFragment.newInstance(1, getString(R.string.favorite_exercise), mTwoPaneMode);
-                    // TODO : assign the result to mDataCursor
-                    //fragment2.updateAdapterData(mDataCursor);
-                    return mFragment2;
-
-                default:
-                    return null;
-            }
-        }
-
-        @Override
-        public int getCount() {
-            return FRAGMENT_NUM;
-        }
-    }
+//    public class MyPagerAdapter extends FragmentStatePagerAdapter {
+//
+//        public MyPagerAdapter(FragmentManager fm){
+//          super(fm);
+//        }
+//        @Override
+//        public Fragment getItem(int position) {
+//            switch (position) {
+//                case 0: // Fragment # 0 - This will show FirstFragment
+//                    Log.d(TAG,"MyPagerAdapter - init Fragment1");
+//                    mFragment1 = AllExerciseFragment.newInstance(0, getString(R.string.all_exercise), mTwoPaneMode);
+//                    // TODO : assign the result to mDataCursor
+//                    //fragment1.updateAdapterData(mDataCursor);
+//                    return mFragment1;
+//                case 1: // Fragment # 1 - This will show second Fragment different title
+//                    Log.d(TAG,"MyPagerAdapter - init Fragment2");
+//                    mFragment2 = FavoriteExerciseFragment.newInstance(1, getString(R.string.favorite_exercise), mTwoPaneMode);
+//                    // TODO : assign the result to mDataCursor
+//                    //fragment2.updateAdapterData(mDataCursor);
+//                    return mFragment2;
+//
+//                default:
+//                    return null;
+//            }
+//        }
+//
+//        @Override
+//        public int getCount() {
+//            return FRAGMENT_NUM;
+//        }
+//    }
 
 
 //    /**
@@ -775,7 +781,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(TAG, "onStop()");
+        Log.d(TAG, "===========onStart()============");
     }
 
     @Override
@@ -793,6 +799,6 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume()");
+        Log.d(TAG, "===========onResume()==========");
     }
 }
