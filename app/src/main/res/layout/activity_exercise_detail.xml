@@ -41,6 +41,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:name="com.project.capstone_stage2.ExerciseDetailFragment"
+        android:contentDescription="@string/content_detailview_exercise_video"
+        android:nextFocusDown="@id/detail_fab_btn"
         />
 
     </android.support.v4.widget.NestedScrollView>
@@ -52,6 +54,8 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@android:drawable/ic_menu_share"
-        app:layout_behavior="com.project.capstone_stage2.util.FabButtonBehavior"/>
+        app:layout_behavior="com.project.capstone_stage2.util.FabButtonBehavior"
+        android:contentDescription="@string/content_shareButton"
+        android:nextFocusUp="@id/fragment_steps_detail"/>
 
 </android.support.design.widget.CoordinatorLayout>

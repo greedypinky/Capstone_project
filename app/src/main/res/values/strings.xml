@@ -39,6 +39,7 @@
     <string name="content_removeExerciseButton">Remove Exercise</string>
     <string name="content_addExerciseButton">Add Exercise</string>
     <string name="content_exercise_category">Exericse Category Image</string>
+    <string name="content_detailview_exercise_video">Youtube Exericse Video</string>
 
     <string name="youtube_url">https://www.youtube.com/watch?v=</string>
 
