@@ -23,32 +23,34 @@ import java.util.Hashtable;
 public class ListViewWidgetService extends RemoteViewsService {
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        return new ListViewRemoteViewsFactory(this.getApplicationContext(),intent);
+        return new ListViewRemoteViewsFactory(this.getApplicationContext(), intent);
 
     }
+
     class ListViewRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
         private String TAG = ListViewRemoteViewsFactory.class.getSimpleName();
         private Context mContext = null;
         private Intent intentWithData = null;
 
-       // private ArrayList<Exercise> mExercisesData = new ArrayList<Exercise>();
-        private ArrayList<HashMap<String,String>> mExercisesData = new ArrayList<HashMap<String, String>>();
+        // private ArrayList<Exercise> mExercisesData = new ArrayList<Exercise>();
+        private ArrayList<HashMap<String, String>> mExercisesData = new ArrayList<HashMap<String, String>>();
+
         // startListViewServiceIntent.putParcelableArrayListExtra(WIDGET_EXERCISE_DATA, exercises);
         // TODO: question is where should we get back the data?
         public ListViewRemoteViewsFactory(Context context, Intent intent) {
 
             mContext = context;
             intentWithData = intent;
-            if(intentWithData != null) {
+            if (intentWithData != null) {
 
                 Bundle bundle = intentWithData.getExtras();
-                Log.d(TAG,"Get exercise Arraylist");
+                Log.d(TAG, "Get exercise Arraylist");
 
                 //mExercisesData =  bundle.getParcelableArrayList(MyExerciseAppWidget.WIDGET_EXERCISE_DATA);
-                mExercisesData = (ArrayList<HashMap<String,String>>)bundle.getSerializable(MyExerciseAppWidget.WIDGET_EXERCISE_DATA);
+                mExercisesData = (ArrayList<HashMap<String, String>>) bundle.getSerializable(MyExerciseAppWidget.WIDGET_EXERCISE_DATA);
                 int widgetID = bundle.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
-                Log.d(TAG,"widget id is:" + widgetID);
+                Log.d(TAG, "widget id is:" + widgetID);
 
             }
 
@@ -58,7 +60,7 @@ public class ListViewWidgetService extends RemoteViewsService {
 
         public void onCreate() {
 
-            Log.d(TAG,"onCreate()");
+            Log.d(TAG, "onCreate()");
             // In onCreate() you set up any connections / cursors to your data source. Heavy lifting,
 
             // for example downloading or creating content etc, should be deferred to onDataSetChanged()
@@ -85,15 +87,15 @@ public class ListViewWidgetService extends RemoteViewsService {
 
             RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.widget_exercise_item);
 
-            HashMap<String,String> hmap = mExercisesData.get(position);
+            HashMap<String, String> hmap = mExercisesData.get(position);
             String name = "";
-            String desc =  "";
+            String desc = "";
             String imageurl = "";
 
-            for (int i=0;i<hmap.size();i++){
-               name = hmap.get("name");
-               desc =  hmap.get("desc");
-               imageurl = hmap.get("imageurl");
+            for (int i = 0; i < hmap.size(); i++) {
+                name = hmap.get("name");
+                desc = hmap.get("desc");
+                imageurl = hmap.get("imageurl");
                 Log.d(TAG, String.format("name %s, desc %s, imageURL %s", name, desc, imageurl));
 
             }
@@ -119,7 +121,7 @@ public class ListViewWidgetService extends RemoteViewsService {
                 Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.nao_squat01);
                 //rv.setImageViewResource(R.id.widget_execise_image,bm);
                 rv.setImageViewBitmap(R.id.widget_execise_image, bm);
-            } catch(Exception ioe) {
+            } catch (Exception ioe) {
                 ioe.printStackTrace();
             }
 
@@ -151,21 +153,21 @@ public class ListViewWidgetService extends RemoteViewsService {
 
         }
 
-        public int getCount(){
+        public int getCount() {
 
-            Log.d(TAG,mExercisesData.size()+"");
+            Log.d(TAG, mExercisesData.size() + "");
             return mExercisesData.size();
             //return 3;
 
         }
 
         // when will this be triggered?
-        public void onDataSetChanged(){
-            Log.d(TAG,"onDataSetChanged!");
+        public void onDataSetChanged() {
+            Log.d(TAG, "onDataSetChanged!");
             // Fetching JSON data from server and add them to records arraylist
         }
 
-        public int getViewTypeCount(){
+        public int getViewTypeCount() {
 
             return 1;
 
@@ -177,7 +179,7 @@ public class ListViewWidgetService extends RemoteViewsService {
 
         }
 
-        public void onDestroy(){
+        public void onDestroy() {
 
             mExercisesData.clear();
 

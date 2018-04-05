@@ -32,7 +32,7 @@ public class FabButtonBehavior extends FloatingActionButton.Behavior {
         if (dyConsumed > 0) {
             Log.d("FAB_Behavior", "Scroll up - Hide FAB");
             child.hide();
-        } else if (dyConsumed < 0 ) {
+        } else if (dyConsumed < 0) {
             Log.d("FAB_Behavior", "Scroll down - Hide FAB");
             child.hide();
         }
@@ -53,7 +53,6 @@ public class FabButtonBehavior extends FloatingActionButton.Behavior {
     public FabButtonBehavior(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
-
 
 
 }

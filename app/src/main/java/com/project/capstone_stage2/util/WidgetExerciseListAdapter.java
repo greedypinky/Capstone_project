@@ -20,13 +20,6 @@ import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
-// https://developer.android.com/training/material/lists-cards.html
-// RecyclerView provides these built-in layout managers:
-//
-// LinearLayoutManager shows items in a vertical or horizontal scrolling list.
-//        GridLayoutManager shows items in a grid.
-//        StaggeredGridLayoutManager shows items in a staggered grid.
-
 public class WidgetExerciseListAdapter extends RecyclerView.Adapter<WidgetExerciseListAdapter.ExerciseViewHolder> {
 
     protected boolean mDataValid;
@@ -77,15 +70,16 @@ public class WidgetExerciseListAdapter extends RecyclerView.Adapter<WidgetExerci
     }
 
     /**
-     public static String[] EXERCISE_PROJECTION = {
-     ExerciseContract.ExerciseEntry.CATEGORY,
-     ExerciseContract.ExerciseEntry.CATEGORY_DESC,
-     ExerciseContract.ExerciseEntry.EXERCISE_ID,
-     ExerciseContract.ExerciseEntry.EXERCISE_NAME,
-     ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION,
-     ExerciseContract.ExerciseEntry.EXERCISE_IMAGE,
-     ExerciseContract.ExerciseEntry.EXERCISE_VIDEO
-     };
+     * public static String[] EXERCISE_PROJECTION = {
+     * ExerciseContract.ExerciseEntry.CATEGORY,
+     * ExerciseContract.ExerciseEntry.CATEGORY_DESC,
+     * ExerciseContract.ExerciseEntry.EXERCISE_ID,
+     * ExerciseContract.ExerciseEntry.EXERCISE_NAME,
+     * ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION,
+     * ExerciseContract.ExerciseEntry.EXERCISE_IMAGE,
+     * ExerciseContract.ExerciseEntry.EXERCISE_VIDEO
+     * };
+     *
      * @param holder
      * @param position
      */
@@ -125,7 +119,7 @@ public class WidgetExerciseListAdapter extends RecyclerView.Adapter<WidgetExerci
     @Override
     public long getItemId(int position) {
 
-        if (mCursor != null){
+        if (mCursor != null) {
             if (mCursor.moveToPosition(position)) {
                 return mCursor.getLong(Integer.getInteger(ExerciseContract.ExerciseEntry._ID));
             } else {
@@ -139,7 +133,7 @@ public class WidgetExerciseListAdapter extends RecyclerView.Adapter<WidgetExerci
 
     @Override
     public int getItemCount() {
-        if (mCursor!=null) {
+        if (mCursor != null) {
             return mCursor.getCount();
         } else {
             return 0;
@@ -176,7 +170,7 @@ public class WidgetExerciseListAdapter extends RecyclerView.Adapter<WidgetExerci
     /**
      * ExerciseViewHolder
      */
-    public class ExerciseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ExerciseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public TextView mExerciseName;
         public TextView mExerciseDesc;

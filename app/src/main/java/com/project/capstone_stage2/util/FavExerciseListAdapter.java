@@ -87,15 +87,16 @@ public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseList
     }
 
     /**
-     public static String[] EXERCISE_PROJECTION = {
-     ExerciseContract.ExerciseEntry.CATEGORY,
-     ExerciseContract.ExerciseEntry.CATEGORY_DESC,
-     ExerciseContract.ExerciseEntry.EXERCISE_ID,
-     ExerciseContract.ExerciseEntry.EXERCISE_NAME,
-     ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION,
-     ExerciseContract.ExerciseEntry.EXERCISE_IMAGE,
-     ExerciseContract.ExerciseEntry.EXERCISE_VIDEO
-     };
+     * public static String[] EXERCISE_PROJECTION = {
+     * ExerciseContract.ExerciseEntry.CATEGORY,
+     * ExerciseContract.ExerciseEntry.CATEGORY_DESC,
+     * ExerciseContract.ExerciseEntry.EXERCISE_ID,
+     * ExerciseContract.ExerciseEntry.EXERCISE_NAME,
+     * ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION,
+     * ExerciseContract.ExerciseEntry.EXERCISE_IMAGE,
+     * ExerciseContract.ExerciseEntry.EXERCISE_VIDEO
+     * };
+     *
      * @param holder
      * @param position
      */
@@ -110,7 +111,7 @@ public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseList
             String imageURL = mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE));
 
             // holder.mExerciseImage.setImageResource(mCursor.getInt(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE)));
-            if(!imageURL.isEmpty() && imageURL != null) {
+            if (!imageURL.isEmpty() && imageURL != null) {
                 // Picasso will handle loading the images on a background thread, image decompression and caching the images.
                 Picasso.with(mContext).load(imageURL).into(holder.mExerciseImage);
             } else {
@@ -119,7 +120,7 @@ public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseList
                 Picasso.with(mContext).load(defaultImage).into(holder.mExerciseImage);
             }
         } else {
-            Log.e(TAG,"onBindViewHolder - cursor is closed!");
+            Log.e(TAG, "onBindViewHolder - cursor is closed!");
         }
     }
 
@@ -132,7 +133,7 @@ public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseList
     @Override
     public long getItemId(int position) {
 
-        if (mCursor != null){
+        if (mCursor != null) {
             if (mCursor.moveToPosition(position)) {
                 return mCursor.getLong(Integer.getInteger(ExerciseContract.ExerciseEntry._ID));
             } else {
@@ -146,7 +147,7 @@ public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseList
 
     @Override
     public int getItemCount() {
-        if (mCursor!=null) {
+        if (mCursor != null) {
             return mCursor.getCount();
         } else {
             return 0;
@@ -171,10 +172,10 @@ public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseList
             mDataValid = true;
             // notify the observers about the new cursor
             notifyDataSetChanged();
-            Log.d(TAG,"swapCursor: notifyDataSetChanged!");
-            Log.d(TAG,"swapCursor new Cursor count:" +  mCursor.getCount());
+            Log.d(TAG, "swapCursor: notifyDataSetChanged!");
+            Log.d(TAG, "swapCursor new Cursor count:" + mCursor.getCount());
         } else {
-            Log.d(TAG,"newCursor is null!");
+            Log.d(TAG, "newCursor is null!");
             mRowID = -1;
             mDataValid = false;
             // notify the observers about the lack of a data set
@@ -186,7 +187,7 @@ public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseList
     /**
      * ExerciseViewHolder
      */
-    public static class ExerciseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public static class ExerciseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public CardView mCardView;
         public TextView mExerciseName;
         public TextView mExerciseDesc;
@@ -209,7 +210,7 @@ public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseList
 
             // TODO: add onClickListener to the Fav Button to trigger the callback?
             mRemoveFavButton = (Button) itemView.findViewById(R.id.remove_fav_btn);
-            if (mRemoveFavButton!=null) {
+            if (mRemoveFavButton != null) {
                 mRemoveFavButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -232,7 +233,7 @@ public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseList
         @Override
         public void onClick(View view) {
             int adapterPosition = getAdapterPosition();
-             mCursor.moveToPosition(adapterPosition);
+            mCursor.moveToPosition(adapterPosition);
             // Use Call back to pass information back to the activity
             exerciseItemOnClickHandler.onClickExercise(mCursor);
         }

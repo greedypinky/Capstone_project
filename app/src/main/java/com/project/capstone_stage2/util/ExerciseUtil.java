@@ -27,7 +27,7 @@ public class ExerciseUtil {
     private final static String YOUTUBE_URL_PREFIX = "https://www.youtube.com/watch?v=";
 
     // public void updateAllExerciseFavoriteCol(Uri updateURI,String exerciseID, ContentValues contentValues){
-    public static void updateAllExerciseFavoriteCol(Fragment fragment, Uri updateURI, ContentValues contentValues, String exeID, String category){
+    public static void updateAllExerciseFavoriteCol(Fragment fragment, Uri updateURI, ContentValues contentValues, String exeID, String category) {
         // TODO: need to refresh the list after a list is deleted
         //Log.e(TAG, "reload the list after removal of the item!");
         // Uri updateURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
@@ -37,11 +37,11 @@ public class ExerciseUtil {
         //int updateRow = getActivity().getContentResolver().update(updateURI, contentValues, whereClause, new String[]{id});
         //int updateRow = getActivity().getContentResolver().update(updateURI, contentValues, whereClause, new String[]{exeID});
 
-        int updateRow = fragment.getActivity().getContentResolver().update(updateURI, contentValues, whereClause, new String[]{exeID,category});
+        int updateRow = fragment.getActivity().getContentResolver().update(updateURI, contentValues, whereClause, new String[]{exeID, category});
         Log.e(fragment.getTag(), "updateAllExerciseFavoriteCol #of row:" + updateRow);
     }
 
-    public static void toggleButtonDisable(boolean disable, Button favButton){
+    public static void toggleButtonDisable(boolean disable, Button favButton) {
         if (disable) {
             Log.d(TAG, "expect to setEnabled false!");
             Log.d(TAG, "disable the Add Button by flag:- " + !disable);
@@ -57,19 +57,19 @@ public class ExerciseUtil {
         }
     }
 
-    public Cursor checkAlreadyInsertAsFavorite(Fragment fragment,String exerciseID) {
+    public Cursor checkAlreadyInsertAsFavorite(Fragment fragment, String exerciseID) {
         Uri uri = ExerciseContract.ExerciseEntry.CONTENT_URI_FAV;
         String[] projections = {ExerciseContract.ExerciseEntry.EXERCISE_ID, ExerciseContract.ExerciseEntry.EXERCISE_NAME};
         String selection = ExerciseContract.ExerciseEntry.EXERCISE_ID + "=?";
         String[] selectionArgs = {exerciseID};
         try {
-            Cursor cursor = fragment.getActivity().getContentResolver().query(uri,projections,selection,selectionArgs,null);
+            Cursor cursor = fragment.getActivity().getContentResolver().query(uri, projections, selection, selectionArgs, null);
             //if (cursor.getCount() == 1) {
             if (cursor.getCount() > 0) {
-                Log.d(TAG,"Assert if favorite is added ::: checkAlreadyInsertAsFavorite:" + cursor.getCount());
+                Log.d(TAG, "Assert if favorite is added ::: checkAlreadyInsertAsFavorite:" + cursor.getCount());
                 return cursor;
-            }  else {
-                Log.d(TAG,"Error:::unable to query the added favorite exercise!");
+            } else {
+                Log.d(TAG, "Error:::unable to query the added favorite exercise!");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -79,16 +79,16 @@ public class ExerciseUtil {
     }
 
 
-    public static void onShareClick(String cat,String exeName,String exeSteps,String exeVideoURL,Context context, ExerciseDetailFragment fragment) {
+    public static void onShareClick(String cat, String exeName, String exeSteps, String exeVideoURL, Context context, ExerciseDetailFragment fragment) {
         // Add analytics to track which exercise is shared
         //Toast.makeText(getContext(),"share content!", Toast.LENGTH_LONG).show();
         Bundle bundle = new Bundle();
 
         StringBuilder builder = new StringBuilder();
         builder.append("Exercise Category:" + cat + "\n")
-               .append("Exercise Name:" + exeName + "\n")
+                .append("Exercise Name:" + exeName + "\n")
                 .append("Exercise Steps:" + exeSteps + "\n");
-        if (exeVideoURL!=null && !exeVideoURL.isEmpty()) {
+        if (exeVideoURL != null && !exeVideoURL.isEmpty()) {
             String youtubeURL = YOUTUBE_URL_PREFIX + exeVideoURL;
             builder.append("Please check out our exercise by this link: " + youtubeURL + "\n");
         }
@@ -105,8 +105,6 @@ public class ExerciseUtil {
                 .setText(builder.toString())
                 .getIntent(), context.getString(R.string.share_exercise_sendTo)));
     }
-
-
 
 
 }

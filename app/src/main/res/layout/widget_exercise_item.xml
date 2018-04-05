@@ -16,7 +16,7 @@
         android:layout_height="40dp"
         android:scaleType="fitCenter"
         android:layout_marginTop="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
         android:src="@drawable/nao_squat01"
         />
 

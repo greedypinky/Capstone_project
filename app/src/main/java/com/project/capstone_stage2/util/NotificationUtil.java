@@ -123,7 +123,7 @@ public class NotificationUtil {
 //                    .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
 //          COMPLETED (5) Set the content Intent of the NotificationBuilder
-           // notificationBuilder.setContentIntent(resultPendingIntent);
+        // notificationBuilder.setContentIntent(resultPendingIntent);
 
 //          COMPLETED (6) Get a reference to the NotificationManager
 //            NotificationManager notificationManager = (NotificationManager)
@@ -131,18 +131,18 @@ public class NotificationUtil {
 
 //          COMPLETED (7) Notify the user with the ID WEATHER_NOTIFICATION_ID
             /* WEATHER_NOTIFICATION_ID allows you to update or cancel the notification later on */
-            //notificationManager.notify(WEATHER_NOTIFICATION_ID, notificationBuilder.build());
+        //notificationManager.notify(WEATHER_NOTIFICATION_ID, notificationBuilder.build());
 
 //          COMPLETED (8) Save the time at which the notification occurred using SunshinePreferences
             /*
              * Since we just showed a notification, save the current time. That way, we can check
              * next time the weather is refreshed if we should show another notification.
              */
-            // SunshinePreferences.saveLastNotificationTime(context, System.currentTimeMillis());
+        // SunshinePreferences.saveLastNotificationTime(context, System.currentTimeMillis());
         // }
 
         /* Always close your cursor when you're done with it to avoid wasting resources. */
-       // todayWeatherCursor.close();
+        // todayWeatherCursor.close();
     }
 
     /**

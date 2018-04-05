@@ -12,6 +12,7 @@ import android.widget.TextView;
 public class NetworkUtil {
     /**
      * Checks if the device is currently connected to the network.
+     *
      * @param context Context this is being called from
      * @return Whether the network state is connected or not
      */

@@ -54,7 +54,7 @@ public class MyExerciseAppWidget extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
-           // updateAppWidget(context, appWidgetManager, appWidgetId);
+            // updateAppWidget(context, appWidgetManager, appWidgetId);
         }
     }
 
@@ -85,7 +85,7 @@ public class MyExerciseAppWidget extends AppWidgetProvider {
         protected void onHandleIntent(Intent intent) {
 
             String mSelectedExceriseCategory = null;
-            Log.d(TAG,"onHandleIntent" );
+            Log.d(TAG, "onHandleIntent");
             AppWidgetManager appWidgetManager = AppWidgetManager
                     .getInstance(UpdateWidgetService.this);
 
@@ -106,20 +106,20 @@ public class MyExerciseAppWidget extends AppWidgetProvider {
     //https://www.sitepoint.com/killer-way-to-show-a-list-of-items-in-android-collection-widget/
 //    public static void updateExerciseAppWidget(Context context,AppWidgetManager appWidgetManager,
 //                                               int appWidgetId, ArrayList<Exercise> exercises) {
-        public static void  updateExerciseAppWidget(Context context,AppWidgetManager appWidgetManager,
-        int appWidgetId, ArrayList<HashMap<String,String>> exercises) {
+    public static void updateExerciseAppWidget(Context context, AppWidgetManager appWidgetManager,
+                                               int appWidgetId, ArrayList<HashMap<String, String>> exercises) {
 
-        RemoteViews remoteViews = new RemoteViews(context.getPackageName(),R.layout.content_widget);
-        Log.d(TAG,"updateExerciseAppWidget:" + context.getPackageName());
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.content_widget);
+        Log.d(TAG, "updateExerciseAppWidget:" + context.getPackageName());
 
-        if (exercises!=null && exercises.size() == 0) {
-            Log.d(TAG, "No Exercise Data!" );
+        if (exercises != null && exercises.size() == 0) {
+            Log.d(TAG, "No Exercise Data!");
             // should set the No Exercise Data place holder Text if there is no exercise data!
             remoteViews.setTextViewText(R.id.widget_empty_textview, context.getString(R.string.widget_no_data));
             remoteViews.setViewVisibility(R.id.widget_empty_textview, View.VISIBLE);
         } else {
 
-            Log.d(TAG, "Have Exercise Data!" );
+            Log.d(TAG, "Have Exercise Data!");
 
             // TODO: DEBUG by finding AppWidgetHostView
             // AppWidgetHostView: android.os.BadParcelableException: ClassNotFoundException when unmarshalling: com.project.capstone_stage2.util.Exercise
@@ -130,7 +130,7 @@ public class MyExerciseAppWidget extends AppWidgetProvider {
             //bundle.putParcelableArrayList(WIDGET_EXERCISE_DATA, exercises);
 
             bundle.putSerializable(WIDGET_EXERCISE_DATA, exercises);
-            bundle.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID,appWidgetId);
+            bundle.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             startListViewServiceIntent.putExtras(bundle);
 
             // startListViewServiceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
@@ -139,7 +139,7 @@ public class MyExerciseAppWidget extends AppWidgetProvider {
             // TODO: populate the data - need to implement the data correctly
             remoteViews.setRemoteAdapter(R.id.widget_exercise_listview, startListViewServiceIntent);
 
-        //     template to handle the click listener for each item
+            //     template to handle the click listener for each item
 //        Intent clickIntentTemplate = new Intent(context, MainActivity.class);
 //        PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
 //                .addNextIntentWithParentStack(clickIntentTemplate)

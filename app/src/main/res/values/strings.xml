@@ -42,5 +42,9 @@
 
     <string name="youtube_url">https://www.youtube.com/watch?v=</string>
 
+    <!-- Toast message -->
+    <string name="toast_share_exercise">Share Exercise!</string>
+    <string name="toast_add_exercise">Exercise is added as favorite!</string>
+
 
 </resources>

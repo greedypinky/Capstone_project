@@ -42,7 +42,7 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
     private static final String TAG = FavoriteExerciseFragment.class.getSimpleName();
     private static final String ARG_PAGE = "page";
     private static final String ARG_TITLE = "page_title";
-    private static final String HAS_DATA_KEY= "has_data";
+    private static final String HAS_DATA_KEY = "has_data";
 
     @Override
     public void onDestroyView() {
@@ -152,7 +152,7 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(TAG,"===========onCreateView is called! ============");
+        Log.d(TAG, "===========onCreateView is called! ============");
         mTwoPane = getResources().getBoolean(R.bool.has_two_panes);
         Log.d(TAG, "###### onCreateView IS IT TWO PANE ?? #### " + mTwoPane);
 
@@ -164,17 +164,17 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_favorite_exercise, container, false);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.fav_execise_recyclerview);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setHasFixedSize(true);
         // fixed the nullpointerException by pass in context from constructor
-         mAdapter = new FavExerciseListAdapter(getActivity().getApplicationContext(),this);
+        mAdapter = new FavExerciseListAdapter(getActivity().getApplicationContext(), this);
         // mAdapter = new ExerciseListAdapter(getContext(), this, false);
         mRecyclerView.setAdapter(mAdapter);
         mNoDataText = (TextView) rootView.findViewById(R.id.fav_exercise_no_data_error_text);
         mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.fav_exercise_loading_indicator);
 
-        if(savedInstanceState!=null) {
-            if(savedInstanceState.containsKey(HAS_DATA_KEY)) {
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(HAS_DATA_KEY)) {
                 mHasData = savedInstanceState.getBoolean(HAS_DATA_KEY);
             }
         }
@@ -189,18 +189,19 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
 
     /**
      * Call by SwipeView activity to update the cursor
+     *
      * @param cursor
      */
     public void updateAdapterData(Cursor cursor) {
         // TODO: update the cursor
         // TODO: question - when do we need to close the cursor ??
-       // mAdapter.setAdapterData(cursor);
+        // mAdapter.setAdapterData(cursor);
         // TODO: update the cursor
         // TODO: question - when do we need to close the cursor ??
         if (cursor != null && !cursor.isClosed() && cursor.getCount() > 0) {
-            Log.d(TAG,"Cursor is not null and has data -> updateAdapterData!");
+            Log.d(TAG, "Cursor is not null and has data -> updateAdapterData!");
             if (mAdapter != null) {
-                Log.d(TAG,"data Adapter is not null!");
+                Log.d(TAG, "data Adapter is not null!");
                 mCursor = cursor;
                 mAdapter.setAdapterData(mCursor);
                 mHasData = true;
@@ -208,10 +209,10 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
             } else {
                 // how about mRecyclerView ? Recycler view is also null ?
                 Log.d(TAG, "what is mRecyclerView?" + mRecyclerView);
-                Log.d(TAG,"Adapter is null! Why?");
+                Log.d(TAG, "Adapter is null! Why?");
             }
         } else {
-            Log.d(TAG,"Cursor has no data!");
+            Log.d(TAG, "Cursor has no data!");
             showData(false);
         }
     }
@@ -230,7 +231,7 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Log.d(TAG,"onAttach()");
+        Log.d(TAG, "onAttach()");
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
@@ -242,7 +243,7 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.d(TAG,"onDetach()");
+        Log.d(TAG, "onDetach()");
         mListener = null;
     }
 
@@ -258,7 +259,7 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         String exeVideoURL = null;
         String exeSteps = null;
 
-        if (cursor!=null && !cursor.isClosed()) {
+        if (cursor != null && !cursor.isClosed()) {
             exeCategory = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.CATEGORY));
             exeName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
             exeID = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID));
@@ -267,8 +268,8 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         }
 
         // One-Pane
-        if (!mTwoPane ) {
-            Toast.makeText(getContext(), "One Pane-navigate to Detail view", Toast.LENGTH_LONG).show();
+        if (!mTwoPane) {
+            // Toast.makeText(getContext(), "One Pane-navigate to Detail view", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(getContext(), ExerciseDetailActivity.class);
             Bundle bundle = new Bundle();
             bundle.putString(ExerciseDetailActivity.EXERCISE_CATEGORY, exeCategory);
@@ -283,17 +284,14 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
             // when in Two pane!
             // Activity need to implement the Fragment listener to pass back the information to show the video
             // show the video on the right pane
-            mListener.favTwoPaneModeOnClick(exeID,exeSteps,exeVideoURL);
-            Toast.makeText(getContext(), "twoPaneModeOnClick Callback method is called for 2pane mode!", Toast.LENGTH_LONG).show();
+            mListener.favTwoPaneModeOnClick(exeID, exeSteps, exeVideoURL);
+            // Toast.makeText(getContext(), "twoPaneModeOnClick Callback method is called for 2pane mode!", Toast.LENGTH_LONG).show();
         }
     }
 
     @Override
     public void onShareClick(Cursor cursor) {
 
-        Toast.makeText(getContext(), "Share!", Toast.LENGTH_LONG).show();
-
-        Toast.makeText(getContext(),"share content!", Toast.LENGTH_LONG).show();
         Bundle bundle = new Bundle();
         String exeName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
         String exeVideoURL = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO));
@@ -308,7 +306,7 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         StringBuilder builder = new StringBuilder();
         builder.append("Exercise Name:" + exeName + "\n")
                 .append("Exercise Steps:" + exeSteps + "\n");
-        if(exeVideoURL!=null && !exeVideoURL.isEmpty()) {
+        if (exeVideoURL != null && !exeVideoURL.isEmpty()) {
             builder.append("Please check out our exercise by this link: " + exeVideoURL + "\n");
         }
 
@@ -322,18 +320,18 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean(HAS_DATA_KEY,mHasData);
+        outState.putBoolean(HAS_DATA_KEY, mHasData);
     }
 
     @Override
     public boolean onRemoveFavClick(Cursor cursor) {
-        Log.d(TAG,"callback onRemoveFavClick");
+        Log.d(TAG, "callback onRemoveFavClick");
         // cursor is stale and could cause StaleDataException
         String id = cursor.getString(cursor.getColumnIndex("_id"));
         String exeID = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID));
         String exeName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
         String catName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.CATEGORY));
-        String  whereClause = ExerciseContract.ExerciseEntry._ID + " =?";
+        String whereClause = ExerciseContract.ExerciseEntry._ID + " =?";
         Uri uri = ExerciseContract.ExerciseEntry.buildFavoriteExerciseUriWithId(Long.parseLong(id));
         int deleteRow = getActivity().getContentResolver().delete(uri, whereClause, new String[]{id});
 
@@ -351,7 +349,7 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         // TODO: not sure why but unable to update the flag
         //updateAllExerciseFavoriteCol(exeID, contentValues);
         Uri updateALlExerciseURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
-        ExerciseUtil.updateAllExerciseFavoriteCol(this,updateALlExerciseURI,contentValues,exeID,catName);
+        ExerciseUtil.updateAllExerciseFavoriteCol(this, updateALlExerciseURI, contentValues, exeID, catName);
         if (deleteRow > 0) {
             return true;
         } else {
@@ -361,7 +359,7 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
 
 
     // After data changes, we need to reload the list
-    public void reloadData(String catName){
+    public void reloadData(String catName) {
 
         // TODO: need to refresh the list after a list is deleted
         Log.e(TAG, "reload the list!");
@@ -372,8 +370,8 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
 //        Log.e(TAG, "getApplicationContent?" + getActivity());
 //        Log.e(TAG, "getApplicationContent?" + getActivity().getContentResolver());
 //        Log.e(TAG, "getContent resolver?" + getActivity().getContentResolver());
-        if (getActivity() !=null && getActivity().getContentResolver()!=null) {
-        //if (getContext() !=null && getContext().getContentResolver()!=null) {
+        if (getActivity() != null && getActivity().getContentResolver() != null) {
+            //if (getContext() !=null && getContext().getContentResolver()!=null) {
             Cursor newCursor = getActivity().getContentResolver().query(queryURI, ExerciseSwipeViewActivity.FAV_EXERCISE_PROJECTION, selectionByCategoryName, new String[]{catName}, favSortOrder);
             if (newCursor != null) {
                 Log.d(TAG, "Assert latest data count:" + newCursor.getCount());
@@ -389,23 +387,20 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
                 Log.e(TAG, "unable to get the cursor!");
             }
         } else {
-
             // TODO:- Need to show Error Message!
-            //Toast.makeText(getContext(),"Unable to get data! Please Try again!",Toast.LENGTH_LONG).show();
             Log.e(TAG, "ERROR::: Why unable to get ContentResolver!");
-            // showData(false);
         }
     }
 
-    public void showData(boolean hasData){
+    public void showData(boolean hasData) {
         if (hasData) {
-            Log.d(TAG,"=========show the recycler view!==========");
+            Log.d(TAG, "=========show the recycler view!==========");
             mProgressIndicator.setVisibility(View.GONE);
             mNoDataText.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
             mHasData = true;
         } else {
-            Log.d(TAG,"hide the recycler view!");
+            Log.d(TAG, "hide the recycler view!");
             mProgressIndicator.setVisibility(View.GONE);
             mNoDataText.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.INVISIBLE);

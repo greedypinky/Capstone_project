@@ -37,16 +37,17 @@ import java.io.InputStream;
 // image resource
 // çsapling-plant-growing-seedling-154734/ https://pixabay.com/en/cactus-cacti-plant-thorns-spiky-152378/ https://pixabay.com/en/the-background-background-design-352165/
 // https://developer.android.com/training/keyboard-input/navigation.html
+
 /**
-1. Add the google cloud module from Android Studio : but where is it??
-2. go to Google Developer Console to create a new project
- https://console.developers.google.com/
- use marukotest888 account to create the project
- capstoneproject-189106
+ * 1. Add the google cloud module from Android Studio : but where is it??
+ * 2. go to Google Developer Console to create a new project
+ * https://console.developers.google.com/
+ * use marukotest888 account to create the project
+ * capstoneproject-189106
  **/
 
 // Main activity includes the CardView Layout for the activity
-public class MainActivity extends AppCompatActivity implements CategoryListAdapter.CardViewOnClickListener,EndPointsAsyncTask.AsyncResponse {
+public class MainActivity extends AppCompatActivity implements CategoryListAdapter.CardViewOnClickListener, EndPointsAsyncTask.AsyncResponse {
 
 
     // App ID: ca-app-pub-3160158119336562~7703910721
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
     private ProgressBar mProgressBar = null;
     private InterstitialAd mInterstitial;
     private Tracker mTracker; // https://developers.google.com/analytics/devguides/collection/android/v4/
-    private static final String PREF_GETENDPOINT="getendpoint";
+    private static final String PREF_GETENDPOINT = "getendpoint";
 
 
     @Override
@@ -75,16 +76,16 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
         // https://developers.google.com/analytics/devguides/collection/android/v4/?hl=ja
         // https://github.com/googlesamples/google-services/blob/master/android/analytics/app/src/main/java/com/google/samples/quickstart/analytics/MainActivity.java#L72-L74
         // Obtain the shared Tracker instance.
-        Log.d(TAG,"onCreate:- getApplication:" + getApplication().getApplicationInfo());
+        Log.d(TAG, "onCreate:- getApplication:" + getApplication().getApplicationInfo());
         AnalyticsApplication application = (AnalyticsApplication) getApplication();
         mTracker = application.getDefaultTracker();
 
-        if (mTracker!=null) {
-            mTracker.setScreenName("Activity:"  + TAG);
+        if (mTracker != null) {
+            mTracker.setScreenName("Activity:" + TAG);
             mTracker.send(new HitBuilders.ScreenViewBuilder().build());
         }
 
-        Log.d(TAG,"onCreate:- get Analytics Tracker:" + mTracker);
+        Log.d(TAG, "onCreate:- get Analytics Tracker:" + mTracker);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.category_recycler_view);
         mListAdapter = new CategoryListAdapter(this, this.getApplicationContext());
@@ -113,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
     }
 
 
-    private void showProgressBar(boolean showProgress){
+    private void showProgressBar(boolean showProgress) {
         if (showProgress) {
             mProgressBar.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.INVISIBLE);
@@ -124,16 +125,14 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
     }
 
 
-
-
     private View getRootView() {
         final ViewGroup contentViewGroup = (ViewGroup) findViewById(android.R.id.content);
         View rootView = null;
 
-        if(contentViewGroup != null)
+        if (contentViewGroup != null)
             rootView = contentViewGroup.getChildAt(0);
 
-        if(rootView == null)
+        if (rootView == null)
             rootView = getWindow().getDecorView().getRootView();
 
         return rootView;
@@ -154,15 +153,15 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
         // [END]
 
         // before showing the Exercise, lets show the ads here
-        Log.d(TAG,"onClickCategory --> Call ShowAds() to show the Ads");
+        Log.d(TAG, "onClickCategory --> Call ShowAds() to show the Ads");
         showAds();
 
         // TODO: please add back the Intent and StartActivity with the intent!!
-        Toast.makeText(this,"Start activity for " + category.getCategoryName(), Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(this,ExerciseSwipeViewActivity.class);
+        Toast.makeText(this, "Start activity for " + category.getCategoryName(), Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(this, ExerciseSwipeViewActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("name",category.getCategoryName());
-        bundle.putString("desc",category.getCategoryDesc());
+        bundle.putString("name", category.getCategoryName());
+        bundle.putString("desc", category.getCategoryDesc());
         bundle.putInt("image", category.getImage());
         intent.putExtras(bundle);
         startActivity(intent);
@@ -184,8 +183,8 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
                 // first time to get the data from EndPoint
                 Log.d(TAG, "onCreate()-Get Data from EndPoint!");
                 new EndPointsAsyncTask(this).execute(new Pair<Context, String>(this, "Manfred"));
-                SharedPreferences.Editor editor =  prefs.edit();
-                editor.putBoolean(PREF_GETENDPOINT,true);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putBoolean(PREF_GETENDPOINT, true);
                 editor.commit();
             } else {
                 Log.d(TAG, "No need to get the endpoint when rotate...");
@@ -206,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
 
     @Override
     public void processFinish(String result) {
-        Log.d(TAG,"Google Endpoint API response:-" + result);
+        Log.d(TAG, "Google Endpoint API response:-" + result);
         if ("Connection refused".equals(result)) {
             // use local mock json data from the Assets folder
             //mEXERCISE_DATA_FROM_ENDPOINT = getJSONFromAsset();
@@ -215,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
         }
 
         // TODO: 2) Initialize the database by IntentService
-        Log.d(TAG,"Sync DB data by IntentService");
+        Log.d(TAG, "Sync DB data by IntentService");
         // ExerciseDataSyncTask.startImmediateSync(this, EXERCISE_DATA_FROM_ENDP
         ExerciseDataSyncTask.initialize(this, mEXERCISE_DATA_FROM_ENDPOINT);
         showProgressBar(false);
@@ -223,16 +222,16 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
 
     // at least it works when click on back
     private void showAds() {
-        Log.d(TAG,"Show the TestAds from AdMob");
+        Log.d(TAG, "Show the TestAds from AdMob");
         // Only show when it is a FREE application
-        if (mInterstitial!=null && mInterstitial.isLoaded()) {
-            Log.d(TAG,"showAds > mInterstitial.show()");
+        if (mInterstitial != null && mInterstitial.isLoaded()) {
+            Log.d(TAG, "showAds > mInterstitial.show()");
             mInterstitial.show();
         } else {
             // init the Ads
             initAds();
-            if ( mInterstitial!=null && mInterstitial.isLoaded()) {
-                Log.d(TAG,"showAds > mInterstitial.show()");
+            if (mInterstitial != null && mInterstitial.isLoaded()) {
+                Log.d(TAG, "showAds > mInterstitial.show()");
                 mInterstitial.show();
             }
         }
@@ -240,9 +239,9 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
 
     // TODO: add the ads
     // initialize the apps
-    private void initAds () {
+    private void initAds() {
         // initialize Mobile Ads SDK with the AdMob App ID
-        Log.d(TAG,"initAds: initialize Mobile Ads SDK with the AdMob App ID");
+        Log.d(TAG, "initAds: initialize Mobile Ads SDK with the AdMob App ID");
         MobileAds.initialize(this, AD_MOB_APP_ID);
         mInterstitial = new InterstitialAd(this);
         mInterstitial.setAdUnitId(AD_MOB_UNIT_ID); // TODO: replace valid ads ID please

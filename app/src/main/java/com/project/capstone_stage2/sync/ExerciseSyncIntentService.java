@@ -12,6 +12,7 @@ public class ExerciseSyncIntentService extends IntentService {
 
     // IntentService can perform ACTION_SYNC action to sync data to the DB
     public static final String ACTION_SYNC = "com.project.capstone_stage2.sync.action.SYNC_DATA";
+
     public ExerciseSyncIntentService() {
         super("ExerciseSyncIntentService");
     }

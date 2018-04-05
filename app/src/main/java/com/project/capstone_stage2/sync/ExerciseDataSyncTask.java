@@ -25,7 +25,7 @@ import com.project.capstone_stage2.util.RemoteEndPointUtil;
 
 import java.util.concurrent.TimeUnit;
 
-public class ExerciseDataSyncTask  {
+public class ExerciseDataSyncTask {
 
     /*
     * Interval at which to sync with the weather. Use TimeUnit for convenience, rather than
@@ -35,7 +35,7 @@ public class ExerciseDataSyncTask  {
 //    private static final int SYNC_INTERVAL_SECONDS = (int) TimeUnit.HOURS.toSeconds(SYNC_INTERVAL_HOURS);
 //    private static final int SYNC_FLEXTIME_SECONDS = SYNC_INTERVAL_SECONDS / 3;
 
-    private static final String TAG =  ExerciseDataSyncTask.class.getSimpleName();
+    private static final String TAG = ExerciseDataSyncTask.class.getSimpleName();
     private static final int SYNC_INTERVAL_MINS = 1;
     private static final int SYNC_INTERVAL_SECONDS = (int) TimeUnit.MINUTES.toSeconds(SYNC_INTERVAL_MINS);
     private static final int SYNC_FLEXTIME_SECONDS = SYNC_INTERVAL_SECONDS / 3;
@@ -47,31 +47,32 @@ public class ExerciseDataSyncTask  {
     // add Synchronized
     // synchronized public static void syncData(Context context,boolean alreadyHasData)
     synchronized public static void syncData(Context context, String exerciseJSON) {
-            try {
-                // TODO: add back the logic
-                // 1. Use the EndPointSyncTask.execute to get the JSON data
-                // 2. Parse the JSON data and put them into ContentValues[]
-                // 3. So the bulk insert into the database
-                ContentValues[] contentValues = RemoteEndPointUtil.fetchJSONData(exerciseJSON);
-                if (contentValues != null && contentValues.length > 0) {
+        try {
+            // TODO: add back the logic
+            // 1. Use the EndPointSyncTask.execute to get the JSON data
+            // 2. Parse the JSON data and put them into ContentValues[]
+            // 3. So the bulk insert into the database
+            ContentValues[] contentValues = RemoteEndPointUtil.fetchJSONData(exerciseJSON);
+            if (contentValues != null && contentValues.length > 0) {
 
-                    // Then we update the database
-                    ContentResolver contentResolver = context.getContentResolver();
-                    // delete all the old data in DB first
-                    //contentResolver.delete(ExerciseContract.ExerciseEntry.CONTENT_URI_ALL, null,null);
-                    // bulk insert again with the latest data from server
-                    contentResolver.bulkInsert(ExerciseContract.ExerciseEntry.CONTENT_URI_ALL, contentValues);
+                // Then we update the database
+                ContentResolver contentResolver = context.getContentResolver();
+                // delete all the old data in DB first
+                //contentResolver.delete(ExerciseContract.ExerciseEntry.CONTENT_URI_ALL, null,null);
+                // bulk insert again with the latest data from server
+                contentResolver.bulkInsert(ExerciseContract.ExerciseEntry.CONTENT_URI_ALL, contentValues);
 
-                }
-            } catch (Exception e) {
-
-                e.printStackTrace();
             }
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
 
     }
 
     /**
      * Schedules a repeating sync up data by FirebaseJobDispatcher.
+     *
      * @param context Context used to create the GooglePlayDriver that powers the
      *                FirebaseJobDispatcher
      */
@@ -102,9 +103,10 @@ public class ExerciseDataSyncTask  {
                 .build(); // build the job when job configurations are set
 
         //schedule the Job to get Exercise Data from the backend
-        Log.d(TAG," dispatcher.schedule(syncExerciseDataJob)!");
+        Log.d(TAG, " dispatcher.schedule(syncExerciseDataJob)!");
         dispatcher.schedule(syncExerciseDataJob);
     }
+
     /**
      * Creates periodic sync tasks and checks to see if an immediate sync is required. If an
      * immediate sync is required, this method will take care of making sure that sync occurs.
@@ -126,7 +128,7 @@ public class ExerciseDataSyncTask  {
          * This method call triggers Sunshine to create its task to synchronize weather data
          * periodically.
          */
-        Log.d(TAG,"scheduleFirebaseJobDispatcherSync!");
+        Log.d(TAG, "scheduleFirebaseJobDispatcherSync!");
         // Context is the MainActivity
         scheduleFirebaseJobDispatcherSync(context);
 
@@ -150,11 +152,11 @@ public class ExerciseDataSyncTask  {
                  * row. In our queries where we display data, we need to PROJECT more columns
                  * to determine what weather details need to be displayed.
                  */
-                String[] projectionColumns = { ExerciseContract.ExerciseEntry._ID};
+                String[] projectionColumns = {ExerciseContract.ExerciseEntry._ID};
 
                 /* Here, we perform the query to check to see if we have any weather data */
                 Cursor cursor = context.getContentResolver().query(
-                        allExerciseURI ,
+                        allExerciseURI,
                         projectionColumns,
                         null,
                         null,

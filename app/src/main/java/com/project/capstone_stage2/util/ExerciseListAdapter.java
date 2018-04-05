@@ -85,28 +85,29 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
     }
 
     /**
-     public static String[] EXERCISE_PROJECTION = {
-     ExerciseContract.ExerciseEntry.CATEGORY,
-     ExerciseContract.ExerciseEntry.CATEGORY_DESC,
-     ExerciseContract.ExerciseEntry.EXERCISE_ID,
-     ExerciseContract.ExerciseEntry.EXERCISE_NAME,
-     ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION,
-     ExerciseContract.ExerciseEntry.EXERCISE_IMAGE,
-     ExerciseContract.ExerciseEntry.EXERCISE_VIDEO
-     };
+     * public static String[] EXERCISE_PROJECTION = {
+     * ExerciseContract.ExerciseEntry.CATEGORY,
+     * ExerciseContract.ExerciseEntry.CATEGORY_DESC,
+     * ExerciseContract.ExerciseEntry.EXERCISE_ID,
+     * ExerciseContract.ExerciseEntry.EXERCISE_NAME,
+     * ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION,
+     * ExerciseContract.ExerciseEntry.EXERCISE_IMAGE,
+     * ExerciseContract.ExerciseEntry.EXERCISE_VIDEO
+     * };
+     *
      * @param holder
      * @param position
      */
     @Override
     public void onBindViewHolder(ExerciseViewHolder holder, int position) {
-        Log.d(TAG,">>>>>> DEBUG::: onBindViewHolder is called! ");
+        Log.d(TAG, ">>>>>> DEBUG::: onBindViewHolder is called! ");
         // TODO: so before that we need to pass the cursor by setAdapterData
         if (mCursor != null && !mCursor.isClosed()) {
             mCursor.moveToPosition(position);
 
-            boolean isFavorite = (mCursor.getInt(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE)) == 1)? true:false;
-            Log.d(TAG,">>>>>> onBindViewHolder: favorite flag int? " + mCursor.getInt(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE)));
-            Log.d(TAG,">>>>>> onBindViewHolder: favorite flag boolean? " + isFavorite);
+            boolean isFavorite = (mCursor.getInt(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE)) == 1) ? true : false;
+            Log.d(TAG, ">>>>>> onBindViewHolder: favorite flag int? " + mCursor.getInt(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE)));
+            Log.d(TAG, ">>>>>> onBindViewHolder: favorite flag boolean? " + isFavorite);
             // TODO: StaleException - after going back to MainActivity the cursor is destroyed!
             holder.mExerciseName.setText(mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME)));
             // TODO: add back the Backend JSON with exercise description
@@ -114,18 +115,18 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
             // set the DUMMY data for now
             //holder.mExerciseDesc.setText("<exercise description here...>");
             String imageURL = mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE));
-            Log.d(TAG,">>>>>> onBindViewHolder: imageURL? " + imageURL);
+            Log.d(TAG, ">>>>>> onBindViewHolder: imageURL? " + imageURL);
 
             holder.toggleButtonDisable(isFavorite);
 
             // holder.mExerciseImage.setImageResource(mCursor.getInt(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE)));
-        if(!imageURL.isEmpty() && imageURL != null) {
-            // Picasso will handle loading the images on a background thread, image decompression and caching the images.
-            Picasso.with(mContext).load(imageURL).into(holder.mExerciseImage);
-        } else {
+            if (!imageURL.isEmpty() && imageURL != null) {
+                // Picasso will handle loading the images on a background thread, image decompression and caching the images.
+                Picasso.with(mContext).load(imageURL).into(holder.mExerciseImage);
+            } else {
 
-            // TODO: add the No image textview if no image for the exercise
-        }
+                // TODO: add the No image textview if no image for the exercise
+            }
 
             // TODO: will use the default image for now - need to load a real image !
             int defaultImage = R.drawable.exercise_default;
@@ -136,7 +137,7 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
 //                    .into(holder.mExerciseImage);
         } else {
 
-            Log.e(TAG,"onBindViewHolder - cursor is closed");
+            Log.e(TAG, "onBindViewHolder - cursor is closed");
         }
     }
 
@@ -148,8 +149,8 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
 
     @Override
     public long getItemId(int position) {
-        Log.e(TAG,">>>> getItemId:" + position);
-        if (mCursor != null){
+        Log.e(TAG, ">>>> getItemId:" + position);
+        if (mCursor != null) {
             if (mCursor.moveToPosition(position)) {
                 return mCursor.getLong(Integer.getInteger(ExerciseContract.ExerciseEntry._ID));
             } else {
@@ -162,7 +163,7 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
 
     @Override
     public int getItemCount() {
-        if (mCursor!=null) {
+        if (mCursor != null) {
             return mCursor.getCount();
         } else {
             return 0;
@@ -198,11 +199,10 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
     }
 
 
-
     /**
      * ExerciseViewHolder
      */
-    public class ExerciseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ExerciseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public CardView mCardView;
         public TextView mExerciseName;
         public TextView mExerciseDesc;
@@ -225,7 +225,7 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
             mShareButton = (Button) itemView.findViewById(R.id.share_btn);
             if (mIsAllExercise) {
                 mAddFavButton = (Button) itemView.findViewById(R.id.add_fav_btn);
-                if (mAddFavButton!=null) {
+                if (mAddFavButton != null) {
                     mAddFavButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -241,7 +241,7 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
                                 //mClickHandler.onClick(dateInMillis);
 
                                 boolean addFavorite = exerciseItemOnClickHandler.onAddFavClick(cursor);
-                                Log.d(TAG,"setOnClickListener - addFavorite flag: " + addFavorite);
+                                Log.d(TAG, "setOnClickListener - addFavorite flag: " + addFavorite);
                                 toggleButtonDisable(addFavorite);
 
                             }
@@ -277,7 +277,7 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
             mShareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(exerciseItemOnClickHandler!=null) {
+                    if (exerciseItemOnClickHandler != null) {
 
                         int adapterPosition = getAdapterPosition();
                         // mCursor.moveToPosition(adapterPosition);
@@ -295,34 +295,33 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
             Log.d(TAG, "onClick Method to call the call back method on position");
             int adapterPosition = getAdapterPosition();
             Log.d(TAG, "onClick Method to call the call back method on position:" + adapterPosition);
-             mCursor.moveToPosition(adapterPosition);
+            mCursor.moveToPosition(adapterPosition);
             // Use Call back to pass information back to the activity
             //long dateInMillis = mCursor.getLong(MainActivity.INDEX_WEATHER_DATE);
             // mClickHandler.onClick(dateInMillis);
             exerciseItemOnClickHandler.onClickExercise(mCursor);
         }
 
-        public void toggleButtonDisable(boolean disable){
-            Log.d("ExerciseListAdapter","toogleButtonDisable method is called");
-            Log.d("ExerciseListAdapter","Disable Flag is?" + disable);
+        public void toggleButtonDisable(boolean disable) {
+            Log.d("ExerciseListAdapter", "toogleButtonDisable method is called");
+            Log.d("ExerciseListAdapter", "Disable Flag is?" + disable);
             if (disable) {
                 Log.d("ExerciseListAdapter", "disable the Add Button by:" + !disable);
                 mAddFavButton.setAlpha(0.5f);
                 mAddFavButton.setEnabled(!disable);
 
-                Log.d("ExerciseListAdapter","isEnabled() check:" + mAddFavButton.isEnabled());
+                Log.d("ExerciseListAdapter", "isEnabled() check:" + mAddFavButton.isEnabled());
             } else {
                 Log.d(TAG, "Enable the Add Button!");
                 Log.d(TAG, "===========================================================");
                 mAddFavButton.setAlpha(1f);
                 mAddFavButton.setEnabled(!disable);
-                Log.d("ExerciseListAdapter","isEnabled() check:" + mAddFavButton.isEnabled());
+                Log.d("ExerciseListAdapter", "isEnabled() check:" + mAddFavButton.isEnabled());
             }
         }
 
 
     }
-
 
 
 }

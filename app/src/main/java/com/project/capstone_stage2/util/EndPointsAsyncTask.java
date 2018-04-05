@@ -12,6 +12,7 @@ import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
 import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
+
 import java.io.IOException;
 
 public class EndPointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
@@ -81,7 +82,7 @@ public class EndPointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, S
 
 
         try {
-           return myApiService.getExerciseData().execute().getData();
+            return myApiService.getExerciseData().execute().getData();
         } catch (IOException e) {
             return e.getMessage();
         }
@@ -94,7 +95,7 @@ public class EndPointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, S
         if (delegate != null) {
             delegate.processFinish(result);
         } else {
-            Log.d(TAG,"EndPointAPI JSON Response:- " + result);
+            Log.d(TAG, "EndPointAPI JSON Response:- " + result);
         }
     }
 }

@@ -40,7 +40,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     private static final String TAG = AllExerciseFragment.class.getSimpleName();
     private static final String ARG_PAGE = "page";
     private static final String ARG_TITLE = "page_title";
-    private static final String HAS_DATA_KEY= "has_data";
+    private static final String HAS_DATA_KEY = "has_data";
 
     private String title;
     private int page;
@@ -54,8 +54,6 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     private Cursor mCursor = null;
     private boolean mTwoPane = false;
     private Tracker mTracker;
-
-
 
 
     private AllExerciseFragment.OnFragmentInteractionListener mListener = null;
@@ -82,12 +80,12 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
+     *
      * @return A new instance of fragment AllExerciseFragment.
      */
     // TODO: Rename and change types and number of parameter
-
-    public static AllExerciseFragment newInstance(int page, String title,boolean twoPane) {
-        Log.d(TAG,"when new fragment newInstance, what is the paneMode?" + twoPane);
+    public static AllExerciseFragment newInstance(int page, String title, boolean twoPane) {
+        Log.d(TAG, "when new fragment newInstance, what is the paneMode?" + twoPane);
         AllExerciseFragment fragment = new AllExerciseFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_PAGE, page);
@@ -112,7 +110,6 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
                              Bundle savedInstanceState) {
 
 
-
         mTwoPane = getResources().getBoolean(R.bool.has_two_panes);
         Log.d(TAG, "###### onCreateView IS IT TWO PANE ?? #### " + mTwoPane);
 
@@ -120,23 +117,23 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         AnalyticsApplication application = (AnalyticsApplication) getActivity().getApplication();
         mTracker = application.getDefaultTracker();
 
-        Log.d(TAG,"onCreateView is called!");
+        Log.d(TAG, "onCreateView is called!");
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_all_exercise, container, false);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.all_execise_recyclerview);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setHasFixedSize(true);
-        Log.d(TAG,"onCreateView:-create new instance for Recycler Adapter");
+        Log.d(TAG, "onCreateView:-create new instance for Recycler Adapter");
         // THINK ABOUT if we need to have 2 fragment
         // actually the only difference is the adapter, do you think we need seperate Fragment class?
         boolean isAllFragment = true;
-        mAdapter = new ExerciseListAdapter(getContext(),this, isAllFragment);
+        mAdapter = new ExerciseListAdapter(getContext(), this, isAllFragment);
         mRecyclerView.setAdapter(mAdapter);
         mNoDataText = (TextView) rootView.findViewById(R.id.all_exercise_no_data_error_text);
         mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.all_exercise_loading_indicator);
 
-        if (savedInstanceState!=null) {
-            if(savedInstanceState.containsKey(HAS_DATA_KEY)) {
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(HAS_DATA_KEY)) {
                 mHasData = savedInstanceState.getBoolean(HAS_DATA_KEY);
             }
         }
@@ -150,7 +147,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     }
 
     public void showData(boolean hasData) {
-        if(hasData) {
+        if (hasData) {
             Log.d(TAG, "show the recycler view!");
             mProgressIndicator.setVisibility(View.GONE);
             mNoDataText.setVisibility(View.GONE);
@@ -168,15 +165,16 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 
     /**
      * Call by SwipeView activity to update the cursor
+     *
      * @param cursor
      */
     public void updateAdapterData(Cursor cursor) {
-        if(cursor != null) {
-            Log.d(TAG,">>>>>updateAdapterData!!");
+        if (cursor != null) {
+            Log.d(TAG, ">>>>>updateAdapterData!!");
             // TODO: how come quickly click on tab page the mAdapter is not ready ??
             if (cursor != null && !cursor.isClosed() && cursor.getCount() > 0) {
-                Log.d(TAG,"Cursor has data!");
-                if(mAdapter != null) {
+                Log.d(TAG, "Cursor has data!");
+                if (mAdapter != null) {
                     mCursor = cursor;
                     mAdapter.setAdapterData(mCursor);
                     mHasData = true;
@@ -186,12 +184,12 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
                     // checkIsFavorite(cursor);
 
                 } else {
-                    Log.e(TAG,"Error:Adapter is null ? why?");
+                    Log.e(TAG, "Error:Adapter is null ? why?");
                     // showData(false);
                 }
             }
         } else {
-            Log.d(TAG,"Cursor has No data!");
+            Log.d(TAG, "Cursor has No data!");
             mHasData = false;
             showData(false);
         }
@@ -205,7 +203,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     }
 
     public void setPaneMode(boolean mode) {
-        Log.d(TAG,">>>> DEBUG::: setPaneMode:" + mode);
+        Log.d(TAG, ">>>> DEBUG::: setPaneMode:" + mode);
         mTwoPane = mode;
     }
 
@@ -235,14 +233,15 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         Log.d(TAG, "onClickExercise: what is the pane mode?" + mTwoPane);
         //Toast.makeText(getContext(), "navigate to Detail view", Toast.LENGTH_LONG).show();
         Log.d(TAG, "onClickExercise:check 2 Pane mode is:" + mTwoPane);
-        Toast.makeText(getContext(), "2 pane mode:" + mTwoPane, Toast.LENGTH_LONG).show();
+        // FOR DEBUG
+        //Toast.makeText(getContext(), "2 pane mode:" + mTwoPane, Toast.LENGTH_LONG).show();
         String exeCategory = null;
         String exeName = null;
         String exeID = null;
         String exeVideoURL = null;
         String exeSteps = null;
 
-        if (cursor!=null && !cursor.isClosed()) {
+        if (cursor != null && !cursor.isClosed()) {
             exeCategory = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.CATEGORY));
             exeName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
             exeID = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID));
@@ -252,7 +251,8 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 
         // One-Pane
         if (!mTwoPane) {
-            Toast.makeText(getContext(), "One Pane - navigate to Detail view after click", Toast.LENGTH_LONG).show();
+            // FOR DEBUG
+            // Toast.makeText(getContext(), "One Pane - navigate to Detail view after click", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(getContext(), ExerciseDetailActivity.class);
             Bundle bundle = new Bundle();
             bundle.putString(ExerciseDetailActivity.EXERCISE_CATEGORY, exeCategory);
@@ -269,17 +269,14 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
             // show the video on the right pane
             // Pass the information back to the Parent Activity to play the video on the Right pane.
             // but now we cannot play this because we dont know when it is a 2 pane mode!
-            Toast.makeText(getContext(), "Two Pane - OnClick exercise", Toast.LENGTH_LONG).show();
-             mListener.twoPaneModeOnClick(exeID,exeSteps,exeVideoURL);
-            Toast.makeText(getContext(), "Callback action for 2pane mode, what the hell!", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getContext(), "Two Pane - OnClick exercise", Toast.LENGTH_LONG).show();
+            mListener.twoPaneModeOnClick(exeID, exeSteps, exeVideoURL);
         }
     }
 
     @Override
     public void onShareClick(Cursor cursor) {
-
-
-        Toast.makeText(getContext(),"share content!", Toast.LENGTH_LONG).show();
+        //Toast.makeText(getContext(), "share content!", Toast.LENGTH_LONG).show();
         Bundle bundle = new Bundle();
         String exeName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
         String exeVideoURL = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO));
@@ -294,8 +291,8 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         StringBuilder builder = new StringBuilder();
         builder.append("Exercise Name:" + exeName + "\n")
                 .append("Exercise Steps:" + exeSteps + "\n");
-        if(exeVideoURL!=null && !exeVideoURL.isEmpty()) {
-                builder.append("Please check out our exercise by this link: " + exeVideoURL + "\n");
+        if (exeVideoURL != null && !exeVideoURL.isEmpty()) {
+            builder.append("Please check out our exercise by this link: " + exeVideoURL + "\n");
         }
 
         startActivity(Intent.createChooser(ShareCompat.IntentBuilder.from(getActivity())
@@ -323,18 +320,17 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
                 .build());
 
 
-        Log.d(TAG,"insert favorite index0: " + cursor.getString(0) );
-        Log.d(TAG,"insert favorite index1: " + cursor.getString(1) );
-        Log.d(TAG,"insert favorite index2: " + cursor.getString(2) );
-        Log.d(TAG,"insert favorite index3: " + cursor.getString(3) );
-        Log.d(TAG,"insert favorite index4: " + cursor.getString(4) );
-        Log.d(TAG,"insert favorite index5: " + cursor.getString(5) );
-        Log.d(TAG,"insert favorite index6: " + cursor.getString(6) );
-        Log.d(TAG,"insert favorite index0: " + cursor.getString(7) );
-        Log.d(TAG,"insert favorite index0: " + cursor.getString(8) );
+        Log.d(TAG, "insert favorite index0: " + cursor.getString(0));
+        Log.d(TAG, "insert favorite index1: " + cursor.getString(1));
+        Log.d(TAG, "insert favorite index2: " + cursor.getString(2));
+        Log.d(TAG, "insert favorite index3: " + cursor.getString(3));
+        Log.d(TAG, "insert favorite index4: " + cursor.getString(4));
+        Log.d(TAG, "insert favorite index5: " + cursor.getString(5));
+        Log.d(TAG, "insert favorite index6: " + cursor.getString(6));
+        Log.d(TAG, "insert favorite index0: " + cursor.getString(7));
+        Log.d(TAG, "insert favorite index0: " + cursor.getString(8));
 
-        Toast.makeText(getContext(), "add favorite:- " + exeID + ":" + exeName, Toast.LENGTH_LONG).show();
-        // CREATE TABLE AllExercise (_id INTEGER PRIMARY KEY AUTOINCREMENT,category TEXT NOT NULL,categoryDesc TEXT NOT NULL,exerciseID TEXT NOT NULL,name TEXT NOT NULL,description TEXT NOT NULL,steps TEXT NOT NULL,image TEXT NOT NULL,video TEXT NOT NULL);
+        Toast.makeText(getContext(), getString(R.string.toast_add_exercise), Toast.LENGTH_LONG).show();
 
         if (cursor != null || !cursor.isClosed()) {
             // Defines an object to contain the new values to insert
@@ -363,11 +359,11 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
             // TODO: disable the ADD Favorite button!
             ContentValues contentValues = new ContentValues();
             // set the favorite flag = 1
-            contentValues.put(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE,1);
+            contentValues.put(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE, 1);
             // TODO: update the AllExercise table's favorite flag
-             Uri uri = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
+            Uri uri = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
             // Uri uri = ExerciseContract.ExerciseEntry.buildAllExerciseUriWithId(id);
-            updateAllExerciseFavoriteCol(uri,contentValues,exeID,category);
+            updateAllExerciseFavoriteCol(uri, contentValues, exeID, category);
             //updateAllExerciseFavoriteCol(exeID, contentValues);
             return true;
         }
@@ -410,13 +406,13 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         String selection = ExerciseContract.ExerciseEntry.EXERCISE_ID + "=?";
         String[] selectionArgs = {exerciseID};
         try {
-            Cursor cursor = getActivity().getContentResolver().query(uri,projections,selection,selectionArgs,null);
+            Cursor cursor = getActivity().getContentResolver().query(uri, projections, selection, selectionArgs, null);
             //if (cursor.getCount() == 1) {
             if (cursor.getCount() > 0) {
-                Log.d(TAG,"Assert if favorite is added ::: checkAlreadyInsertAsFavorite:" + cursor.getCount());
+                Log.d(TAG, "Assert if favorite is added ::: checkAlreadyInsertAsFavorite:" + cursor.getCount());
                 return true;
-            }  else {
-                Log.d(TAG,"Error:::unable to query the added favorite exercise!");
+            } else {
+                Log.d(TAG, "Error:::unable to query the added favorite exercise!");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -426,16 +422,15 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState)
-    {
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean(HAS_DATA_KEY,mHasData);
+        outState.putBoolean(HAS_DATA_KEY, mHasData);
 
     }
 
     // TODO: should we move to an Util class
-   // public void updateAllExerciseFavoriteCol(Uri updateURI,String exerciseID, ContentValues contentValues){
-    public void updateAllExerciseFavoriteCol(Uri updateURI, ContentValues contentValues, String exeID, String category){
+    // public void updateAllExerciseFavoriteCol(Uri updateURI,String exerciseID, ContentValues contentValues){
+    public void updateAllExerciseFavoriteCol(Uri updateURI, ContentValues contentValues, String exeID, String category) {
         // TODO: need to refresh the list after a list is deleted
         Log.e(TAG, "update AllExercise Table's favorite flag!");
         Log.e(TAG, "ContentValues:" + contentValues);
@@ -446,7 +441,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         //int updateRow = getActivity().getContentResolver().update(updateURI, contentValues, whereClause, new String[]{id});
         //int updateRow = getActivity().getContentResolver().update(updateURI, contentValues, whereClause, new String[]{exeID});
 
-        int updateRow = getActivity().getContentResolver().update(updateURI, contentValues, whereClause, new String[]{exeID,category});
+        int updateRow = getActivity().getContentResolver().update(updateURI, contentValues, whereClause, new String[]{exeID, category});
         Log.e(TAG, "updateAllExerciseFavoriteCol #of row:" + updateRow);
     }
 
@@ -456,7 +451,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 
     public void checkIsFavorite(Cursor cursor) {
 
-        if (cursor!=null && !cursor.isClosed()) {
+        if (cursor != null && !cursor.isClosed()) {
             Log.d(TAG, "checkIsFavorite - what is the cursor size?" + cursor.getCount());
             Log.d(TAG, "Loop through cursor and toggle the button!");
             cursor.moveToPosition(-1);
@@ -469,7 +464,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
                 Log.e(TAG, ">>>>> Cursor 's favorite flag:" + favorite);
                 boolean toggle = (favorite == 1) ? true : false;
                 Log.e(TAG, ">>>>> if favorite ==1 set to true,else false:" + toggle);
-                updateButtonState(toggle,exerciseName);
+                updateButtonState(toggle, exerciseName);
 
             }
             Log.d(TAG, "End of while loop=====================================================");
@@ -483,7 +478,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
                 /* Sort order: Ascending by exercise id */
         String favSortOrder = ExerciseContract.ExerciseEntry.EXERCISE_ID + " ASC";
         String selectionByCategoryName = ExerciseContract.ExerciseEntry.CATEGORY + " = ?";
-        if (getActivity()!= null && getActivity().getContentResolver() != null) {
+        if (getActivity() != null && getActivity().getContentResolver() != null) {
             Cursor favCursor = getActivity().getContentResolver().query(queryURI, ExerciseSwipeViewActivity.FAV_EXERCISE_PROJECTION, selectionByCategoryName, new String[]{catName}, favSortOrder);
             if (favCursor != null && favCursor.getCount() > 0) {
                 while (favCursor.moveToNext()) {
@@ -505,24 +500,24 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 
 
     private void resetButtonStateToEnabled() {
-        if (mRecyclerView!=null && mRecyclerView.getAdapter()!=null) {
-            Log.e(TAG,"updateButtonState() is called!");
+        if (mRecyclerView != null && mRecyclerView.getAdapter() != null) {
+            Log.e(TAG, "updateButtonState() is called!");
             int itemCount = mRecyclerView.getAdapter().getItemCount();
-            for (int i=0; i<itemCount;i++) {
+            for (int i = 0; i < itemCount; i++) {
                 ExerciseListAdapter.ExerciseViewHolder vh = (ExerciseListAdapter.ExerciseViewHolder) mRecyclerView.findViewHolderForAdapterPosition(i);
 
-                if (vh != null ) {
+                if (vh != null) {
 
-                        Log.e(TAG, "=====================updateButtonState=====================");
+                    Log.e(TAG, "=====================updateButtonState=====================");
 
-                        Button addFavoriteBtn = vh.mAddFavButton;
-                        if (addFavoriteBtn != null) {
-                            vh.toggleButtonDisable(false);
+                    Button addFavoriteBtn = vh.mAddFavButton;
+                    if (addFavoriteBtn != null) {
+                        vh.toggleButtonDisable(false);
 
-                        } else {
+                    } else {
 
-                            Log.e(TAG, "ERROR:::UpdateButtonState:" + "unable to get the addFavoriteButton?");
-                        }
+                        Log.e(TAG, "ERROR:::UpdateButtonState:" + "unable to get the addFavoriteButton?");
+                    }
                 } else {
                     Log.e(TAG, "updateButtonState() is called but VH is null!");
                 }
@@ -530,19 +525,19 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
             }
 
         } else {
-            Log.e(TAG,"ERROR:::updateButtonState() is called but adapter is null!");
+            Log.e(TAG, "ERROR:::updateButtonState() is called but adapter is null!");
         }
 
     }
 
-    private void updateButtonState(boolean toggle,String exerciseName){
-        if (mRecyclerView!=null && mRecyclerView.getAdapter()!=null) {
-            Log.e(TAG,"updateButtonState() is called!");
+    private void updateButtonState(boolean toggle, String exerciseName) {
+        if (mRecyclerView != null && mRecyclerView.getAdapter() != null) {
+            Log.e(TAG, "updateButtonState() is called!");
             int itemCount = mRecyclerView.getAdapter().getItemCount();
-            for (int i=0; i<itemCount;i++) {
+            for (int i = 0; i < itemCount; i++) {
                 ExerciseListAdapter.ExerciseViewHolder vh = (ExerciseListAdapter.ExerciseViewHolder) mRecyclerView.findViewHolderForAdapterPosition(i);
 
-                if (vh != null ) {
+                if (vh != null) {
                     if (vh.mExerciseName.getText().toString().compareTo(exerciseName) == 0) {
                         Log.e(TAG, "=====================updateButtonState=====================");
                         Log.e(TAG, "=====findViewHolderForAdapterPosition?=====" + i);
@@ -568,11 +563,11 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
             }
 
         } else {
-            Log.e(TAG,"ERROR:::updateButtonState() is called but adapter is null!");
+            Log.e(TAG, "ERROR:::updateButtonState() is called but adapter is null!");
         }
     }
 
-    public void reloadData(String catName){
+    public void reloadData(String catName) {
 
         // TODO: need to refresh the list after a list is deleted
         Log.e(TAG, "reload the list!");
@@ -580,7 +575,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
                 /* Sort order: Ascending by exercise id */
         String sortOrder = ExerciseContract.ExerciseEntry.EXERCISE_ID + " ASC";
         String selectionByCategoryName = ExerciseContract.ExerciseEntry.CATEGORY + " = ?";
-        if (getContext() !=null && getContext().getContentResolver()!=null) {
+        if (getContext() != null && getContext().getContentResolver() != null) {
             Cursor newCursor = getActivity().getContentResolver().query(queryURI, ExerciseSwipeViewActivity.FAV_EXERCISE_PROJECTION, selectionByCategoryName, new String[]{catName}, sortOrder);
             if (newCursor != null) {
                 Log.d(TAG, "Assert latest data count:" + newCursor.getCount());
@@ -596,11 +591,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
                 Log.e(TAG, "unable to get the cursor!");
             }
         } else {
-
-            // TODO:- Need to show Error Message!
-            //Toast.makeText(getContext(),"Unable to get data! Please Try again!",Toast.LENGTH_LONG).show();
             Log.e(TAG, "ERROR::: Why unable to get ContentResolver!");
-            // showData(false);
         }
     }
 }

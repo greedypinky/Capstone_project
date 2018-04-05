@@ -1,4 +1,5 @@
 package com.project.capstone_stage2.util;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.CardView;
@@ -20,13 +21,13 @@ import java.util.List;
 public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapter.CategoryViewHolder> {
 
     private static int CATEGORY_COUNT = 3;
-    private static HashMap<String,String> category = new HashMap<String,String>();
+    private static HashMap<String, String> category = new HashMap<String, String>();
     private static ArrayList<ExerciseCategory> catArrayList = null;
     private static CardViewOnClickListener cardViewOnClickListener;
     private Context mContext;
 
     // Constructor that require the listener implements the onClick callback method
-    public CategoryListAdapter(CardViewOnClickListener listener,Context context) {
+    public CategoryListAdapter(CardViewOnClickListener listener, Context context) {
         cardViewOnClickListener = listener;
         initData(context);
     }
@@ -38,10 +39,10 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
     private int getImageResource(String name) {
 
         int drawable = -1;
-        switch(name) {
+        switch (name) {
 
             case "Squat": {
-                drawable =  R.drawable.nao_squat01;
+                drawable = R.drawable.nao_squat01;
                 //drawable =  R.drawable.exercise_default;
                 break;
             }
@@ -58,7 +59,8 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
                 break;
             }
 
-        };
+        }
+        ;
 
         return drawable;
     }
@@ -71,7 +73,7 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
 
 
         int i = 0;
-        for(String cat:category_array) {
+        for (String cat : category_array) {
             // init default Data
             catArrayList.add(new ExerciseCategory(category_array[i], category_desc_array[i], getImageResource(category_array[i])));
             i++;
@@ -86,7 +88,7 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
     @Override
     public CategoryListAdapter.CategoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         mContext = parent.getContext(); // get the Context reference from parent view
-        View cardView = LayoutInflater.from(parent.getContext()).inflate(R.layout.exercise_card_view,parent,false);
+        View cardView = LayoutInflater.from(parent.getContext()).inflate(R.layout.exercise_card_view, parent, false);
         CategoryViewHolder vh = new CategoryViewHolder(cardView);
         return vh;
     }
@@ -96,10 +98,10 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
         // TODO: bind adapter's data to the view holder's view based on the position
         holder.mTitle.setText(catArrayList.get(position).getCategoryName());
         holder.mDesc.setText(catArrayList.get(position).getCategoryDesc());
-       // holder.image.setImageResource(catArrayList.get(position).getImage());
+        // holder.image.setImageResource(catArrayList.get(position).getImage());
         //  if(!selectedRecipe.getImage().isEmpty()) {
         // Picasso will handle loading the images on a background thread, image decompression and caching the images.
-       Picasso.with(mContext).load(catArrayList.get(position).getImage()).into(holder.mImage);
+        Picasso.with(mContext).load(catArrayList.get(position).getImage()).into(holder.mImage);
     }
 
     @Override
@@ -116,8 +118,8 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
 
     @Override
     public int getItemCount() {
-        if(catArrayList != null && catArrayList.size() > 0) {
-          return catArrayList.size();
+        if (catArrayList != null && catArrayList.size() > 0) {
+            return catArrayList.size();
         } else {
             return 0;
         }
@@ -134,7 +136,7 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
 
         public CategoryViewHolder(View itemView) {
             super(itemView);
-            mCardView = (CardView)itemView.findViewById(R.id.category_card_view);
+            mCardView = (CardView) itemView.findViewById(R.id.category_card_view);
             mCardView.setOnClickListener(this); // must set the OnClickListener,otherwise it will not react to the click
             mTitle = (TextView) itemView.findViewById(R.id.exercise_category_name);
             mDesc = (TextView) itemView.findViewById(R.id.exercise_category_desc);

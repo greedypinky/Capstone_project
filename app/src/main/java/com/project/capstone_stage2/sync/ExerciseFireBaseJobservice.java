@@ -17,10 +17,11 @@ public class ExerciseFireBaseJobservice extends JobService {
     private static String TAG = ExerciseFireBaseJobservice.class.getSimpleName();
     private static AsyncTask<Void, Void, Void> mFetchDataTask;
     private static AsyncTask<Pair<Context, String>, Void, String> mFetchFromEndPointTask;
+
     /**
      * The entry point to your Job. Implementations should offload work to another thread of
      * execution as soon as possible.
-     *
+     * <p>
      * This is called by the Job Dispatcher to tell us we should start our job. Keep in mind this
      * method is run on the application's main thread, so we need to offload work to a background
      * thread.
@@ -37,25 +38,24 @@ public class ExerciseFireBaseJobservice extends JobService {
 //        mFetchFromEndPointTask = new EndPointsAsyncTask(true).execute(new Pair<Context, String>(this, "Manfred"));
 //        return true;
 //    }
-
     @Override
     public boolean onStartJob(final JobParameters job) {
         final boolean needsReschedule = false;
-        mFetchDataTask = new AsyncTask<Void, Void , Void>() {
-             @Override
-             protected Void doInBackground(Void... voids) {
-                 // Context context = getApplicationContext();
-                 // ExerciseDataSyncTask.scheduleFirebaseJobDispatcherSync(context);
-                 Log.d(TAG, "Congrats! your job dispatcher is working - doInBackground is called!");
-                 jobFinished(job,needsReschedule);
-                 return null;
-             }
+        mFetchDataTask = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                // Context context = getApplicationContext();
+                // ExerciseDataSyncTask.scheduleFirebaseJobDispatcherSync(context);
+                Log.d(TAG, "Congrats! your job dispatcher is working - doInBackground is called!");
+                jobFinished(job, needsReschedule);
+                return null;
+            }
 
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
                 Log.d(TAG, "Congrats! onPostExecute() is called!");
-                jobFinished(job,needsReschedule);
+                jobFinished(job, needsReschedule);
             }
 
 
@@ -65,13 +65,13 @@ public class ExerciseFireBaseJobservice extends JobService {
         return true;
     }
 
-/**
- * Called when the scheduling engine has decided to interrupt the execution of a running job,
- * most likely because the runtime constraints associated with the job are no longer satisfied.
- *
- * @return whether the job should be retried
- * @see com.firebase.jobdispatcher.Job.Builder#setRetryStrategy(RetryStrategy)
- **/
+    /**
+     * Called when the scheduling engine has decided to interrupt the execution of a running job,
+     * most likely because the runtime constraints associated with the job are no longer satisfied.
+     *
+     * @return whether the job should be retried
+     * @see com.firebase.jobdispatcher.Job.Builder#setRetryStrategy(RetryStrategy)
+     **/
 
     @Override
     public boolean onStopJob(JobParameters job) {

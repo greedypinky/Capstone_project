@@ -46,22 +46,24 @@ public class ExerciseContract {
 
         /**
          * buildAllExerciseUriWithId
+         *
          * @param id
          * @return
          */
         public static Uri buildAllExerciseUriWithId(long id) {
 
-            return ContentUris.withAppendedId(CONTENT_URI_ALL,id);
+            return ContentUris.withAppendedId(CONTENT_URI_ALL, id);
         }
 
         /**
          * buildFavoriteExerciseUriWithId
+         *
          * @param id
          * @return
          */
         public static Uri buildFavoriteExerciseUriWithId(long id) {
 
-            return ContentUris.withAppendedId(CONTENT_URI_FAV,id);
+            return ContentUris.withAppendedId(CONTENT_URI_FAV, id);
         }
 
 

@@ -45,7 +45,7 @@ public class ExerciseContentProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         dbHelper = new DBHelper(this.getContext());
-        if(dbHelper!=null)
+        if (dbHelper != null)
             return true;
         else
             return false;
@@ -63,23 +63,23 @@ public class ExerciseContentProvider extends ContentProvider {
 
         switch (match) {
             case FAV_EXERCISE:
-                Log.d(TAG,"QUERY:FAVORITE EXERCISE Query from " + ExerciseContract.ExerciseEntry.TABLE_EXERCISE);
-                cursor = db.query(ExerciseContract.ExerciseEntry.TABLE_EXERCISE ,projection, selection, selectionArgs,null,null, sortOrder);
-                if(cursor!=null) {
-                   int count = cursor.getCount();
-                    Log.d(TAG,"cursor count:" + count);
+                Log.d(TAG, "QUERY:FAVORITE EXERCISE Query from " + ExerciseContract.ExerciseEntry.TABLE_EXERCISE);
+                cursor = db.query(ExerciseContract.ExerciseEntry.TABLE_EXERCISE, projection, selection, selectionArgs, null, null, sortOrder);
+                if (cursor != null) {
+                    int count = cursor.getCount();
+                    Log.d(TAG, "cursor count:" + count);
                 }
                 return cursor;
             case FAV_EXERCISE_WITH_ID:
-                Log.d(TAG,"QUERY:FAVORITE EXERCISE ID Query from " + ExerciseContract.ExerciseEntry.TABLE_EXERCISE);
-                cursor = db.query(ExerciseContract.ExerciseEntry.TABLE_EXERCISE ,projection, selection, selectionArgs,null,null, sortOrder);
+                Log.d(TAG, "QUERY:FAVORITE EXERCISE ID Query from " + ExerciseContract.ExerciseEntry.TABLE_EXERCISE);
+                cursor = db.query(ExerciseContract.ExerciseEntry.TABLE_EXERCISE, projection, selection, selectionArgs, null, null, sortOrder);
                 return cursor;
             case ALL_EXERCISE:
-                Log.d(TAG,"QUERY:ALL EXERCISE Query from " + ExerciseContract.ExerciseEntry.TABLE_ALL);
-                cursor = db.query(ExerciseContract.ExerciseEntry.TABLE_ALL,projection, selection, selectionArgs,null,null, sortOrder);
-                if(cursor!=null) {
+                Log.d(TAG, "QUERY:ALL EXERCISE Query from " + ExerciseContract.ExerciseEntry.TABLE_ALL);
+                cursor = db.query(ExerciseContract.ExerciseEntry.TABLE_ALL, projection, selection, selectionArgs, null, null, sortOrder);
+                if (cursor != null) {
                     int count = cursor.getCount();
-                    Log.d(TAG,"cursor count:" + count);
+                    Log.d(TAG, "cursor count:" + count);
                 }
                 return cursor;
 
@@ -89,7 +89,6 @@ public class ExerciseContentProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unable to update table by uri:" + uri);
 
         }
-
 
 
     }
@@ -103,26 +102,26 @@ public class ExerciseContentProvider extends ContentProvider {
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
-      int type =  uriMatcher.match(uri);
-      switch(type) {
+        int type = uriMatcher.match(uri);
+        switch (type) {
 
-          //vnc.android.cursor.dir
-          case FAV_EXERCISE:
-              return ExerciseContract.ExerciseEntry.CONTENT_DIR_FAV;
+            //vnc.android.cursor.dir
+            case FAV_EXERCISE:
+                return ExerciseContract.ExerciseEntry.CONTENT_DIR_FAV;
 
-          //vnc.android.cursor.item
-          case FAV_EXERCISE_WITH_ID:
-              return ExerciseContract.ExerciseEntry.CONTENT_ITEM_FAV;
+            //vnc.android.cursor.item
+            case FAV_EXERCISE_WITH_ID:
+                return ExerciseContract.ExerciseEntry.CONTENT_ITEM_FAV;
 
-          case ALL_EXERCISE:
-              return ExerciseContract.ExerciseEntry.CONTENT_DIR_ALL;
+            case ALL_EXERCISE:
+                return ExerciseContract.ExerciseEntry.CONTENT_DIR_ALL;
 
-          case ALL_EXERCISE_WITH_ID:
-              return ExerciseContract.ExerciseEntry.CONTENT_ITEM_ALL;
+            case ALL_EXERCISE_WITH_ID:
+                return ExerciseContract.ExerciseEntry.CONTENT_ITEM_ALL;
 
-          default:
-              throw new UnsupportedOperationException("Unable to get type because of unknown uri:" + uri);
-      }
+            default:
+                throw new UnsupportedOperationException("Unable to get type because of unknown uri:" + uri);
+        }
 
     }
 
@@ -134,36 +133,36 @@ public class ExerciseContentProvider extends ContentProvider {
         final SQLiteDatabase db = dbHelper.getWritableDatabase();
         final int match = uriMatcher.match(uri);
 
-        Log.d(TAG,"insert by uri: " + uri);
-        Log.d(TAG,"matcher: " + match);
+        Log.d(TAG, "insert by uri: " + uri);
+        Log.d(TAG, "matcher: " + match);
 
         switch (match) {
-           case FAV_EXERCISE:
-               db.beginTransaction();
-               try {
-                   // use the insert method to insert
-                   long id = db.insert(ExerciseContract.ExerciseEntry.TABLE_EXERCISE, null,
-                           contentValues);
-                   // if id is return
-                   if (id > 0) {
-                       // build the insert URI with the returned ID
-                       insertUri = ExerciseContract.ExerciseEntry.buildFavoriteExerciseUriWithId(id);
-                       db.setTransactionSuccessful();
-                       //return insertUri;
-                   } else {
-                       throw new android.database.SQLException("unable to insert into table:" +
-                               ExerciseContract.ExerciseEntry.TABLE_EXERCISE);
-                   }
+            case FAV_EXERCISE:
+                db.beginTransaction();
+                try {
+                    // use the insert method to insert
+                    long id = db.insert(ExerciseContract.ExerciseEntry.TABLE_EXERCISE, null,
+                            contentValues);
+                    // if id is return
+                    if (id > 0) {
+                        // build the insert URI with the returned ID
+                        insertUri = ExerciseContract.ExerciseEntry.buildFavoriteExerciseUriWithId(id);
+                        db.setTransactionSuccessful();
+                        //return insertUri;
+                    } else {
+                        throw new android.database.SQLException("unable to insert into table:" +
+                                ExerciseContract.ExerciseEntry.TABLE_EXERCISE);
+                    }
 
-               } finally {
-                   db.endTransaction();
-               }
-               break;
-           default:
-               throw new UnsupportedOperationException("insert fail-unsupported url");
-       }
+                } finally {
+                    db.endTransaction();
+                }
+                break;
+            default:
+                throw new UnsupportedOperationException("insert fail-unsupported url");
+        }
 
-       return insertUri;
+        return insertUri;
 
     }
 
@@ -179,57 +178,13 @@ public class ExerciseContentProvider extends ContentProvider {
         Uri insertUri = null;
         final SQLiteDatabase db = dbHelper.getWritableDatabase();
         final int match = uriMatcher.match(uri);
-        Log.d(TAG,"insert by uri: " + uri);
-        Log.d(TAG,"matcher: " + match);
+        Log.d(TAG, "insert by uri: " + uri);
+        Log.d(TAG, "matcher: " + match);
         int rowsInserted = 0;
-
-        // db.query("")
 
         switch (match) {
             case FAV_EXERCISE:
-//                db.beginTransaction();
-//                try {
-//                    for (ContentValues value : values) {
-//                        // insert a row and return the id of the row
-//                        /*
-//                        builder.append("CREATE TABLE IF NOT EXISTS " + ALL_TABLE)
-//                                .append(" (")
-//                                .append(ExerciseContract.ExerciseEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,")
-//                                .append(ExerciseContract.ExerciseEntry.CATEGORY +  TEXT_NOT_NULL + ",")
-//                                .append(ExerciseContract.ExerciseEntry.CATEGORY_DESC +  TEXT_NOT_NULL + ",")
-//                                .append(ExerciseContract.ExerciseEntry.EXERCISE_ID + TEXT_NOT_NULL + ",")
-//                                .append(ExerciseContract.ExerciseEntry.EXERCISE_NAME +  TEXT_NOT_NULL + ",")
-//                                .append(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION +  TEXT_NOT_NULL + ",")
-//                                .append(ExerciseContract.ExerciseEntry.EXERCISE_STEPS +  TEXT_NOT_NULL + ",")
-//                                .append(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE +  TEXT_NOT_NULL + ",")
-//                                .append(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO +  TEXT_NOT_NULL)
-//                                .append(");");
-//                                */
-//
-//                        long _id = db.insert(ExerciseContract.ExerciseEntry.TABLE_EXERCISE,null,
-//                            value);
-//
-//                        Log.d(TAG, "bulk insert ContentValues:" + _id);
-//                        if (_id != -1) {
-//                            rowsInserted++;
-//                            Log.d(TAG, "total bulk insert num:" + rowsInserted);
-//                        }
-//                    }
-//                    db.setTransactionSuccessful();
-//                } finally {
-//                    db.endTransaction();
-//                }
-//
-//                if (rowsInserted > 0) {
-//                    // need to notify the data change is happnened to URI uri
-//                    getContext().getContentResolver().notifyChange(uri, null);
-//                }
-//
-//                Log.d(TAG,"bulk insert:" + rowsInserted);
-//                return rowsInserted; // need to return the number of rows that have been inserted
-
                 return -1;
-
             case ALL_EXERCISE:
                 db.beginTransaction();
                 try {
@@ -255,46 +210,6 @@ public class ExerciseContentProvider extends ContentProvider {
                 return super.bulkInsert(uri, values);
         }
 
-       // return deleteRowsNum ;
-/*
-        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-
-        switch (sUriMatcher.match(uri)) {
-
-            case CODE_WEATHER:
-                db.beginTransaction();
-                int rowsInserted = 0;
-                try {
-                    for (ContentValues value : values) {
-                        long weatherDate =
-                                value.getAsLong(WeatherContract.WeatherEntry.COLUMN_DATE);
-                        if (!SunshineDateUtils.isDateNormalized(weatherDate)) {
-                            throw new IllegalArgumentException("Date must be normalized to insert");
-                        }
-
-                        long _id = db.insert(WeatherContract.WeatherEntry.TABLE_NAME, null, value);
-                        if (_id != -1) {
-                            rowsInserted++;
-                        }
-                    }
-                    db.setTransactionSuccessful();
-                } finally {
-                    db.endTransaction();
-                }
-
-                if (rowsInserted > 0) {
-                    getContext().getContentResolver().notifyChange(uri, null);
-                }
-
-                return rowsInserted;
-
-            default:
-                return super.bulkInsert(uri, values);
-        }
-
-        */
-
-
     }
 
     @Override
@@ -303,16 +218,16 @@ public class ExerciseContentProvider extends ContentProvider {
         int match = uriMatcher.match(uri);
         int deleteRowsNum = 0;
 
-        Log.d(TAG,"delete by uri: " + uri);
-        Log.d(TAG,"matcher: " + match);
-        Log.d(TAG,"where clause: " + whereClause);
+        Log.d(TAG, "delete by uri: " + uri);
+        Log.d(TAG, "matcher: " + match);
+        Log.d(TAG, "where clause: " + whereClause);
 
         switch (match) {
             case FAV_EXERCISE:
-                deleteRowsNum  = db.delete(ExerciseContract.ExerciseEntry.TABLE_EXERCISE, whereClause, whereArgs);
+                deleteRowsNum = db.delete(ExerciseContract.ExerciseEntry.TABLE_EXERCISE, whereClause, whereArgs);
                 break;
             case ALL_EXERCISE:
-                deleteRowsNum  = db.delete(ExerciseContract.ExerciseEntry.TABLE_ALL, whereClause, whereArgs);
+                deleteRowsNum = db.delete(ExerciseContract.ExerciseEntry.TABLE_ALL, whereClause, whereArgs);
                 break;
             case FAV_EXERCISE_WITH_ID:
                 db.beginTransaction();
@@ -333,8 +248,8 @@ public class ExerciseContentProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Unable to delete table by uri:" + uri);
         }
-        Log.d(TAG,"delete number of rows:" + deleteRowsNum);
-        return deleteRowsNum ;
+        Log.d(TAG, "delete number of rows:" + deleteRowsNum);
+        return deleteRowsNum;
     }
 
     @Override
@@ -378,11 +293,6 @@ public class ExerciseContentProvider extends ContentProvider {
                     Log.d(TAG, "contentValues:" + contentValues.toString());
                     Log.d(TAG, "where " + ExerciseContract.ExerciseEntry.EXERCISE_ID + " = " + whereArgs[0]);
 
-//                    updatedRowsNum = db.update(ExerciseContract.ExerciseEntry.TABLE_ALL,
-//                            contentValues,
-//                            ExerciseContract.ExerciseEntry.EXERCISE_ID + " = ?", // baseColumn's ExerciseID, not _id
-//                            new String[]{whereArgs[0], whereArgs[1]});
-
                     updatedRowsNum = db.update(ExerciseContract.ExerciseEntry.TABLE_ALL,
                             contentValues,
                             whereClause, // baseColumn's ExerciseID, not _id
@@ -403,13 +313,13 @@ public class ExerciseContentProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Unable to update table by uri:" + uri);
 
-       }
+        }
 
-       if (updatedRowsNum > 0) {
+        if (updatedRowsNum > 0) {
             // notify the change
-           getContext().getContentResolver().notifyChange(uri,null);
-       }
-       return updatedRowsNum;
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return updatedRowsNum;
     }
 
 }

@@ -47,7 +47,7 @@ import com.google.android.youtube.player.YouTubePlayerView;
  */
 public class ExerciseDetailFragment extends Fragment {
 
-    private static final String API_KEY="AIzaSyDy8aQ5OavXmxILBp_Oijz3O3VXlEcS7ys";
+    private static final String API_KEY = "AIzaSyDy8aQ5OavXmxILBp_Oijz3O3VXlEcS7ys";
     private static String TAG = ExerciseDetailFragment.class.getSimpleName();
     public static String CURRENT_EXERCISE_KEY = "current_exercise";
     public static String CURRENT_EXERCISE_STEPS = "current_exerciseSteps";
@@ -116,7 +116,7 @@ public class ExerciseDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(TAG,"onCreateView!");
+        Log.d(TAG, "onCreateView!");
         // Inflate the layout for this fragment
         View fragmentRootView = inflater.inflate(R.layout.fragment_exercise_detail2, container, false);
 
@@ -124,7 +124,7 @@ public class ExerciseDetailFragment extends Fragment {
         mExerciseSteps = (TextView) fragmentRootView.findViewById(R.id.exercise_steps);
         mNoVideo = (TextView) fragmentRootView.findViewById(R.id.text_no_video);
         mPlaceHolder = (TextView) fragmentRootView.findViewById(R.id.text_get_start);
-        mFrameLayoutForVideo = (FrameLayout)fragmentRootView.findViewById(R.id.youtube_fragment);
+        mFrameLayoutForVideo = (FrameLayout) fragmentRootView.findViewById(R.id.youtube_fragment);
 
         // TODO: Restore the saved instance state
         if (savedInstanceState != null) {
@@ -149,7 +149,7 @@ public class ExerciseDetailFragment extends Fragment {
             initializeYoutubeFragment();
         }
 
-        Log.d(TAG,"============== View initial state is ? " + mDetailViewInitState + " ============");
+        Log.d(TAG, "============== View initial state is ? " + mDetailViewInitState + " ============");
         if (mDetailViewInitState) {
             showGetStartPlaceHolderStr(mDetailViewInitState);
         }
@@ -174,13 +174,13 @@ public class ExerciseDetailFragment extends Fragment {
 
     public void showGetStartPlaceHolderStr(boolean isInit) {
         if (isInit) {
-            Log.d(TAG,"======= Init is true so show the Initial place holder string! =======");
+            Log.d(TAG, "======= Init is true so show the Initial place holder string! =======");
             mPlaceHolder.setVisibility(View.VISIBLE); // No Exercise is selected!
             // Not show video until the video is clicked
             mNoVideo.setVisibility(View.GONE);
             mExerciseSteps.setVisibility(View.GONE);
         } else {
-            Log.d(TAG,"Not in the initial state!");
+            Log.d(TAG, "Not in the initial state!");
         }
     }
 
@@ -210,6 +210,7 @@ public class ExerciseDetailFragment extends Fragment {
     }
 
     // ====== Initialize the YouTubePlayerFragment Method =======
+
     /**
      * Initialize a YouTubePlayer, which can be used to play videos and control video playback.
      * One of the callbacks in listener will be invoked when the initialization succeeds or fails.
@@ -228,21 +229,21 @@ public class ExerciseDetailFragment extends Fragment {
                     mYoutubePlayer = player;
                     mYoutubePlayer.setShowFullscreenButton(false);
                     if (mVideoURIStr != null || !mVideoURIStr.isEmpty()) {
-                        Log.d(TAG,"DEBUG:::onInitializationSuccess: Video Position -> " + mVideoPosition);
+                        Log.d(TAG, "DEBUG:::onInitializationSuccess: Video Position -> " + mVideoPosition);
                         if (mVideoPosition > 0) {
                             // Resume the Video position
-                            Log.d(TAG,"onInitializationSuccess - resume video position!");
+                            Log.d(TAG, "onInitializationSuccess - resume video position!");
                             //mYoutubePlayer.seekToMillis(mVideoPosition);
-                            mYoutubePlayer.cueVideo(mVideoURIStr,mVideoPosition);
+                            mYoutubePlayer.cueVideo(mVideoURIStr, mVideoPosition);
                             //mYoutubePlayer.play(); // start to play the video if we have a position
                             // mYoutubePlayer.seekToMillis(mVideoPosition);
                         } else {
-                            Log.d(TAG,"DEBUG:::cueVideo without position");
+                            Log.d(TAG, "DEBUG:::cueVideo without position");
                             mYoutubePlayer.cueVideo(mVideoURIStr);
                         }
                         initSuccess = true;
                     } else {
-                        Toast.makeText(getContext(),getString(R.string.invalid_video_url),Toast.LENGTH_LONG);
+                        Toast.makeText(getContext(), getString(R.string.invalid_video_url), Toast.LENGTH_LONG);
                         initSuccess = false;
                         //showVideo(false);
                     }
@@ -251,7 +252,7 @@ public class ExerciseDetailFragment extends Fragment {
 
             @Override
             public void onInitializationFailure(YouTubePlayer.Provider arg0, YouTubeInitializationResult arg1) {
-                Log.e(TAG,"unable to initialize the YouTube Player");
+                Log.e(TAG, "unable to initialize the YouTube Player");
             }
         });
         // if only when the Detail Fragment is already attached to the parent activity class, add the youtubeplayer fragment
@@ -261,7 +262,7 @@ public class ExerciseDetailFragment extends Fragment {
             mFrameLayoutForVideo.setVisibility(View.VISIBLE);
             showVideo(initSuccess);
         } else {
-            Log.e(TAG,"Detail Fragment is not attached to the parent activity");
+            Log.e(TAG, "Detail Fragment is not attached to the parent activity");
         }
 
     }
@@ -270,6 +271,7 @@ public class ExerciseDetailFragment extends Fragment {
     /**
      * when exercise is clicked, set the fragment data.
      * setFragmentData
+     *
      * @param bundle
      */
     public void setFragmentData(Bundle bundle) {
@@ -279,7 +281,7 @@ public class ExerciseDetailFragment extends Fragment {
         Log.d(TAG, "setFragmentData:" + mExerciseSteps.getText());
     }
 
-    private void resumeVideoSettings(){
+    private void resumeVideoSettings() {
         Bundle savedInstanceState = null;
 
         if (savedInstanceState != null) {
@@ -317,7 +319,7 @@ public class ExerciseDetailFragment extends Fragment {
         }
     }
 
-    public void setTwoPaneMode(boolean isTwoPane){
+    public void setTwoPaneMode(boolean isTwoPane) {
 
         mTwoPaneMode = isTwoPane;
     }
@@ -327,7 +329,7 @@ public class ExerciseDetailFragment extends Fragment {
     public void onPause() {
         Log.d(TAG, "onPause");
         super.onPause();
-        if(mYoutubePlayer != null){
+        if (mYoutubePlayer != null) {
             // save the state of the video and release the resources
             Log.d(TAG, "background - onPause - save the video position before releasing the player!");
             mVideoPosition = mYoutubePlayer.getCurrentTimeMillis();
@@ -385,7 +387,7 @@ public class ExerciseDetailFragment extends Fragment {
 
     // Release the player reference
     private void releasePlayer() {
-    //mNotificationManager.cancelAll();
+        //mNotificationManager.cancelAll();
         if (mYoutubePlayer != null) {
             mYoutubePlayer.play();
             mYoutubePlayer.release();
@@ -397,16 +399,16 @@ public class ExerciseDetailFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.d(TAG,"==============onSaveInstanceState============");
-        Log.d(TAG,"onSaveInstanceState mVideoPosition is:" + mVideoPosition);
+        Log.d(TAG, "==============onSaveInstanceState============");
+        Log.d(TAG, "onSaveInstanceState mVideoPosition is:" + mVideoPosition);
         //mVideoPosition = mYoutubePlayer.getCurrentTimeMillis();
         outState.putInt(CURRENT_VIDEO_POSITION_KEY, mVideoPosition);
         outState.putString(CURRENT_EXERCISE_KEY, mExerciseID);
-        outState.putString(CURRENT_EXERCISE_STEPS, (String)mExerciseSteps.getText());
+        outState.putString(CURRENT_EXERCISE_STEPS, (String) mExerciseSteps.getText());
         outState.putBoolean(SHOW_VIDEO, mDetailViewInitState);
-        if (mVideoURIStr !=null) {
+        if (mVideoURIStr != null) {
             outState.putString(CURRENT_EXERCISE_VIDEO, mVideoURIStr);
         }
-        outState.putBoolean(SHOW_VIDEO,mDetailViewInitState); // remember the state of the detail view
+        outState.putBoolean(SHOW_VIDEO, mDetailViewInitState); // remember the state of the detail view
     }
 }
