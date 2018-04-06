@@ -240,7 +240,6 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                 mCurrentTabPosition = tabPosition;
                 String tabText = (String) tab.getText();
                 CharSequence debugmsg = "tab position:" + tabPosition + " tab text:" + tabText;
-                // Toast.makeText(getApplicationContext(), debugmsg, Toast.LENGTH_LONG).show();
                 mViewPager.setCurrentItem(tab.getPosition());
                 switch (tabPosition) {
                     case 0:

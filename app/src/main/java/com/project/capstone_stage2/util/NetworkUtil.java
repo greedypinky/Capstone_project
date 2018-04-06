@@ -10,6 +10,11 @@ import android.view.View;
 import android.widget.TextView;
 
 public class NetworkUtil {
+
+    // prevent the creation of the NetworkUtil instance outside of the package
+    private NetworkUtil(){
+    }
+
     /**
      * Checks if the device is currently connected to the network.
      *

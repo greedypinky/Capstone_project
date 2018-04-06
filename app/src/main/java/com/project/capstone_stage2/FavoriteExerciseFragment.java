@@ -160,15 +160,12 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         AnalyticsApplication application = (AnalyticsApplication) getActivity().getApplication();
         mTracker = application.getDefaultTracker();
 
-
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_favorite_exercise, container, false);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.fav_execise_recyclerview);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setHasFixedSize(true);
-        // fixed the nullpointerException by pass in context from constructor
         mAdapter = new FavExerciseListAdapter(getActivity().getApplicationContext(), this);
-        // mAdapter = new ExerciseListAdapter(getContext(), this, false);
         mRecyclerView.setAdapter(mAdapter);
         mNoDataText = (TextView) rootView.findViewById(R.id.fav_exercise_no_data_error_text);
         mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.fav_exercise_loading_indicator);
@@ -250,9 +247,8 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
 
     @Override
     public void onClickExercise(Cursor cursor) {
-        Toast.makeText(getContext(), "navigate to Detail view", Toast.LENGTH_LONG).show();
         Log.d(TAG, "onClickExercise:check 2 Pane mode is:" + mTwoPane);
-        Toast.makeText(getContext(), "2 pane mode:" + mTwoPane, Toast.LENGTH_LONG).show();
+        //Toast.makeText(getContext(), "2 pane mode:" + mTwoPane, Toast.LENGTH_LONG).show();
         String exeCategory = null;
         String exeName = null;
         String exeID = null;
@@ -269,7 +265,8 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
 
         // One-Pane
         if (!mTwoPane) {
-            // Toast.makeText(getContext(), "One Pane-navigate to Detail view", Toast.LENGTH_LONG).show();
+
+            Log.d(TAG,"One Pane - will navigate to the Detail view");
             Intent intent = new Intent(getContext(), ExerciseDetailActivity.class);
             Bundle bundle = new Bundle();
             bundle.putString(ExerciseDetailActivity.EXERCISE_CATEGORY, exeCategory);
@@ -284,8 +281,9 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
             // when in Two pane!
             // Activity need to implement the Fragment listener to pass back the information to show the video
             // show the video on the right pane
+            Log.d(TAG,"Two Pane mode!");
             mListener.favTwoPaneModeOnClick(exeID, exeSteps, exeVideoURL);
-            // Toast.makeText(getContext(), "twoPaneModeOnClick Callback method is called for 2pane mode!", Toast.LENGTH_LONG).show();
+
         }
     }
 
@@ -350,11 +348,8 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         //updateAllExerciseFavoriteCol(exeID, contentValues);
         Uri updateALlExerciseURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
         ExerciseUtil.updateAllExerciseFavoriteCol(this, updateALlExerciseURI, contentValues, exeID, catName);
-        if (deleteRow > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        // Thanks for the suggestion, it is really helpful
+        return deleteRow > 0;
     }
 
 

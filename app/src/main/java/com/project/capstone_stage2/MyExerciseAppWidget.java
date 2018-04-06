@@ -45,34 +45,6 @@ public class MyExerciseAppWidget extends AppWidgetProvider {
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        super.onReceive(context, intent);
-    }
-
-    @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        // There may be multiple widgets active, so update all of them
-        for (int appWidgetId : appWidgetIds) {
-            // updateAppWidget(context, appWidgetManager, appWidgetId);
-        }
-    }
-
-    @Override
-    public void onDeleted(Context context, int[] appWidgetIds) {
-        super.onDeleted(context, appWidgetIds);
-    }
-
-    @Override
-    public void onEnabled(Context context) {
-        // Enter relevant functionality for when the first widget is created
-    }
-
-    @Override
-    public void onDisabled(Context context) {
-        // Enter relevant functionality for when the last widget is disabled
-    }
-
     // if we plan to use IntentService to update the widget
     public static class UpdateWidgetService extends IntentService {
         public UpdateWidgetService() {
@@ -99,7 +71,6 @@ public class MyExerciseAppWidget extends AppWidgetProvider {
                 } catch (NullPointerException e) {
                 }
             }
-
         }
     }
 
@@ -133,9 +104,6 @@ public class MyExerciseAppWidget extends AppWidgetProvider {
             bundle.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             startListViewServiceIntent.putExtras(bundle);
 
-            // startListViewServiceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-            // startListViewServiceIntent.putParcelableArrayListExtra(WIDGET_EXERCISE_DATA, exercises);
-            // startListViewServiceIntent.putExtra(WIDGET_EXERCISE_DATA, "");
             // TODO: populate the data - need to implement the data correctly
             remoteViews.setRemoteAdapter(R.id.widget_exercise_listview, startListViewServiceIntent);
 
@@ -146,16 +114,9 @@ public class MyExerciseAppWidget extends AppWidgetProvider {
 //                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 //        remoteViews.setPendingIntentTemplate(R.id.widget_exercise_listview, clickPendingIntentTemplate);
 
-            // The empty view is displayed when the collection has no items.
-
-            // It should be in the same layout used to instantiate the RemoteViews  object above.
-
-            //remoteViews.setEmptyView(R.id.widget_ListView, R.id.widget_empty_view);
         }
         Log.d(TAG, "call appWidgetManager.updateAppWidget");
         appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
     }
-
-
 }
 
