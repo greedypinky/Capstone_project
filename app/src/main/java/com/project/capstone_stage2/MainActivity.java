@@ -157,7 +157,6 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
         showAds();
 
         // TODO: please add back the Intent and StartActivity with the intent!!
-        Toast.makeText(this, "Start activity for " + category.getCategoryName(), Toast.LENGTH_LONG).show();
         Intent intent = new Intent(this, ExerciseSwipeViewActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("name", category.getCategoryName());

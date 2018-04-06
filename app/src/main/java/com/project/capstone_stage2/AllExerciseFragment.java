@@ -335,8 +335,6 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         if (cursor != null || !cursor.isClosed()) {
             // Defines an object to contain the new values to insert
             ContentValues mNewValues = new ContentValues();
-
-/// 01-23 00:07:05.885 2637-2637/com.project.capstone_stage2 E/CursorWindow: Failed to read row 0, column 7 from a CursorWindow which has 2 rows, 7 columns.
             mNewValues.put(ExerciseContract.ExerciseEntry.CATEGORY, cursor.getString(1));
             mNewValues.put(ExerciseContract.ExerciseEntry.CATEGORY_DESC, cursor.getString(2));
             mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_ID, cursor.getString(3));
@@ -351,20 +349,17 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
                     .insert(ExerciseContract.ExerciseEntry.CONTENT_URI_FAV, mNewValues);
             Log.d(TAG, "insert favorite exercise result uri: " + insertUri);
         } else {
-            Toast.makeText(getContext(), "Error:Cursor is not valid!", Toast.LENGTH_LONG).show();
+            Log.e(TAG, "Error:Cursor is not valid! ");
         }
 
         if (checkAlreadyInsertAsFavorite(exeID)) {
-            //mFavMap.put(exeName,true);
             // TODO: disable the ADD Favorite button!
             ContentValues contentValues = new ContentValues();
             // set the favorite flag = 1
             contentValues.put(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE, 1);
             // TODO: update the AllExercise table's favorite flag
             Uri uri = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
-            // Uri uri = ExerciseContract.ExerciseEntry.buildAllExerciseUriWithId(id);
             updateAllExerciseFavoriteCol(uri, contentValues, exeID, category);
-            //updateAllExerciseFavoriteCol(exeID, contentValues);
             return true;
         }
 
@@ -396,10 +391,6 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 
     }
 
-    //D/AllExerciseFragment: insert favorite exercise result uri: content://com.project.capstone_stage2.app.provider/FavoriteExercise/1
-//02-18 18:28:48.324 2832-2832/com.project.capstone_stage2 D/ExerciseContentProvider: QUERY:FAVORITE EXERCISE Query from FavoriteExercise
-//02-18 18:28:48.325 2832-2832/com.project.capstone_stage2 D/ExerciseContentProvider: cursor count:0
-//            02-18 18:28:48.325 2832-2832/com.project.capstone_stage2 D/ContentValues: addFavorite flag:false
     public boolean checkAlreadyInsertAsFavorite(String exerciseID) {
         Uri uri = ExerciseContract.ExerciseEntry.CONTENT_URI_FAV;
         String[] projections = {ExerciseContract.ExerciseEntry.EXERCISE_ID, ExerciseContract.ExerciseEntry.EXERCISE_NAME};
@@ -412,7 +403,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
                 Log.d(TAG, "Assert if favorite is added ::: checkAlreadyInsertAsFavorite:" + cursor.getCount());
                 return true;
             } else {
-                Log.d(TAG, "Error:::unable to query the added favorite exercise!");
+                Log.e(TAG, "Error:::unable to query the added favorite exercise!");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -432,8 +423,8 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     // public void updateAllExerciseFavoriteCol(Uri updateURI,String exerciseID, ContentValues contentValues){
     public void updateAllExerciseFavoriteCol(Uri updateURI, ContentValues contentValues, String exeID, String category) {
         // TODO: need to refresh the list after a list is deleted
-        Log.e(TAG, "update AllExercise Table's favorite flag!");
-        Log.e(TAG, "ContentValues:" + contentValues);
+        Log.d(TAG, "update AllExercise Table's favorite flag!");
+        Log.d(TAG, "ContentValues:" + contentValues);
         // Uri updateURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
         //String whereClause = ExerciseContract.ExerciseEntry._ID + " = ?";
         String whereClause = ExerciseContract.ExerciseEntry.EXERCISE_ID + " = ? AND " + ExerciseContract.ExerciseEntry.CATEGORY + " = ?";
@@ -442,7 +433,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         //int updateRow = getActivity().getContentResolver().update(updateURI, contentValues, whereClause, new String[]{exeID});
 
         int updateRow = getActivity().getContentResolver().update(updateURI, contentValues, whereClause, new String[]{exeID, category});
-        Log.e(TAG, "updateAllExerciseFavoriteCol #of row:" + updateRow);
+        Log.d(TAG, "updateAllExerciseFavoriteCol #of row:" + updateRow);
     }
 
     private ExerciseListAdapter getAdapter() {
@@ -460,10 +451,10 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 
                 String exerciseName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
                 int favorite = cursor.getInt(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE));
-                Log.e(TAG, ">>>>> Curosr 's ExerciseName:" + exerciseName);
-                Log.e(TAG, ">>>>> Cursor 's favorite flag:" + favorite);
+                Log.d(TAG, ">>>>> Curosr 's ExerciseName:" + exerciseName);
+                Log.d(TAG, ">>>>> Cursor 's favorite flag:" + favorite);
                 boolean toggle = (favorite == 1) ? true : false;
-                Log.e(TAG, ">>>>> if favorite ==1 set to true,else false:" + toggle);
+                Log.d(TAG, ">>>>> if favorite ==1 set to true,else false:" + toggle);
                 updateButtonState(toggle, exerciseName);
 
             }
@@ -508,7 +499,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 
                 if (vh != null) {
 
-                    Log.e(TAG, "=====================updateButtonState=====================");
+                    Log.d(TAG, "=====================updateButtonState=====================");
 
                     Button addFavoriteBtn = vh.mAddFavButton;
                     if (addFavoriteBtn != null) {
@@ -539,12 +530,12 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 
                 if (vh != null) {
                     if (vh.mExerciseName.getText().toString().compareTo(exerciseName) == 0) {
-                        Log.e(TAG, "=====================updateButtonState=====================");
-                        Log.e(TAG, "=====findViewHolderForAdapterPosition?=====" + i);
-                        Log.e(TAG, "VH is NOT Null - get the button and toggle it!");
-                        Log.e(TAG, "Cursor passin's exercise name:" + exerciseName);
-                        Log.e(TAG, "VH properties:" + vh.mExerciseName.getText().toString());
-                        Log.e(TAG, "VH properties:" + vh.mExerciseDesc.getText().toString());
+                        Log.d(TAG, "=====================updateButtonState=====================");
+                        Log.d(TAG, "=====findViewHolderForAdapterPosition?=====" + i);
+                        Log.d(TAG, "VH is NOT Null - get the button and toggle it!");
+                        Log.d(TAG, "Cursor passin's exercise name:" + exerciseName);
+                        Log.d(TAG, "VH properties:" + vh.mExerciseName.getText().toString());
+                        Log.d(TAG, "VH properties:" + vh.mExerciseDesc.getText().toString());
                         Button addFavoriteBtn = vh.mAddFavButton;
                         if (addFavoriteBtn != null) {
                             Log.e(TAG, ">>>>> UpdateButtonState:" + toggle);
@@ -588,7 +579,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
                 }
             } else {
 
-                Log.e(TAG, "unable to get the cursor!");
+                Log.e(TAG, "ERROR:::unable to get the cursor!");
             }
         } else {
             Log.e(TAG, "ERROR::: Why unable to get ContentResolver!");
