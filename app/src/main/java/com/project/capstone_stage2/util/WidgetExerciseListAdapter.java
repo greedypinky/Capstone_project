@@ -96,6 +96,8 @@ public class WidgetExerciseListAdapter extends RecyclerView.Adapter<WidgetExerci
             // holder.mExerciseDesc.setText(mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION)));
             // set the DUMMY data for now
             holder.mExerciseDesc.setText("<exercise description here...>");
+
+            // TODO: Technical debt-source clean up - why using default image?
             String imageURL = mCursor.getString(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE));
 
             // holder.mExerciseImage.setImageResource(mCursor.getInt(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE)));

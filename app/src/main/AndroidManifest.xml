@@ -49,7 +49,7 @@
         <service
             android:name=".sync.ExerciseSyncIntentService"
             android:exported="false" />
-        <!-- IntentService to update widget-->
+        <!-- IntentService to update widget -->
         <service
             android:name=".MyExerciseAppWidget$UpdateWidgetService"
             android:exported="false" />
@@ -63,8 +63,9 @@
             </intent-filter>
         </service>
 
-        <!-- Remote View service to create the listview-->
-        <service android:name=".util.ListViewWidgetService"
+        <!-- Remote View service to create the listview -->
+        <service
+            android:name=".util.ListViewWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <!-- Include the AdActivity configChanges and theme. -->
@@ -76,10 +77,35 @@
             android:name=".WidgetConfigActivity"
             android:label="@string/title_activity_widget_config"
             android:theme="@style/AppTheme.NoActionBar">
-        <intent-filter>
-            <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
-        </intent-filter>>
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+            >
         </activity>
+        <activity
+            android:name=".pref.ExercisePreferenceActivity"
+            android:label="@string/title_activity_preference"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+
+        <receiver
+            android:name=".reminders.AlarmReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.developer.capstone.action.REMINDERS" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".reminders.ReminderIntentService"
+            android:exported="false" />
+        <service
+            android:name=".reminders.MyIntentService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

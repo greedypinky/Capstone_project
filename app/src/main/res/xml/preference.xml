@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <SwitchPreferenceCompat
+        android:key="@string/pref_key_reminder"
+        android:title="@string/pref_reminder_title"
+        android:summary="@string/pref_reminder_summary"
+        android:defaultValue="false" />
+
+    <ListPreference
+        android:key="@string/pref_key_time"
+        android:title="@string/pref_settime_title"
+        android:summary="@string/pref_settime_summary"
+        android:entries="@array/time_entries"
+        android:entryValues="@array/time_values"
+        android:defaultValue="12:00"
+        android:dependency="@string/pref_key_reminder"/>
+
+
+</PreferenceScreen>

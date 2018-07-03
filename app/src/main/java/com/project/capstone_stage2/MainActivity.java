@@ -13,6 +13,9 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -25,6 +28,8 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.project.capstone_stage2.R;
+import com.project.capstone_stage2.pref.ExercisePreferenceActivity;
+import com.project.capstone_stage2.pref.ExercisePreferenceFragment;
 import com.project.capstone_stage2.sync.ExerciseDataSyncTask;
 import com.project.capstone_stage2.util.CategoryListAdapter;
 import com.project.capstone_stage2.util.EndPointsAsyncTask;
@@ -66,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
     private InterstitialAd mInterstitial;
     private Tracker mTracker; // https://developers.google.com/analytics/devguides/collection/android/v4/
     private static final String PREF_GETENDPOINT = "getendpoint";
+    private static String mEndPointResponse = "";
 
 
     @Override
@@ -202,21 +208,28 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
         }
     }
 
+    // Call back method to set the EndPoint API result from the Async Task
     @Override
     public void processFinish(String result) {
         Log.d(TAG, "Google Endpoint API response:-" + result);
         if ("Connection refused".equals(result)) {
-            // use local mock json data from the Assets folder
-            //mEXERCISE_DATA_FROM_ENDPOINT = getJSONFromAsset();
+            Log.e(TAG,"Google API EndPoint connection failed!");
         } else {
             mEXERCISE_DATA_FROM_ENDPOINT = result;
+            // TODO: 2) Initialize the database by IntentService
+            Log.d(TAG, "Get back JSON data from the Google BackEnd API-Sync DB data by IntentService");
+            // ExerciseDataSyncTask.startImmediateSync(this, EXERCISE_DATA_FROM_ENDP
+            // This will trigger the IntentService to update the JSON data to the DB
+            ExerciseDataSyncTask.initialize(this, mEXERCISE_DATA_FROM_ENDPOINT);
+            mEndPointResponse = result;
         }
 
-        // TODO: 2) Initialize the database by IntentService
-        Log.d(TAG, "Sync DB data by IntentService");
-        // ExerciseDataSyncTask.startImmediateSync(this, EXERCISE_DATA_FROM_ENDP
-        ExerciseDataSyncTask.initialize(this, mEXERCISE_DATA_FROM_ENDPOINT);
-        showProgressBar(false);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showProgressBar(false);
+            }
+        }, 1000);
     }
 
     // at least it works when click on back
@@ -253,7 +266,25 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                 .build();
-        // mAdView.loadAd(adRequest);
+
         mInterstitial.loadAd(adRequest);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Navigate to the Preference activity
+        if( item.getItemId() == R.id.action_settings) {
+            Intent intent = new Intent(this, ExercisePreferenceActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -47,5 +47,16 @@
     <string name="toast_share_exercise">Share Exercise!</string>
     <string name="toast_add_exercise">Exercise is added as favorite!</string>
 
+    <!--Preferences Strings -->
+    <string name="pref_key_reminder" translatable="false">exercise_reminder</string>
+    <string name="pref_key_time" translatable="false">exercise_time</string>
+    <string name="pref_reminder_title">Exercise Reminder</string>
+    <string name="pref_settime_title">Exercise Time</string>
+    <string name="title_activity_preference">Preference Activity</string>
+    <string name="pref_reminder_summary">Set Exercise Reminder to do exercise</string>
+    <string name="pref_settime_summary">Set the time to trigger the reminder to do exercise</string>
+
+    <!-- menu -->
+    <string name="action_setting">Setting</string>
 
 </resources>

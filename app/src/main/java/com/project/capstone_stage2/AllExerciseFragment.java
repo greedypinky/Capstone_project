@@ -135,13 +135,16 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(HAS_DATA_KEY)) {
                 mHasData = savedInstanceState.getBoolean(HAS_DATA_KEY);
+                if (mHasData) {
+                    showData(true);
+                }
+
             }
-        }
-        if (mHasData) {
-            showData(true);
         } else {
-            showData(false);
+            Toast.makeText(getContext(),"no data yet? why?",Toast.LENGTH_SHORT);
+            showData(false); // this is false until the Activity Set the Cursor
         }
+
 
         return rootView;
     }

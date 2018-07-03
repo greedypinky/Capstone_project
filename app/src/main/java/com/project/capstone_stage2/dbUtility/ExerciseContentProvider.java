@@ -69,11 +69,13 @@ public class ExerciseContentProvider extends ContentProvider {
                     int count = cursor.getCount();
                     Log.d(TAG, "cursor count:" + count);
                 }
-                return cursor;
+                break;
+                //return cursor;
             case FAV_EXERCISE_WITH_ID:
                 Log.d(TAG, "QUERY:FAVORITE EXERCISE ID Query from " + ExerciseContract.ExerciseEntry.TABLE_EXERCISE);
                 cursor = db.query(ExerciseContract.ExerciseEntry.TABLE_EXERCISE, projection, selection, selectionArgs, null, null, sortOrder);
-                return cursor;
+                //return cursor;
+                break;
             case ALL_EXERCISE:
                 Log.d(TAG, "QUERY:ALL EXERCISE Query from " + ExerciseContract.ExerciseEntry.TABLE_ALL);
                 cursor = db.query(ExerciseContract.ExerciseEntry.TABLE_ALL, projection, selection, selectionArgs, null, null, sortOrder);
@@ -81,14 +83,21 @@ public class ExerciseContentProvider extends ContentProvider {
                     int count = cursor.getCount();
                     Log.d(TAG, "cursor count:" + count);
                 }
-                return cursor;
+                break;
+               // return cursor;
 
             case ALL_EXERCISE_WITH_ID:
-                return null;
+                //return null;
+                break;
             default:
                 throw new UnsupportedOperationException("Unable to update table by uri:" + uri);
 
+
+
         }
+
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        return cursor;
 
 
     }
@@ -149,6 +158,8 @@ public class ExerciseContentProvider extends ContentProvider {
                         insertUri = ExerciseContract.ExerciseEntry.buildFavoriteExerciseUriWithId(id);
                         db.setTransactionSuccessful();
                         //return insertUri;
+                        Log.d(TAG,"insert:notifyChanges!");
+                        getContext().getContentResolver().notifyChange(uri,null);
                     } else {
                         throw new android.database.SQLException("unable to insert into table:" +
                                 ExerciseContract.ExerciseEntry.TABLE_EXERCISE);
@@ -166,12 +177,7 @@ public class ExerciseContentProvider extends ContentProvider {
 
     }
 
-    /*
-    1-06 13:18:49.261 2545-3779/com.project.capstone_stage2 E/SQLiteDatabase: Error inserting name=Squat1 categoryDesc=Squat steps=step1step2 description= category=Squat exerciseID=1 image= video=
-    android.database.sqlite.SQLiteException: table AllExercise has no column named categoryDesc (code 1): , while compiling:
-    INSERT INTO AllExercise(name,categoryDesc,steps,description,category,exerciseID,image,video)
-    VALUES (?,?,?,?,?,?,?,?)
-   */
+
     @Override
     public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
         // TODO: Add back bulkInsert implementation
@@ -192,6 +198,7 @@ public class ExerciseContentProvider extends ContentProvider {
                         long _id = db.insert(ExerciseContract.ExerciseEntry.TABLE_ALL, null, value);
                         if (_id != -1) {
                             rowsInserted++;
+
                         }
                     }
                     db.setTransactionSuccessful();
@@ -200,6 +207,7 @@ public class ExerciseContentProvider extends ContentProvider {
                 }
 
                 if (rowsInserted > 0) {
+                    Log.d(TAG, String.format("bulk insert:notifyChanges of %d of rows is inserted!", rowsInserted));
                     getContext().getContentResolver().notifyChange(uri, null);
                 }
 
@@ -249,6 +257,10 @@ public class ExerciseContentProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unable to delete table by uri:" + uri);
         }
         Log.d(TAG, "delete number of rows:" + deleteRowsNum);
+        if (deleteRowsNum > 0) {
+            Log.d(TAG, String.format("Delete :notifyChanges of %d of rows is deleted!!", deleteRowsNum));
+            getContext().getContentResolver().notifyChange(uri,null);
+        }
         return deleteRowsNum;
     }
 
@@ -268,7 +280,7 @@ public class ExerciseContentProvider extends ContentProvider {
                 db.beginTransaction();
                 try {
                     updatedRowsNum = db.update(ExerciseContract.ExerciseEntry.TABLE_EXERCISE, contentValues, whereClause, whereArgs);
-                    //db.setTransactionSuccessful();
+                    db.setTransactionSuccessful();
                 } finally {
                     db.endTransaction();
                 }
@@ -317,6 +329,7 @@ public class ExerciseContentProvider extends ContentProvider {
 
         if (updatedRowsNum > 0) {
             // notify the change
+            Log.d(TAG, String.format("Update :notifyChanges of %d of rows is updated!!", updatedRowsNum));
             getContext().getContentResolver().notifyChange(uri, null);
         }
         return updatedRowsNum;

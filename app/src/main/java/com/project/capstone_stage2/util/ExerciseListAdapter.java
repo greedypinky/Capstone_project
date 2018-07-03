@@ -129,7 +129,7 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
             }
 
             // TODO: will use the default image for now - need to load a real image !
-            int defaultImage = R.drawable.exercise_default;
+            //int defaultImage = R.drawable.exercise_default;
             // "http://atlasonlinefitness.com/wp-content/uploads/2018/03/nao-push01.png"
             //Picasso.with(mContext).load(defaultImage).into(holder.mExerciseImage);
 //            Picasso.with(mContext)
@@ -249,28 +249,25 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
                     });
                 }
             }
-//            else {
-//                mRemoveFavButton = (Button) itemView.findViewById(R.id.remove_fav_btn);
-//                if (mRemoveFavButton!=null) {
-//                    mRemoveFavButton.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View view) {
-//
-//                            if (exerciseItemOnClickHandler != null) {
-//
-//                                int adapterPosition = getAdapterPosition();
-//                                // mCursor.moveToPosition(adapterPosition);
-//                                Cursor cursor = mCursor;
-//                                cursor.moveToPosition(adapterPosition);
-//
-//                                boolean removeFavorite = exerciseItemOnClickHandler.onRemoveFavClick(cursor);
-//                                //mAddFavButton.setEnabled(!addFavorite);
-//                            }
-//                        }
-//                    });
-//                }
-//
-//            }
+            else {
+                mRemoveFavButton = (Button) itemView.findViewById(R.id.remove_fav_btn);
+                if (mRemoveFavButton != null) {
+                    mRemoveFavButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                            if (exerciseItemOnClickHandler != null) {
+
+                                int adapterPosition = getAdapterPosition();
+                                // mCursor.moveToPosition(adapterPosition);
+                                Cursor cursor = mCursor;
+                                cursor.moveToPosition(adapterPosition);
+                                boolean removeFavorite = exerciseItemOnClickHandler.onRemoveFavClick(cursor);
+                            }
+                        }
+                    });
+                }
+            }
 
             // TODO: add onClickListener to the Fav Button to trigger the callback?
 
