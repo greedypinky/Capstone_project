@@ -103,9 +103,6 @@
         <service
             android:name=".reminders.ReminderIntentService"
             android:exported="false" />
-        <service
-            android:name=".reminders.MyIntentService"
-            android:exported="false"></service>
     </application>
 
 </manifest>
