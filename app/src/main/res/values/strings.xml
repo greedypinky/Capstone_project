@@ -59,4 +59,9 @@
     <!-- menu -->
     <string name="action_setting">Setting</string>
 
+    <!-- notification title -->
+    <string name="notification_title">Exercise Reminder</string>
+    <string name="notification_context">Click here to start your exercise!</string>
+
+
 </resources>
