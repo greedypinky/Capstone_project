@@ -8,7 +8,6 @@ tools:context="com.example.android.sunshine.DetailActivity">
 <item
     android:id="@+id/action_settings"
     android:orderInCategory="100"
-    android:icon="@android:drawable/ic_menu_preferences"
     android:title="@string/action_setting"
-    app:showAsAction="always" />
+    app:showAsAction="collapseActionView" />
 </menu>

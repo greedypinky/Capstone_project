@@ -20,8 +20,11 @@ public class ExercisePreferenceActivity extends AppCompatActivity {
 
         // get the action bar
         ActionBar actionBar = this.getSupportActionBar();
-        if(actionBar!=null) {
+        if (actionBar!=null) {
             actionBar.setDisplayHomeAsUpEnabled(true); // go back to the previous activity
+        } else {
+
+            Log.d(TAG,"unable to set the DisplayHomeAsEnabled");
         }
 
     }
@@ -29,7 +32,7 @@ public class ExercisePreferenceActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id == android.R.id.home) {
+        if (id == android.R.id.home) {
             Log.d(TAG,"Home button is selected!");
             NavUtils.navigateUpFromSameTask(this);
         }

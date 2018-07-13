@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 // Create a variable called keystorePropertiesFile, and initialize it to your
 // keystore.properties file, in the rootProject folder.
-def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystorePropertiesFile = rootProject.file("./keystore.properties")
 
 // Initialize a new Properties() object called keystoreProperties.
 def keystoreProperties = new Properties()
@@ -14,10 +14,10 @@ android {
     signingConfigs {
         // keystore location is the relative path
         release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
+            keyAlias 'capstonekey1'
+            keyPassword 'testing'
+            storeFile file('/Users/ritalaw/Documents/udacity/GitHub/Capstone_project/keystores')
+            storePassword 'testing'
         }
         debug {
             keyAlias 'androiddebugkey'
@@ -39,6 +39,11 @@ android {
         vectorDrawables.useSupportLibrary = true
 
 
+    }
+    packagingOptions {
+        //exclude 'LICENSE.txt'
+        exclude "META-INF/com.android.support_support-vector-drawable.version"
+        exclude "META-INF/com.android.support_support-v4.version"
     }
     lintOptions {
         abortOnError false
@@ -101,7 +106,6 @@ dependencies {
     // Dependency for the Android Cloud EndPoint project
     compile project(path: ':capstone_backend', configuration: 'android-endpoints')
     implementation files('libs/YouTubeAndroidPlayerApi.jar')
-
     // AndroidJUnitRunner and JUnit Rules
     // Optional -- Hamcrest library
     androidTestCompile 'org.hamcrest:hamcrest-library:1.3'

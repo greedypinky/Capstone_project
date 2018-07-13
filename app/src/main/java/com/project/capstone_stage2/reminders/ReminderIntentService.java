@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.Context;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.project.capstone_stage2.MainActivity;
 import com.project.capstone_stage2.R;
@@ -21,6 +22,7 @@ import com.project.capstone_stage2.R;
  * helper methods.
  */
 public class ReminderIntentService extends IntentService {
+    private final String TAG = ReminderIntentService.class.getSimpleName();
     // TODO: Rename actions, choose action names that describe tasks that this
     // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
     public static final String ACTION_SEND_REMINDER= "com.google.developer.capstone.action.REMINDERS";
@@ -36,6 +38,7 @@ public class ReminderIntentService extends IntentService {
         if (intent != null) {
             final String action = intent.getAction();
             if (ACTION_SEND_REMINDER.equals(action)) {
+                Log.d(TAG, "onHandleIntent - Got the Action to send reminder!");
                 handleActionReminder();
             }
         }
@@ -50,17 +53,6 @@ public class ReminderIntentService extends IntentService {
         NotificationManager notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),1,intent,PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,CHANNEL_ID);
-        builder.setContentTitle(getString(R.string.notification_title))
-                .setContentText(getString(R.string.notification_context))
-                .setSmallIcon(android.R.drawable.ic_dialog_alert)
-                .setChannelId(CHANNEL_ID)
-                .setAutoCancel(true)
-                .setPriority(NotificationManager.IMPORTANCE_DEFAULT)
-                .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
-                .setContentIntent(pendingIntent)
-                .setWhen(System.currentTimeMillis());
-
 
         // if the device is on Oreo platform or up
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -70,11 +62,21 @@ public class ReminderIntentService extends IntentService {
             notificationManager.createNotificationChannel(channel);
         }
 
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,CHANNEL_ID);
+        builder.setContentTitle(getString(R.string.notification_title))
+                .setContentText(getString(R.string.notification_context))
+                .setSmallIcon(android.R.drawable.ic_dialog_alert)
+                .setChannelId(CHANNEL_ID) // Oreo requires Channel for notification
+                .setAutoCancel(true)
+                .setPriority(NotificationManager.IMPORTANCE_HIGH)
+                .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
+                .setContentIntent(pendingIntent) // pendingIntent is to start the MainActivity of the App
+                .setWhen(System.currentTimeMillis());
 
         // TODO: create channel for Oreo devices
         // use NotificationManager to add the channel and notify
         notificationManager.notify(REMINDER_NOTIFICATOIN_ID,builder.build());
-
+        Log.d(TAG, "Notification is fire!");
     }
 
 

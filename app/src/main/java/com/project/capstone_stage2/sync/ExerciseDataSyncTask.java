@@ -20,25 +20,18 @@ import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.RetryStrategy;
 import com.firebase.jobdispatcher.Trigger;
 import com.project.capstone_stage2.dbUtility.ExerciseContract;
-import com.project.capstone_stage2.util.EndPointsAsyncTask;
 import com.project.capstone_stage2.util.RemoteEndPointUtil;
-
 import java.util.concurrent.TimeUnit;
 
 public class ExerciseDataSyncTask {
-
-    /*
-    * Interval at which to sync with the weather. Use TimeUnit for convenience, rather than
-    * writing out a bunch of multiplication ourselves and risk making a silly mistake.
-    */
-//    private static final int SYNC_INTERVAL_HOURS = 3;
-//    private static final int SYNC_INTERVAL_SECONDS = (int) TimeUnit.HOURS.toSeconds(SYNC_INTERVAL_HOURS);
-//    private static final int SYNC_FLEXTIME_SECONDS = SYNC_INTERVAL_SECONDS / 3;
-
     private static final String TAG = ExerciseDataSyncTask.class.getSimpleName();
-    private static final int SYNC_INTERVAL_MINS = 1;
-    private static final int SYNC_INTERVAL_SECONDS = (int) TimeUnit.MINUTES.toSeconds(SYNC_INTERVAL_MINS);
-    private static final int SYNC_FLEXTIME_SECONDS = SYNC_INTERVAL_SECONDS / 3;
+    /*
+    * Interval at which to sync with latest data from the backend. Use TimeUnit for convenience, rather than
+    * writing out a bunch of multiplication ourselves.
+    */
+//     private static final int SYNC_INTERVAL_HOURS = 3;
+//     private static final int SYNC_INTERVAL_SECONDS = (int) TimeUnit.HOURS.toSeconds(SYNC_INTERVAL_HOURS);
+//     private static final int SYNC_FLEXTIME_SECONDS = SYNC_INTERVAL_SECONDS / 3;
 
     private static boolean sInitialized = false;
     private static final String SYNC_TAG = "exercise-sync";
@@ -80,7 +73,8 @@ public class ExerciseDataSyncTask {
 
         Driver driver = new GooglePlayDriver(context);
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(driver);
-
+        Long duration = TimeUnit.DAYS.toSeconds(7);
+        int oneWeekDuration = duration.intValue();
         // Create the Job to periodically sync the exercise data from the endpoint server
         Job syncExerciseDataJob = dispatcher.newJobBuilder()
                 .setService(ExerciseFireBaseJobservice.class) // use the JobService to sync the data
@@ -95,11 +89,14 @@ public class ExerciseDataSyncTask {
                  * which the data should be synced. Please note that this end time is not
                  * guaranteed, but is more of a guideline for FirebaseJobDispatcher to go off of.
                  */
-                .setTrigger(Trigger.executionWindow(
-                        10,
-                        30))
+//                .setTrigger(Trigger.executionWindow(
+//                        10,
+//                        30))
+
+                .setTrigger(Trigger.executionWindow(0, oneWeekDuration))
                 .setRetryStrategy(RetryStrategy.DEFAULT_LINEAR)
                 .setReplaceCurrent(true) // replace the job if one already exists.
+                .setConstraints(Constraint.ON_ANY_NETWORK)  //Run this job only when the network is avaiable.
                 .build(); // build the job when job configurations are set
 
         //schedule the Job to get Exercise Data from the backend
