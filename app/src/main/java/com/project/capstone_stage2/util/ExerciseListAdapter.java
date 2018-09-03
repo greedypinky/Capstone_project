@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.project.capstone_stage2.ExerciseSwipeViewActivity;
@@ -118,11 +119,33 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
             Log.d(TAG, ">>>>>> onBindViewHolder: imageURL? " + imageURL);
 
             holder.toggleButtonDisable(isFavorite);
+            final ExerciseViewHolder mHolder = holder;
+            //mHolder.mImageProgressBar.setVisibility(View.VISIBLE);
 
             // holder.mExerciseImage.setImageResource(mCursor.getInt(mCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE)));
             if (!imageURL.isEmpty() && imageURL != null) {
-                // Picasso will handle loading the images on a background thread, image decompression and caching the images.
-                Picasso.with(mContext).load(imageURL).into(holder.mExerciseImage);
+//                // https://github.com/codepath/android_guides/wiki/Displaying-Images-with-the-Picasso-Library
+//                // Picasso will handle loading the images on a background thread, image decompression and caching the images.
+                Picasso.with(mContext).load(imageURL).fit().centerCrop().into(holder.mExerciseImage, new com.squareup.picasso.Callback() {
+                    @Override
+                    public void onSuccess() {
+                        if (mHolder.mImageProgressBar != null) {
+                            mHolder.mImageProgressBar.setVisibility(View.GONE);
+                        }
+                    }
+
+                    @Override
+                    public void onError() {
+                        mHolder.mImageProgressBar.setVisibility(View.GONE);
+                        mHolder.mExerciseImage.setVisibility(View.GONE);
+                        mHolder.mLoadImageError.setVisibility(View.VISIBLE);
+                        // load the error message
+                        Log.e(TAG,"Unable to load the exercise image!");
+                    }
+                });
+
+               // Picasso.with(mContext).load(imageURL).into(holder.mExerciseImage);
+
             } else {
 
                 // TODO: add the No image textview if no image for the exercise
@@ -207,6 +230,8 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
         public TextView mExerciseName;
         public TextView mExerciseDesc;
         public ImageView mExerciseImage;
+        public ProgressBar mImageProgressBar;
+        public TextView mLoadImageError;
         // Share button
         public Button mShareButton;
         // Add Favorite button
@@ -214,7 +239,7 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
         // Remove Favorite button
         public Button mRemoveFavButton;
 
-        public ExerciseViewHolder(View itemView) {
+        private ExerciseViewHolder(View itemView) {
             // initialize the views inside the view holder
             super(itemView); // must be in the first line of constructor
             mCardView = (CardView) itemView.findViewById(R.id.exercise_card_view);
@@ -223,6 +248,9 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
             mExerciseDesc = (TextView) itemView.findViewById(R.id.exercise_desc);
             mExerciseImage = (ImageView) itemView.findViewById(R.id.exercise_image);
             mShareButton = (Button) itemView.findViewById(R.id.share_btn);
+            mImageProgressBar = (ProgressBar) itemView.findViewById(R.id.image_progressBar);
+            mLoadImageError = (TextView) itemView.findViewById(R.id.loading_error_text);
+
             if (mIsAllExercise) {
                 mAddFavButton = (Button) itemView.findViewById(R.id.add_fav_btn);
                 if (mAddFavButton != null) {

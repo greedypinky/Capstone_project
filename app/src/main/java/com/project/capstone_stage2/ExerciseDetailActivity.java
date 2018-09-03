@@ -2,6 +2,7 @@ package com.project.capstone_stage2;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
@@ -13,18 +14,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
-import com.google.android.exoplayer2.C;
-import com.google.android.exoplayer2.DefaultLoadControl;
-import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.LoadControl;
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
-import com.google.android.exoplayer2.source.ExtractorMediaSource;
-import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.trackselection.TrackSelector;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.util.Util;
+import com.project.capstone_stage2.util.Exercise;
 import com.project.capstone_stage2.util.ExerciseUtil;
 import com.project.capstone_stage2.util.NetworkUtil;
 
@@ -32,16 +24,20 @@ public class ExerciseDetailActivity extends AppCompatActivity {
 
     public static final String TAG = ExerciseDetailActivity.class.getSimpleName();
     public static final String EXERCISE_CATEGORY = "exerciseCategory";
+    public static final String EXERCISE_CATEGORY_DESC= "exerciseCategoryDesc";
     public static final String EXERCISE_NAME = "exerciseName";
     public static final String EXERCISE_KEY = "exerciseID";
     public static final String EXERCISE_STEPS = "exerciseSteps";
+    public static final String EXERCISE_IMAGE_URL = "exerciseImageURL";
     public static final String EXERCISE_VIDEO_URL = "exerciseVideoURL";
 
     private FloatingActionButton mFAB = null;
     private String mExerciseCategory = null;
+    private String mExerciseCategoryDesc = null;
     private String mExerciseID = null;
     private String mExerciseName = null;
     private String mExerciseSteps = null;
+    private String mExerciseImageUrl = null;
     private String mExerciseVideoUrl = null;
     ExerciseDetailFragment mDetailFragment;
     private CoordinatorLayout mCoordinatorLayout;
@@ -73,8 +69,10 @@ public class ExerciseDetailActivity extends AppCompatActivity {
             mExerciseSteps = intent.getExtras().getString(EXERCISE_STEPS);
             mExerciseVideoUrl = intent.getExtras().getString(EXERCISE_VIDEO_URL);
             Log.d(TAG, "From intent-Get the current ExerciseID");
-            // Alternative way is to test the local mp4 files stored under the assets/raw
-            // String localUrlPath="android.resource://"+getPackageName()+"/"+R.raw.ur file name;
+
+            // TODO: for testing - get the exercise object out
+          // Exercise exercise = intent.getExtras().getParcelable("exercise");
+          // System.out.println("DEBUG::: Get we get back the exercise from intent? " + exercise.getExerciseName());
         }
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -86,17 +84,22 @@ public class ExerciseDetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // TODO: add the share action here
                 if (!NetworkUtil.isNetworkConnected(ExerciseDetailActivity.this)) {
-//                    Snackbar sb = Snackbar.make(mCoordinatorLayout, getString(R.string.no_network), Snackbar.LENGTH_LONG);
-//                    View sbView = sb.getView();
-//                    sbView.setElevation(getResources().getDimension(R.dimen.sb_elevation));
-//                    sb.show();
-
                     Snackbar noNetworkSnackBar = NetworkUtil.makeSnackbar(mCoordinatorLayout, getString(R.string.no_network_connection), true);
                     noNetworkSnackBar.getView().setElevation(getResources().getDimension(R.dimen.sb_elevation));
                     noNetworkSnackBar.show();
 
                 } else {
-                    ExerciseUtil.onShareClick(mExerciseCategory, mExerciseName, mExerciseSteps, mExerciseVideoUrl, getApplicationContext(), mDetailFragment);
+                    try {
+                        ExerciseUtil.onShareClick(mExerciseCategory, mExerciseName, mExerciseSteps, mExerciseVideoUrl, getApplicationContext(), mDetailFragment);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(ExerciseDetailActivity.this,"Error occurs: unable to share!", Toast.LENGTH_LONG);
+                        if (BuildConfig.DEBUG) {
+                            Toast.makeText(ExerciseDetailActivity.this, e.getMessage(), Toast.LENGTH_LONG);
+                        }
+                    }
+                    // if this causes exception, what will happen
+                    //throw new IllegalStateException("Share Errors!");
                 }
             }
         });
@@ -106,12 +109,6 @@ public class ExerciseDetailActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-       //  outState.putParcelable(RECIPE_KEY, mRecipe);
-        // when in the landscape mode
-//        if(mTwoPane) {
-//            outState.putLong(VIDEO_POSITION_KEY, mVideoPosition);
-//            outState.putInt(CURRENT_WINDOW_POSITION_KEY, mCurrentwindowIndex);
-//        }
     }
 
     @Override
@@ -143,8 +140,6 @@ public class ExerciseDetailActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.d(TAG, "onResume");
-        // mDetailFragment.setData(mExerciseVideoUrl);
-        // mDetailFragment.setData(mExerciseVideoUrl);
     }
 
 

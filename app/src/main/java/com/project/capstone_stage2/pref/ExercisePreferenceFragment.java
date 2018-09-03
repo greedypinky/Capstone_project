@@ -49,10 +49,11 @@ public class ExercisePreferenceFragment extends PreferenceFragmentCompat impleme
             }
         }
 
-        // If use select a new time, we also need to reschedule the timer agaim
+        // If use select a new time, we also need to reschedule the timer again
         if (key.equals(getString(R.string.pref_key_time))) {
             String alarmTime = sharedPreferences.getString(getString(R.string.pref_key_time), "12:00");
-            Log.d(TAG, "Need to re-scheulde Alarm Time at: " + alarmTime);
+            Log.d(TAG, "Need to re-schedule Alarm Time at: " + alarmTime);
+
 
             Preference pref = findPreference(key);
             if (pref instanceof ListPreference) {
@@ -60,13 +61,11 @@ public class ExercisePreferenceFragment extends PreferenceFragmentCompat impleme
                 int index = listPreference.findIndexOfValue(listPreference.getValue());
                 String entry = listPreference.getEntries()[index].toString();
                 pref.setSummary(getString(R.string.pref_settime_summary) + " at " + entry);
-
-                // Toast.makeText(getContext(),"Time will be re-schedule!", Toast.LENGTH_SHORT);
-
             }
             // re-schedule the alarm
             Intent intentToAlarmReceiver = new Intent(getActivity(), AlarmReceiver.class);
             intentToAlarmReceiver.setAction(ReminderIntentService.ACTION_SEND_REMINDER);
+
             getActivity().sendBroadcast(intentToAlarmReceiver);
         }
     }

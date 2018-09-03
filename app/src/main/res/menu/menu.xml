@@ -10,4 +10,13 @@ tools:context="com.example.android.sunshine.DetailActivity">
     android:orderInCategory="100"
     android:title="@string/action_setting"
     app:showAsAction="collapseActionView" />
+<!-- debug menu -->
+    <!--
+    <item
+        android:id="@+id/action_notification"
+        android:orderInCategory="101"
+        android:title="Notification"
+        app:showAsAction="ifRoom"
+        />
+        -->
 </menu>

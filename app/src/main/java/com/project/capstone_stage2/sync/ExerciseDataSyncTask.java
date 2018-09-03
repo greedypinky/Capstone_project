@@ -37,8 +37,7 @@ public class ExerciseDataSyncTask {
     private static final String SYNC_TAG = "exercise-sync";
     public static final String SYNC_EXERCISE_DATA = "exercise-json";
 
-    // add Synchronized
-    // synchronized public static void syncData(Context context,boolean alreadyHasData)
+    // Sync data from the Google Cloud Backend's data to the Local Database
     synchronized public static void syncData(Context context, String exerciseJSON) {
         try {
             // TODO: add back the logic

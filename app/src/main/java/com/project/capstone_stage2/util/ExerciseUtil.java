@@ -87,9 +87,10 @@ public class ExerciseUtil {
         StringBuilder builder = new StringBuilder();
         builder.append("Exercise Category:" + cat + "\n")
                 .append("Exercise Name:" + exeName + "\n")
-                .append("Exercise Steps:" + exeSteps + "\n");
+                .append(exeSteps + "\n");
         if (exeVideoURL != null && !exeVideoURL.isEmpty()) {
             String youtubeURL = YOUTUBE_URL_PREFIX + exeVideoURL;
+            Log.d(TAG,"shared video link:" + youtubeURL);
             builder.append("Please check out our exercise by this link: " + youtubeURL + "\n");
         }
 

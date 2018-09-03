@@ -6,10 +6,20 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Scanner;
+
 public class NetworkUtil {
+
+    private final static String TAG = NetworkUtil.class.getSimpleName();
+    private final static String DELIMITER = "//A";
 
     // prevent the creation of the NetworkUtil instance outside of the package
     private NetworkUtil(){
@@ -46,5 +56,38 @@ public class NetworkUtil {
         }
 
         return snackbar;
+    }
+
+    /**
+     * gerRespsonseFromHttp
+     *
+     * @param url
+     * @return response
+     * @throws IOException
+     */
+    public static String getResponseFromHttp(URL url) throws IOException {
+
+        Log.d(TAG, "URL authority:" + url.getAuthority());
+        Log.d(TAG, "Http URL connecting...to " + url.toString());
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        InputStream responseInputStream = conn.getInputStream();
+        String response = null;
+
+        try {
+
+            Scanner scanner = new Scanner(responseInputStream);
+            scanner.useDelimiter(DELIMITER);
+            if (scanner.hasNext()) {
+                response = scanner.next();
+                Log.d(TAG, "response is " + response);
+                return response;
+            } else {
+                return null;
+            }
+
+        } finally {
+            conn.disconnect();
+        }
+
     }
 }

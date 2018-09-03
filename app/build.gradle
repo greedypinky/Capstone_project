@@ -31,8 +31,8 @@ android {
         applicationId "com.project.capstone_stage2"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         // configure your app for multidex otherwise there will be error during compilation
         multiDexEnabled true
@@ -81,22 +81,26 @@ dependencies {
         exclude group: 'org.apache.httpcomponents'
     }
     implementation 'com.google.http-client:google-http-client-android:1.22.0' exclude module: 'httpclient'
+
     // job dispatcher
     implementation 'com.firebase:firebase-jobdispatcher:0.5.0'
-    // use 3rd party library in this app
-    // picasso
-    // exoPlayer
-    // compile 'com.google.android.exoplayer:exoplayer:r2.6.0'
-    // compile 'com.google.android.gms:play-services-ads:11.0.8'
-    //compile 'com.google.android.gms:play-services-ads:9.0.2'
-    implementation 'com.google.android.gms:play-services-ads:10.2.4'
-    implementation 'com.google.android.gms:play-services-analytics:10.2.4'
+    // firebase
+    compile 'com.google.firebase:firebase-core:16.0.1'
+    compile 'com.google.firebase:firebase-database:16.0.1'
+    // google services
+    implementation 'com.google.android.gms:play-services-ads:15.0.1'
+    implementation 'com.google.android.gms:play-services-analytics:16.0.1'
+  //  implementation 'com.google.android.gms:play-services-ads:16.0.0'
+  //  implementation 'com.google.android.gms:play-services-analytics:16.0.0'
+    // 3rd party library
     implementation 'com.squareup.picasso:picasso:2.5.2'
-    implementation 'com.google.android.exoplayer:exoplayer:r2.2.0'
+    //implementation 'com.google.android.exoplayer:exoplayer:r2.2.0'
+    // Android support library
     implementation "com.android.support:recyclerview-v7:${rootProject.supportLibVersion}"
     implementation "com.android.support:cardview-v7:${rootProject.supportLibVersion}"
     implementation "com.android.support:preference-v7:${rootProject.supportLibVersion}"
     implementation 'com.google.code.findbugs:jsr305:2.0.1'
+    // Testing libraries
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation "com.android.support:appcompat-v7:${rootProject.supportLibVersion}"
@@ -124,4 +128,6 @@ task startAppEngine(dependsOn: ":backend:appengineRun") {
     }
 
 }
+
+apply plugin: 'com.google.gms.google-services'
 

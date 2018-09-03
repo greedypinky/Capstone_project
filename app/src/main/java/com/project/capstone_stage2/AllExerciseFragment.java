@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.ShareCompat;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.project.capstone_stage2.dbUtility.ExerciseContract;
+import com.project.capstone_stage2.util.Exercise;
 import com.project.capstone_stage2.util.ExerciseListAdapter;
 import com.project.capstone_stage2.util.ExerciseUtil;
 
@@ -71,6 +73,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void twoPaneModeOnClick(String exerciseID, String steps, String videoURL);
+        void updateData();
     }
 
     public AllExerciseFragment() {
@@ -85,7 +88,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
      */
     // TODO: Rename and change types and number of parameter
     public static AllExerciseFragment newInstance(int page, String title, boolean twoPane) {
-        Log.d(TAG, "when new fragment newInstance, what is the paneMode?" + twoPane);
+        Log.d(TAG, "AllExerciseFragement newInstance is created, what is the paneMode?" + twoPane);
         AllExerciseFragment fragment = new AllExerciseFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_PAGE, page);
@@ -98,6 +101,8 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "DEBUG:: onCreate is called");
+
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             page = getArguments().getInt(ARG_PAGE);
@@ -105,11 +110,13 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         }
     }
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
+        Log.d(TAG, "DEBUG:: 1. =========== onCreateView is called ===========");
         mTwoPane = getResources().getBoolean(R.bool.has_two_panes);
         Log.d(TAG, "###### onCreateView IS IT TWO PANE ?? #### " + mTwoPane);
 
@@ -117,20 +124,24 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         AnalyticsApplication application = (AnalyticsApplication) getActivity().getApplication();
         mTracker = application.getDefaultTracker();
 
-        Log.d(TAG, "onCreateView is called!");
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_all_exercise, container, false);
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.all_execise_recyclerview);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        mRecyclerView.setHasFixedSize(true);
-        Log.d(TAG, "onCreateView:-create new instance for Recycler Adapter");
-        // THINK ABOUT if we need to have 2 fragment
-        // actually the only difference is the adapter, do you think we need seperate Fragment class?
-        boolean isAllFragment = true;
-        mAdapter = new ExerciseListAdapter(getContext(), this, isAllFragment);
-        mRecyclerView.setAdapter(mAdapter);
-        mNoDataText = (TextView) rootView.findViewById(R.id.all_exercise_no_data_error_text);
-        mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.all_exercise_loading_indicator);
+
+        initViewsLayout(rootView);
+//        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.all_execise_recyclerview);
+//        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+//        mRecyclerView.setHasFixedSize(true);
+//        Log.d(TAG, "onCreateView:-create new instance for Recycler Adapter");
+//        // THINK ABOUT if we need to have 2 fragment
+//        // actually the only difference is the adapter, do you think we need seperate Fragment class?
+//        boolean isAllFragment = true;
+//        Log.d(TAG, "DEBUG::: onCreateView: mAdapter is created!");
+//        mAdapter = new ExerciseListAdapter(getContext(), this, isAllFragment);
+//        mRecyclerView.setAdapter(mAdapter);
+//        mNoDataText = (TextView) rootView.findViewById(R.id.all_exercise_no_data_error_text);
+//        mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.all_exercise_loading_indicator);
+
+        mProgressIndicator.setVisibility(View.VISIBLE); // show loading indicator until lo
 
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(HAS_DATA_KEY)) {
@@ -149,21 +160,53 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         return rootView;
     }
 
+    private void initViewsLayout(View rootView) {
+
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.all_execise_recyclerview);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        mRecyclerView.setHasFixedSize(true);
+        Log.d(TAG, "onCreateView:-create new instance for Recycler Adapter");
+        // THINK ABOUT if we need to have 2 fragment
+        // actually the only difference is the adapter, do you think we need seperate Fragment class?
+        boolean isAllFragment = true;
+        Log.d(TAG, "DEBUG::: onCreateView: mAdapter is created!");
+        mAdapter = new ExerciseListAdapter(getContext(), this, isAllFragment);
+        mRecyclerView.setAdapter(mAdapter);
+        mNoDataText = (TextView) rootView.findViewById(R.id.all_exercise_no_data_error_text);
+        mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.all_exercise_loading_indicator);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+    }
+
+
+
     public void showData(boolean hasData) {
         if (hasData) {
+            Log.d(TAG, "showData method: when has data!");
             Log.d(TAG, "show the recycler view!");
             mProgressIndicator.setVisibility(View.GONE);
             mNoDataText.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
             mHasData = true;
         } else {
+            Log.d(TAG, "showData method: when No Data!! ");
             Log.d(TAG, "hide the recycler view!");
-            mProgressIndicator.setVisibility(View.GONE);
-            mNoDataText.setVisibility(View.VISIBLE);
-            mRecyclerView.setVisibility(View.INVISIBLE);
+            Log.d(TAG, "progress indicator is null ?? " + mProgressIndicator);
+            if(mProgressIndicator != null) {
+                mProgressIndicator.setVisibility(View.GONE);
+            }
+            if ( mNoDataText != null) {
+                mNoDataText.setVisibility(View.VISIBLE); // show No Exercise Text
+            }
+            if (mRecyclerView !=null) {
+                mRecyclerView.setVisibility(View.INVISIBLE);
+            }
+//            mRecyclerView.setVisibility(View.INVISIBLE);
             mHasData = false;
         }
-
     }
 
     /**
@@ -173,14 +216,15 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
      */
     public void updateAdapterData(Cursor cursor) {
         if (cursor != null) {
-            Log.d(TAG, ">>>>>updateAdapterData!!");
+            Log.d(TAG, "DEBUG:2. ==========updateAdapterData===============");
             // TODO: how come quickly click on tab page the mAdapter is not ready ??
+            // we set the adapter in the onCreateView already!
             if (cursor != null && !cursor.isClosed() && cursor.getCount() > 0) {
                 Log.d(TAG, "Cursor has data!");
                 if (mAdapter != null) {
                     mCursor = cursor;
                     mAdapter.setAdapterData(mCursor);
-                    mHasData = true;
+                    // mHasData = true;
                     // Show the Recycler view
                     showData(true);
                     // Set the Add Favorite button state
@@ -212,7 +256,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 
     @Override
     public void onAttach(Context context) {
-
+        Log.d(TAG, "DEBUG::: onAttach");
         super.onAttach(context);
         // TODO: uncomment the callback listener if it is needed !
         if (context instanceof OnFragmentInteractionListener) {
@@ -225,8 +269,15 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 
     @Override
     public void onDetach() {
+        Log.d(TAG, "DEBUG::: onDetach()!");
         super.onDetach();
-        //mListener = null;
+        mListener = null;
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(TAG, "DEBUG::: onDestroy()!");
+        super.onDestroy();
     }
 
     // This is a callback method of ExerciseListAdapter
@@ -239,15 +290,19 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         // FOR DEBUG
         //Toast.makeText(getContext(), "2 pane mode:" + mTwoPane, Toast.LENGTH_LONG).show();
         String exeCategory = null;
+        String exeCategoryDesc = null;
         String exeName = null;
         String exeID = null;
+        String exeImageURL = null;
         String exeVideoURL = null;
         String exeSteps = null;
 
         if (cursor != null && !cursor.isClosed()) {
             exeCategory = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.CATEGORY));
+            exeCategoryDesc = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.CATEGORY_DESC));
             exeName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
             exeID = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID));
+            exeImageURL = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE));
             exeVideoURL = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO));
             exeSteps = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_STEPS));
         }
@@ -263,7 +318,12 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
             bundle.putString(ExerciseDetailActivity.EXERCISE_NAME, exeName);
             bundle.putString(ExerciseDetailActivity.EXERCISE_STEPS, exeSteps);
             bundle.putString(ExerciseDetailActivity.EXERCISE_VIDEO_URL, exeVideoURL);
+            // TODO: try to send an exercise parcelable object and get it from Detail View!
+            // because I want to know if my exercise class is working or not
+            Exercise exercise = new Exercise(exeID,exeCategory,exeCategory,exeName,exeImageURL,exeVideoURL,exeSteps);
+            bundle.putParcelable("exercise", exercise);
             intent.putExtras(bundle);
+
             startActivity(intent);
             // Two-Pane
         } else {
@@ -380,6 +440,15 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     // TODO: 3) set the Content Provider Cursor to the Recycler View's Adapter to show the data
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        Log.d(TAG,"onActivityCreated");
+        if (mListener != null) {
+            mListener.updateData();
+        }
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return null;
     }
@@ -439,7 +508,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         Log.d(TAG, "updateAllExerciseFavoriteCol #of row:" + updateRow);
     }
 
-    private ExerciseListAdapter getAdapter() {
+    public ExerciseListAdapter getAdapter() {
         return mAdapter;
     }
 

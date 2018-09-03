@@ -15,21 +15,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.exoplayer2.C;
-import com.google.android.exoplayer2.DefaultLoadControl;
-import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.LoadControl;
-import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
-import com.google.android.exoplayer2.source.ExtractorMediaSource;
-import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.trackselection.TrackSelector;
-import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.util.Util;
-
+// YouTube
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -135,8 +121,6 @@ public class ExerciseDetailFragment extends Fragment {
                 mExerciseSteps.setText(savedInstanceState.getString(CURRENT_EXERCISE_STEPS));
             }
             if (savedInstanceState.containsKey(CURRENT_EXERCISE_VIDEO)) {
-                // TODO: Remember to replace the real video URL
-                // mVideoURI = Uri.parse(savedInstanceState.getString(CURRENT_EXERCISE_VIDEO));
                 mVideoURIStr = savedInstanceState.getString(CURRENT_EXERCISE_VIDEO);
             }
             if (savedInstanceState.containsKey(CURRENT_VIDEO_POSITION_KEY)) {
@@ -168,7 +152,7 @@ public class ExerciseDetailFragment extends Fragment {
             mNoVideo.setVisibility(View.VISIBLE);
             mExerciseSteps.setVisibility(View.VISIBLE);
             mPlaceHolder.setVisibility(View.GONE);
-            //mStepVideoView.setVisibility(View.GONE);
+
         }
     }
 
@@ -194,13 +178,6 @@ public class ExerciseDetailFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        // if Activity need to implement a call back listenr
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
     }
 
     @Override
@@ -387,7 +364,7 @@ public class ExerciseDetailFragment extends Fragment {
 
     // Release the player reference
     private void releasePlayer() {
-        //mNotificationManager.cancelAll();
+
         if (mYoutubePlayer != null) {
             mYoutubePlayer.play();
             mYoutubePlayer.release();

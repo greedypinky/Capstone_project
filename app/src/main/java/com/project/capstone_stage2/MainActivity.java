@@ -5,7 +5,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,15 +32,30 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.project.capstone_stage2.R;
 import com.project.capstone_stage2.pref.ExercisePreferenceActivity;
 import com.project.capstone_stage2.pref.ExercisePreferenceFragment;
 import com.project.capstone_stage2.sync.ExerciseDataSyncTask;
+import com.project.capstone_stage2.sync.ExerciseSyncIntentService;
 import com.project.capstone_stage2.util.CategoryListAdapter;
 import com.project.capstone_stage2.util.EndPointsAsyncTask;
+import com.project.capstone_stage2.util.Exercise;
 import com.project.capstone_stage2.util.NetworkUtil;
+import com.project.capstone_stage2.reminders.ReminderIntentService;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Arrays;
 
 // Widget Example
 // https://github.com/udacity/AdvancedAndroid_MyGarden
@@ -52,7 +72,7 @@ import java.io.InputStream;
  **/
 
 // Main activity includes the CardView Layout for the activity
-public class MainActivity extends AppCompatActivity implements CategoryListAdapter.CardViewOnClickListener, EndPointsAsyncTask.AsyncResponse {
+public class MainActivity extends AppCompatActivity implements CategoryListAdapter.CardViewOnClickListener, EndPointsAsyncTask.AsyncResponse, LoaderManager.LoaderCallbacks {
 
 
     // App ID: ca-app-pub-3160158119336562~7703910721
@@ -63,6 +83,8 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
     // ca-app-pub-3160158119336562~4874289441
     private static final String AD_MOB_APP_ID = "ca-app-pub-3160158119336562~4874289441";
     private static final String AD_MOB_UNIT_ID = "ca-app-pub-3160158119336562/6706245862";
+    private static final String KEY_LOADED_BY_ENDPOINT = "endpoint";
+    private static final String KEY_LOADED_BY_FIREBASE_REALTIME_DB = "firebaserealtimedb";
     private static final String TAG = MainActivity.class.getSimpleName();
     private RecyclerView mRecyclerView = null;
     private CategoryListAdapter mListAdapter = null;
@@ -72,12 +94,70 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
     private Tracker mTracker; // https://developers.google.com/analytics/devguides/collection/android/v4/
     private static final String PREF_GETENDPOINT = "getendpoint";
     private static String mEndPointResponse = "";
-
+    private final FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+    DatabaseReference exercisesRef = mDatabase.getReference().child("exercises");
+    // References - https://firebase.google.com/docs/reference/rest/database/
+    // API Usage - You can use any Firebase Database URL as a REST endpoint. All you need to do is append .json to the end of the URL and send a request from your favorite HTTPS client.
+    // curl 'https://[PROJECT_ID].firebaseio.com/users/jack/name.json'
+    // curl 'https://naotoexercise.firebaseio.com/exercises.json'
+    private static URL mFirebaseDbUrl = null;
+    private String mExerciseJson = "";
+    private final static int LOADER_EXERCISE_FROM_FIREBASEDB_ID = 100;
+    private LoaderManager.LoaderCallbacks<String> mLoaderManagerCallbacks = null;
+    private boolean isDataLoaded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        try {
+            mFirebaseDbUrl = new URL(getString(R.string.firebaseproject) + getString(R.string.firebaseDbRefJson));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
+        }
+
+        exercisesRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+               // Exercise addedExercise = dataSnapshot.getValue(Exercise.class);
+                Log.d(TAG, "onChildAdded:New Exercise is added!");
+                Log.d(TAG, "DataSnapshot:" + dataSnapshot.toString());
+
+               // TODO: need to update the adapter as well
+                /*
+
+
+                 DataSnapshot:DataSnapshot { key = 4, value = {image=http://atlasonlinefitness.com/wp-content/uploads/2018/03/nao-push-01.jpg, name=Standing Dumbbell Press, category description=UpperBody Push Exercise, description=Level: Beginner | Body Parts: Shoulders | Equipment: Dumbbell, id=5, video=WjP7HwAq_vE, category=Push, steps={0={stepDescription=Step1:Standing with your feet shoulder width apart, take a dumbbell in each hand. Raise the dumbbells to head height, the elbows out and about 90 degrees. This will be your starting position.}, 1={stepDescription=Step2:Maintaining strict technique with no leg drive or leaning back, extend through the elbow to raise the weights together directly above your head.}, 2={stepDescription=Step3:Pause, and slowly return the weight to the starting position}}} }
+
+
+                 */
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                Log.d(TAG, "onChildChanged:Exercise is changed!");
+                Log.d(TAG, "DataSnapshot:" + dataSnapshot.toString());
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
 
         // https://developers.google.com/analytics/devguides/collection/android/v4/?hl=ja
         // https://github.com/googlesamples/google-services/blob/master/android/analytics/app/src/main/java/com/google/samples/quickstart/analytics/MainActivity.java#L72-L74
@@ -102,6 +182,8 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
         mRecyclerView.setLayoutManager(linearLayoutManager);
 
         mProgressBar = (ProgressBar) findViewById(R.id.main_loading_indicator);
+        mLoaderManagerCallbacks = MainActivity.this;
+
         boolean useEndPoint = true;
         // This the ads view
         AdView mAdView = (AdView) findViewById(R.id.adView);
@@ -112,9 +194,16 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
             noNetworkSnackBar.show();
         } else {
             showProgressBar(true);
-            // Lets check the Preferences if we get data from the Endpoint before?
 
-            getResponseFromEndPoint(useEndPoint);
+            // Lets check the Preferences if we get data from the Endpoint before?
+            // getResponseFromEndPoint(useEndPoint);
+            if (savedInstanceState != null && savedInstanceState.containsKey(KEY_LOADED_BY_FIREBASE_REALTIME_DB)) {
+                if (savedInstanceState.getBoolean(KEY_LOADED_BY_FIREBASE_REALTIME_DB)) {
+                   Log.d(TAG, "Exercise Data is retrieved once from firebase realtime db already!");
+                }
+            } else {
+                getSupportLoaderManager().initLoader(LOADER_EXERCISE_FROM_FIREBASEDB_ID,null, mLoaderManagerCallbacks);
+            }
 
         }
     }
@@ -173,39 +262,17 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
     }
 
     private void getResponseFromEndPoint(boolean useEndPoint) {
-
-        if (useEndPoint) {
          /*
             Introduce a project dependency between your Java library and your GCE module,
-            and modify the GCE starter code to pull jokes from your Java library.
-            Create an Async task to retrieve jokes.
+            and modify the GCE starter code to pull data from Java library.
+            Create an Async task to retrieve data from endpoint API.
             Make the button kick off a task to retrieve a joke,
-            then launch the activity from your Android Library to display it.
           */
 
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-            if (!prefs.contains(PREF_GETENDPOINT)) {
-                // first time to get the data from EndPoint
-                Log.d(TAG, "onCreate()-Get Data from EndPoint!");
-                new EndPointsAsyncTask(this).execute(new Pair<Context, String>(this, "Manfred"));
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putBoolean(PREF_GETENDPOINT, true);
-                editor.commit();
-            } else {
-                Log.d(TAG, "No need to get the endpoint when rotate...");
-                // Need to wait sometime to dismiss the ProgressBar otherwise, it will show the empty card view
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        showProgressBar(false);
-                    }
-                }, 2000);
-            }
+        // first time to get the data from EndPoint
+        Log.d(TAG, "onCreate()-Get Data from EndPoint!");
+        new EndPointsAsyncTask(this).execute(new Pair<Context, String>(this, "Manfred"));
 
-        } else {
-
-            //getJSONFromAsset();
-        }
     }
 
     // Call back method to set the EndPoint API result from the Async Task
@@ -213,7 +280,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
     public void processFinish(String result) {
         Log.d(TAG, "Google Endpoint API response:-" + result);
         if ("Connection refused".equals(result)) {
-            Log.e(TAG,"Google API EndPoint connection failed!");
+            Log.e(TAG, "Google API EndPoint connection failed!");
         } else {
             mEXERCISE_DATA_FROM_ENDPOINT = result;
             // TODO: 2) Initialize the database by IntentService
@@ -222,6 +289,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
             // This will trigger the IntentService to update the JSON data to the DB
             ExerciseDataSyncTask.initialize(this, mEXERCISE_DATA_FROM_ENDPOINT);
             mEndPointResponse = result;
+            isDataLoaded = true;
         }
 
         new Handler().postDelayed(new Runnable() {
@@ -273,18 +341,112 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu,menu);
+        inflater.inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Navigate to the Preference activity
-        if( item.getItemId() == R.id.action_settings) {
+        if (item.getItemId() == R.id.action_settings) {
             Intent intent = new Intent(this, ExercisePreferenceActivity.class);
             startActivity(intent);
             return true;
         }
+        // for notification debugging
+        /*
+        if (item.getItemId() == R.id.action_notification) {
+            // Intent intent = new Intent(this, ExercisePreferenceActivity.class);
+            Intent intent = new Intent(this, ReminderIntentService.class);
+            intent.setAction(ReminderIntentService.ACTION_SEND_REMINDER);
+            startService(intent);
+            return true;
+        }
+        */
         return super.onOptionsItemSelected(item);
+    }
+
+    private static class MyAsyncTaskLoader extends AsyncTaskLoader {
+
+        public MyAsyncTaskLoader(final Context context) {
+            super(context);
+
+        }
+
+        @Nullable
+        @Override
+        public Object loadInBackground() {
+            String response = null;
+            try {
+                Log.d(TAG, "loadInBackground is called!");
+                response = NetworkUtil.getResponseFromHttp(mFirebaseDbUrl);
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+                Log.e(TAG, ioe.getMessage());
+            }
+            return response;
+        }
+
+        @Override
+        protected boolean onCancelLoad() {
+            return super.onCancelLoad();
+        }
+
+        @Override
+        protected void onStartLoading() {
+
+            forceLoad(); // loadInBackground
+
+        }
+
+    }
+
+    // LoaderManager's callback methods
+    @NonNull
+    @Override
+    public Loader onCreateLoader(int id, @Nullable Bundle args) {
+        Loader loader = null;
+        if (id == LOADER_EXERCISE_FROM_FIREBASEDB_ID) {
+            // TODO: define a static async task because....
+            // The reason behind is that non-static inner classes hold a direct reference to outer class. When you declare an inner AsyncTask class,
+            // it may live longer than the container class which is an activity now.
+            loader = new MyAsyncTaskLoader(this);
+
+        }
+        return loader;
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader loader, Object data) {
+      if (loader instanceof MyAsyncTaskLoader) {
+          Log.d(TAG, "Get back JSON data from Firebase RealTime Database URL!");
+
+          if (data != null) {
+              mEXERCISE_DATA_FROM_ENDPOINT = (String) data;
+              Log.d(TAG, "JSON data ---> " + mEXERCISE_DATA_FROM_ENDPOINT);
+              // This will trigger the IntentService to update the JSON data to the DB if DB has no data
+              Log.d(TAG, "Trigger immediate sync up data to local DB!");
+              ExerciseDataSyncTask.initialize(this, mEXERCISE_DATA_FROM_ENDPOINT);
+              isDataLoaded = true;
+          }
+          new Handler().postDelayed(new Runnable() {
+              @Override
+              public void run() {
+                  showProgressBar(false);
+              }
+          }, 1000);
+      }
+
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader loader) {
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(KEY_LOADED_BY_FIREBASE_REALTIME_DB, isDataLoaded);
     }
 }

@@ -240,7 +240,7 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.d(TAG, "onDetach()");
+        Log.d(TAG, "onDetach() - set Listern to Null!");
         mListener = null;
     }
 

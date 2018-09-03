@@ -104,7 +104,11 @@
 
         <service
             android:name=".reminders.ReminderIntentService"
-            android:exported="false" />
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.google.developer.capstone.action.REMINDERS"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

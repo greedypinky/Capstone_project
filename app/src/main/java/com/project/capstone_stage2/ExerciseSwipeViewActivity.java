@@ -77,7 +77,8 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
     private CoordinatorLayout mCoordinatorLayout;
 
     private ViewPager mViewPager;
-    FragmentPagerAdapter mAdapterViewPager;
+   // FragmentPagerAdapter mAdapterViewPager;
+    MyFragmentPagerAdapter mAdapterViewPager;
     private final static int FRAGMENT_NUM = 2;
     private static Cursor mDataCursor;
     private String mEXERCISE_DATA_FROM_ENDPOINT = null;
@@ -426,17 +427,16 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
         int loaderID = loader.getId();
         Log.d(TAG, "========== onLoadFinished by loader ID:-" + loaderID + "==============");
         if (mFragment1 == null) {
-            Log.d(TAG, "when tab again, the fragment1 is null!");
+            Log.d(TAG, "onLoadFinished, the fragment1 is null!");
             mFragment1 = (AllExerciseFragment) mAdapterViewPager.getItem(0);
         }
         if (mFragment2 == null) {
-            Log.d(TAG, "when tab again, the fragment2 is null!");
+            Log.d(TAG, "onLoadFinished, the fragment2 is null!");
             mFragment2 = (FavoriteExerciseFragment) mAdapterViewPager.getItem(1);
         }
-
         if (loaderID == ALL_EXERCISE_DB_DATA_LOADER_ID) {
             if (data != null && data.getCount() > 0) {
-                Log.e(TAG, "onLoadFinished - I got the data!");
+                Log.e(TAG, " =============== onLoadFinished for All Exercise =================");
                 Log.d(TAG, "All Exercise items in the cursor:" + data.getCount());
                 data.moveToFirst();
                 mDataCursor = data;
@@ -461,7 +461,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
             }
         } else if (loaderID == FAVORITE_EXERCISE_DB_DATA_LOADER_ID) {
             if (data != null && data.getCount() > 0) {
-                Log.e(TAG, "onLoadFinished - I got the data!");
+                Log.e(TAG, "onLoadFinished for Favorite exercise - I got the data!");
                 Log.d(TAG, "Update Adapter for Favorite Fragment");
                 Log.d(TAG, "Favorite items in the cursor:" + data.getCount());
                 data.moveToFirst();
@@ -566,6 +566,14 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
         }
     }
 
+    // Fragment callback to pass back the exercise details to start the video
+    @Override
+    public void updateData() {
+        if (mFragment1!=null && mDataCursor !=null) {
+            mFragment1.updateAdapterData(mDataCursor);
+        }
+    }
+
     @Override
     public void favTwoPaneModeOnClick(String exerciseID, String steps, String videoURL) {
         Log.d(TAG, "twoPaneModeOnClick - will call the  mDetailFragment.setFragmentData");
@@ -582,7 +590,9 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
 
     // swipe across a collection of Fragment objects
     // https://guides.codepath.com/android/Google-Play-Style-Tabs-using-TabLayout
-    public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
+    //FragmentStatePagerAdapter
+    //public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
+    public class MyFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
 
         public MyFragmentPagerAdapter(FragmentManager fm) {
@@ -611,28 +621,26 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
             super.restoreState(state, loader);
         }
 
-        @Override
-        public long getItemId(int position) {
-
-
-            return super.getItemId(position);
-        }
+//        @Override
+//        public long getItemId(int position) {
+//
+//
+//            return super.getItemId(position);
+//        }
 
         @Override
         public Fragment getItem(int position) {
             // TODO: add back how to get the Page's fragment by position
             switch (position) {
                 case 0: // Fragment # 0 - This will show FirstFragment
-                    Log.d(TAG, ">>>>>FragmentPagerAdapter's getItem Fragment1");
+                    Log.d(TAG, ">>>>>FragmentPagerAdapter gets new instance of Fragment1 (All exercise)!");
                     mFragment1 = AllExerciseFragment.newInstance(0, getString(R.string.all_exercise), mTwoPaneMode);
-                    // TODO : assign the result to mDataCursor
-                    //fragment1.updateAdapterData(mDataCursor);
+                    mFragment1.setRetainInstance(true);
                     return mFragment1;
                 case 1: // Fragment # 1 - This will show second Fragment different title
-                    Log.d(TAG, ">>>>>FragmentPagerAdapter's getItem Fragment2");
+                    Log.d(TAG, ">>>>>FragmentPagerAdapter gets new instance of Fragment2");
                     mFragment2 = FavoriteExerciseFragment.newInstance(1, getString(R.string.favorite_exercise), mTwoPaneMode);
-                    // TODO : assign the result to mDataCursor
-                    //fragment2.updateAdapterData(mDataCursor);
+                    mFragment2.setRetainInstance(true);
                     return mFragment2;
                 default:
                     return null;
@@ -651,6 +659,18 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
 
                 return null;
             }
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            Log.d(TAG,"instantiateItem at position: " + position);
+            return super.instantiateItem(container, position);
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            super.destroyItem(container, position, object);
+            Log.d(TAG,"destroyItem at position: " + position);
         }
     }
 
