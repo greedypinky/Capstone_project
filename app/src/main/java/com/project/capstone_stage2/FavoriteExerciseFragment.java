@@ -26,6 +26,7 @@ import com.project.capstone_stage2.util.CategoryListAdapter;
 import com.project.capstone_stage2.util.ExerciseListAdapter;
 import com.project.capstone_stage2.util.ExerciseUtil;
 import com.project.capstone_stage2.util.FavExerciseListAdapter;
+import com.project.capstone_stage2.util.NetworkUtil;
 
 import java.util.function.LongFunction;
 
@@ -134,6 +135,7 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
     public static FavoriteExerciseFragment newInstance(int page, String title, boolean twoPane) {
         FavoriteExerciseFragment fragment = new FavoriteExerciseFragment();
         Bundle args = new Bundle();
+        args.putInt(ARG_PAGE, page);
         args.putString(ARG_TITLE, title);
         fragment.setArguments(args);
         fragment.setPaneMode(twoPane);
@@ -291,9 +293,11 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
     public void onShareClick(Cursor cursor) {
 
         Bundle bundle = new Bundle();
+        String exeCategory = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.CATEGORY));
         String exeName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
         String exeVideoURL = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO));
         String exeSteps = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_STEPS));
+        String youtubeURL = ExerciseUtil.YOUTUBE_URL_PREFIX + exeVideoURL;
 
         // Add analytics to track which exercise is shared
         mTracker.send(new HitBuilders.EventBuilder()
@@ -301,18 +305,29 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
                 .setAction("Share")
                 .build());
 
-        StringBuilder builder = new StringBuilder();
-        builder.append("Exercise Name:" + exeName + "\n")
-                .append("Exercise Steps:" + exeSteps + "\n");
-        if (exeVideoURL != null && !exeVideoURL.isEmpty()) {
-            builder.append("Please check out our exercise by this link: " + exeVideoURL + "\n");
+//        StringBuilder builder = new StringBuilder();
+//        builder.append("Exercise Name:" + exeName + "\n")
+//                .append("Exercise Steps:" + exeSteps + "\n");
+//
+//        if (exeVideoURL != null && !exeVideoURL.isEmpty()) {
+//
+//            builder.append("Please check out our exercise by this link: " + youtubeURL + "\n");
+//        }
+
+//        startActivity(Intent.createChooser(ShareCompat.IntentBuilder.from(getActivity())
+//                .setType("text/plain")
+//                .setChooserTitle(getString(R.string.share_exercise_title))
+//                .setText(builder.toString())
+//                .getIntent(), getString(R.string.share_exercise_sendTo)));
+
+        try {
+            ExerciseUtil.onShareClick(exeCategory, exeName, exeSteps, youtubeURL, getContext(), this);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(),"Error occurs: unable to share!", Toast.LENGTH_LONG);
+
         }
 
-        startActivity(Intent.createChooser(ShareCompat.IntentBuilder.from(getActivity())
-                .setType("text/plain")
-                .setChooserTitle(getString(R.string.share_exercise_title))
-                .setText(builder.toString())
-                .getIntent(), getString(R.string.share_exercise_sendTo)));
     }
 
     @Override

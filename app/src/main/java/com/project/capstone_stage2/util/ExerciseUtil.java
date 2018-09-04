@@ -24,7 +24,7 @@ import static android.content.ContentValues.TAG;
 
 public class ExerciseUtil {
 
-    private final static String YOUTUBE_URL_PREFIX = "https://www.youtube.com/watch?v=";
+    public final static String YOUTUBE_URL_PREFIX = "https://www.youtube.com/watch?v=";
 
     // public void updateAllExerciseFavoriteCol(Uri updateURI,String exerciseID, ContentValues contentValues){
     public static void updateAllExerciseFavoriteCol(Fragment fragment, Uri updateURI, ContentValues contentValues, String exeID, String category) {
@@ -79,7 +79,8 @@ public class ExerciseUtil {
     }
 
 
-    public static void onShareClick(String cat, String exeName, String exeSteps, String exeVideoURL, Context context, ExerciseDetailFragment fragment) {
+    public static void onShareClick(String cat, String exeName, String exeSteps, String exeVideoURL, Context context, Fragment fragment) {
+        Log.d(TAG, "onShareClick!");
         // Add analytics to track which exercise is shared
         //Toast.makeText(getContext(),"share content!", Toast.LENGTH_LONG).show();
         Bundle bundle = new Bundle();
@@ -105,6 +106,14 @@ public class ExerciseUtil {
                 .setChooserTitle(context.getString(R.string.share_exercise_title))
                 .setText(builder.toString())
                 .getIntent(), context.getString(R.string.share_exercise_sendTo)));
+
+
+//        startActivity(Intent.createChooser(ShareCompat.IntentBuilder.from(getActivity())
+//                .setType("text/plain")
+//                .setChooserTitle(getString(R.string.share_exercise_title))
+//                .setText(builder.toString())
+//                .getIntent(), getString(R.string.share_exercise_sendTo)));
+
     }
 
 

@@ -227,6 +227,22 @@ public class FavExerciseListAdapter extends RecyclerView.Adapter<FavExerciseList
                 });
             }
 
+            // TODO: add onClickListener to the Fav Button to trigger the callback?
+
+            mShareButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (exerciseItemOnClickHandler != null) {
+
+                        int adapterPosition = getAdapterPosition();
+                        // mCursor.moveToPosition(adapterPosition);
+                        Cursor cursor = mCursor;
+                        cursor.moveToPosition(adapterPosition);
+                        exerciseItemOnClickHandler.onShareClick(cursor);
+                    }
+                }
+            });
+
         }
 
         // View.OnClickListener's method

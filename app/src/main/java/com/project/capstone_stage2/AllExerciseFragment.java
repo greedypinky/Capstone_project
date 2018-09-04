@@ -355,7 +355,8 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         builder.append("Exercise Name:" + exeName + "\n")
                 .append("Exercise Steps:" + exeSteps + "\n");
         if (exeVideoURL != null && !exeVideoURL.isEmpty()) {
-            builder.append("Please check out our exercise by this link: " + exeVideoURL + "\n");
+            String youtubeURL = ExerciseUtil.YOUTUBE_URL_PREFIX + exeVideoURL;
+            builder.append("Please check out our exercise by this link: " + youtubeURL + "\n");
         }
 
         startActivity(Intent.createChooser(ShareCompat.IntentBuilder.from(getActivity())
