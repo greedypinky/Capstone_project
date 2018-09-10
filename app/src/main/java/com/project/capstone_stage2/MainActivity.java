@@ -108,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "=============================onCreate()=============================");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -144,17 +145,17 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
+                Log.d(TAG, "onChildChanged:Exercise is removed!");
             }
 
             @Override
             public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
+                Log.d(TAG, "onChildMoved!");
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled!");
             }
         });
 
@@ -419,6 +420,7 @@ public class MainActivity extends AppCompatActivity implements CategoryListAdapt
     @Override
     public void onLoadFinished(@NonNull Loader loader, Object data) {
       if (loader instanceof MyAsyncTaskLoader) {
+          Log.d(TAG, "=========================onLoadFinished==========================");
           Log.d(TAG, "Get back JSON data from Firebase RealTime Database URL!");
 
           if (data != null) {

@@ -1,6 +1,9 @@
 package com.project.capstone_stage2.util;
 
 
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -13,6 +16,8 @@ import java.net.URL;
 
 import android.content.ContentValues;
 
+
+import com.project.capstone_stage2.ExerciseSwipeViewActivity;
 import com.project.capstone_stage2.dbUtility.ExerciseContract;
 
 /*
@@ -58,6 +63,7 @@ public class RemoteEndPointUtil {
     private static final String STEPS = "steps";
     private static final String STEP_DESCRIPTION = "stepDescription";
 
+    /*
     public static ContentValues[] fetchJSONData2(String json) {
         ContentValues[] exerciseContentValues = null;
         JSONArray exercises = null;
@@ -123,6 +129,7 @@ public class RemoteEndPointUtil {
         return exerciseContentValues;
 
     }
+    */
 
 
     public static ContentValues[] fetchJSONData(String json) {
@@ -170,10 +177,6 @@ public class RemoteEndPointUtil {
                 // from here how can we add the data back to the DB
                 ContentValues exerciseValues = new ContentValues();
                 // put the [ Column, Value ]
-               /*
-
-                       */
-
                 exerciseValues.put(ExerciseContract.ExerciseEntry.CATEGORY, category);
                 exerciseValues.put(ExerciseContract.ExerciseEntry.CATEGORY_DESC, category_description);
                 exerciseValues.put(ExerciseContract.ExerciseEntry.EXERCISE_ID, id);
@@ -182,6 +185,7 @@ public class RemoteEndPointUtil {
                 exerciseValues.put(ExerciseContract.ExerciseEntry.EXERCISE_STEPS, stepDesc);
                 exerciseValues.put(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE, image);
                 exerciseValues.put(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO, video);
+                exerciseValues.put(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE, "0");
 
                 // add into the ContentValues array
                 exerciseContentValues[i] = exerciseValues;
@@ -197,5 +201,40 @@ public class RemoteEndPointUtil {
 
     }
 
+    public static boolean insertNewExerciseToDB(Context context, ContentValues[] values) {
+        Cursor existingDbCursor = null;
+        boolean result = true;
+        try {
+            Uri queryURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
+            /* Sort order: Ascending by exercise id */
+            String sortOrder = ExerciseContract.ExerciseEntry.EXERCISE_ID + "ASC";
+            String selectionByExerciseID = ExerciseContract.ExerciseEntry.EXERCISE_ID + " = ?";
+            String selectionByFavorite = ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE + " = ?";
+
+            for (int i=0; i<values.length; i++) {
+                String exerciseID  = values[i].getAsString(ExerciseContract.ExerciseEntry.EXERCISE_ID);
+                String exerciseName  = values[i].getAsString(ExerciseContract.ExerciseEntry.EXERCISE_NAME);
+                existingDbCursor = context.getContentResolver().query(queryURI, ExerciseSwipeViewActivity.EXERCISE_PROJECTION, selectionByFavorite, new String[]{exerciseID}, sortOrder);
+                    if (existingDbCursor.getCount() == 0) {
+
+                        //TODO: insert data into DB
+                        Uri insertUri = context.getContentResolver()
+                                    .insert(ExerciseContract.ExerciseEntry.CONTENT_URI_ALL, values[i]);
+                        Log.d(TAG, "Insert new exercise's result uri: " + insertUri);
+                        if (insertUri == null) {
+                            result = false;
+                            break;
+                        }
+                    } else {
+                        Log.e(TAG, String.format("Exercise %s with exerciseID %s is already existed in the local database!", exerciseName, exerciseID));
+                    }
+            }
+
+        } finally {
+            // close the cursor to avoid memory leak
+            existingDbCursor.close();
+        }
+        return result;
+    }
 
 }

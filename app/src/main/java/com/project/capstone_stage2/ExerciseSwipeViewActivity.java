@@ -95,7 +95,8 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
     }
 
     private AllExerciseFragment mFragment1;
-    private FavoriteExerciseFragment mFragment2;
+    private AllExerciseFragment mFragment2;
+    //private FavoriteExerciseFragment mFragment2;
     private boolean mTwoPaneMode = false;
     ExerciseDetailFragment mDetailFragment; // show this Detail Fragment on right if in 2 pane mode.
     private Tracker mTracker; // https://developers.google.com/analytics/devguides/collection/android/v4/
@@ -122,7 +123,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
             ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION,
             ExerciseContract.ExerciseEntry.EXERCISE_STEPS,
             ExerciseContract.ExerciseEntry.EXERCISE_IMAGE,
-            ExerciseContract.ExerciseEntry.EXERCISE_VIDEO,
+            ExerciseContract.ExerciseEntry.EXERCISE_VIDEO
     };
 
     @Override
@@ -279,8 +280,8 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                         //# Select "name" and "value" columns from secure settings where "name" is equal to "new_setting" and sort the result by name in ascending order.
                         //adb shell content query --uri content://settings/secure --projection name:value --where "name='new_setting'" --sort "name ASC"
                         if (mFragment2 == null) {
-
-                            mFragment2 = (FavoriteExerciseFragment) mAdapterViewPager.getItem(1);
+                            mFragment2 = (AllExerciseFragment) mAdapterViewPager.getItem(1);
+                            //mFragment2 = (FavoriteExerciseFragment) mAdapterViewPager.getItem(1);
                             if (mFragment2 != null) {
                                 Log.d(TAG, ">>> onTabSelected() getFragment Load the favorite data!!");
                                 // getSupportLoaderManager().initLoader(FAVORITE_EXERCISE_DB_DATA_LOADER_ID, null, loaderCallbacks);
@@ -378,6 +379,7 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
         Log.d(TAG, "onCreateLoader:-" + loaderId);
         switch (loaderId) {
             case ALL_EXERCISE_DB_DATA_LOADER_ID:
+                Log.d(TAG, "========================= onCreateLoader: All exercise =======================");
                 CursorLoader loader = null;
                 /* URI for all rows of all exercise data in table */
                 Uri queryUri = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
@@ -401,18 +403,38 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
 
                 Log.d(TAG, "loader:-" + loader);
                 return loader;
+//            case FAVORITE_EXERCISE_DB_DATA_LOADER_ID:
+//                CursorLoader loader2 = null;
+//                Uri queryUri2 = ExerciseContract.ExerciseEntry.CONTENT_URI_FAV;
+//                /* Sort order: Ascending by exercise id */
+//                String favSortOrder = ExerciseContract.ExerciseEntry.EXERCISE_ID + " ASC";
+//                String selectionByCategoryName2 = ExerciseContract.ExerciseEntry.CATEGORY + " = ?";
+//
+//                loader2 = new CursorLoader(this,
+//                        queryUri2,
+//                        FAV_EXERCISE_PROJECTION,
+//                        selectionByCategoryName2,
+//                        new String[]{mExceriseCategoryName},
+//                        favSortOrder);
+//                Log.d(TAG, "loader2 Get uri:- " + loader2.getUri());
+//                return loader2;
+
+            // TODO: refactoring - Try to use the Favorite Flag from All table instead of keeping another set of data
             case FAVORITE_EXERCISE_DB_DATA_LOADER_ID:
+                Log.d(TAG, "====================== onCreateLoader: Favorite exercise ======================");
                 CursorLoader loader2 = null;
-                Uri queryUri2 = ExerciseContract.ExerciseEntry.CONTENT_URI_FAV;
+                Uri queryUri2 = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
                 /* Sort order: Ascending by exercise id */
                 String favSortOrder = ExerciseContract.ExerciseEntry.EXERCISE_ID + " ASC";
                 String selectionByCategoryName2 = ExerciseContract.ExerciseEntry.CATEGORY + " = ?";
+                String selectionByFavorite = ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE + " = ?";
+                String multiSelections = selectionByCategoryName2 + " and " + selectionByFavorite;
 
                 loader2 = new CursorLoader(this,
                         queryUri2,
-                        FAV_EXERCISE_PROJECTION,
-                        selectionByCategoryName2,
-                        new String[]{mExceriseCategoryName},
+                        EXERCISE_PROJECTION,
+                        multiSelections,
+                        new String[]{mExceriseCategoryName,"1"},
                         favSortOrder);
                 Log.d(TAG, "loader2 Get uri:- " + loader2.getUri());
                 return loader2;
@@ -425,14 +447,14 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         int loaderID = loader.getId();
-        Log.d(TAG, "========== onLoadFinished by loader ID:-" + loaderID + "==============");
+        Log.d(TAG, "================ onLoadFinished by loader ID:-" + loaderID + "==============");
         if (mFragment1 == null) {
             Log.d(TAG, "onLoadFinished, the fragment1 is null!");
             mFragment1 = (AllExerciseFragment) mAdapterViewPager.getItem(0);
         }
         if (mFragment2 == null) {
             Log.d(TAG, "onLoadFinished, the fragment2 is null!");
-            mFragment2 = (FavoriteExerciseFragment) mAdapterViewPager.getItem(1);
+            mFragment2 = (AllExerciseFragment) mAdapterViewPager.getItem(1);
         }
         if (loaderID == ALL_EXERCISE_DB_DATA_LOADER_ID) {
             if (data != null && data.getCount() > 0) {
@@ -454,7 +476,9 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
                 String exeDesc = data.getString(data.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION));
                 int favFlag = data.getInt(data.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE));
                 Log.d(TAG, String.format("Category %s, ExerciseName %s, Desc %s, Favorite %d", catName, exeName, exeDesc, favFlag));
-                mFragment1.checkIsFavorite2(catName);
+                //mFragment1.checkIsFavorite2(catName);
+                Log.d(TAG, "================All Exercise ID: call new checkIsFavoriteFromExerciseTable method to update button state ==========================");
+                mFragment1.checkIsFavoriteFromExerciseTable(catName);
 
             } else {
                 Log.e(TAG, "ERROR:::Fragment1 onLoadFinish - No data!! ");
@@ -634,12 +658,13 @@ public class ExerciseSwipeViewActivity extends AppCompatActivity implements Load
             switch (position) {
                 case 0: // Fragment # 0 - This will show FirstFragment
                     Log.d(TAG, ">>>>>FragmentPagerAdapter gets new instance of Fragment1 (All exercise)!");
-                    mFragment1 = AllExerciseFragment.newInstance(0, getString(R.string.all_exercise), mTwoPaneMode);
+                    mFragment1 = AllExerciseFragment.newInstance(0, getString(R.string.all_exercise), mTwoPaneMode, true);
                     mFragment1.setRetainInstance(true);
                     return mFragment1;
                 case 1: // Fragment # 1 - This will show second Fragment different title
                     Log.d(TAG, ">>>>>FragmentPagerAdapter gets new instance of Fragment2");
-                    mFragment2 = FavoriteExerciseFragment.newInstance(1, getString(R.string.favorite_exercise), mTwoPaneMode);
+                    mFragment2 = AllExerciseFragment.newInstance(1, getString(R.string.favorite_exercise), mTwoPaneMode, false);
+                    //mFragment2 = FavoriteExerciseFragment.newInstance(1, getString(R.string.favorite_exercise), mTwoPaneMode);
                     mFragment2.setRetainInstance(true);
                     return mFragment2;
                 default:

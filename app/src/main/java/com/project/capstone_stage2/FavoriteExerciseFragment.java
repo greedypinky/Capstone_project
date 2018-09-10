@@ -104,6 +104,7 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
     private Cursor mCursor = null;
     private boolean mHasData = false;
     private Tracker mTracker;
+    private boolean isAllFragment = false;
 
 
     private OnFragmentInteractionListener mListener = null;
@@ -168,6 +169,7 @@ public class FavoriteExerciseFragment extends Fragment implements FavExerciseLis
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setHasFixedSize(true);
         mAdapter = new FavExerciseListAdapter(getActivity().getApplicationContext(), this);
+        //mAdapter = new ExerciseListAdapter(getContext(), this, isAllFragment);
         mRecyclerView.setAdapter(mAdapter);
         mNoDataText = (TextView) rootView.findViewById(R.id.fav_exercise_no_data_error_text);
         mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.fav_exercise_loading_indicator);

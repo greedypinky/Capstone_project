@@ -80,7 +80,12 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
     public ExerciseListAdapter.ExerciseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Init the layout of the ViewHolder
         // TODO : why on a null reference?
-        View execiseCardView = LayoutInflater.from(mContext).inflate(R.layout.exercise_items, parent, false);
+        View execiseCardView;
+        if (mIsAllExercise) {
+            execiseCardView = LayoutInflater.from(mContext).inflate(R.layout.exercise_items, parent, false);
+        } else {
+            execiseCardView = LayoutInflater.from(mContext).inflate(R.layout.fav_exercise_items, parent, false);
+        }
         ExerciseViewHolder viewHolder = new ExerciseViewHolder(execiseCardView);
         return viewHolder;
     }
@@ -200,9 +205,10 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
     }
 
     public Cursor swapCursor(Cursor newCursor) {
-        if (newCursor == mCursor) {
-            return null;
-        }
+        Log.e(TAG, "================ swapCursor ===============");
+//        if (newCursor == mCursor) {
+//            return null;
+//        }
         Cursor oldCursor = mCursor;
         mCursor = newCursor;
         if (newCursor != null && !newCursor.isClosed()) {
@@ -226,18 +232,18 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
      * ExerciseViewHolder
      */
     public class ExerciseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public CardView mCardView;
-        public TextView mExerciseName;
-        public TextView mExerciseDesc;
-        public ImageView mExerciseImage;
-        public ProgressBar mImageProgressBar;
-        public TextView mLoadImageError;
+        public CardView mCardView = null;
+        public TextView mExerciseName = null;
+        public TextView mExerciseDesc = null;
+        public ImageView mExerciseImage = null;
+        public ProgressBar mImageProgressBar = null;
+        public TextView mLoadImageError = null;
         // Share button
-        public Button mShareButton;
+        public Button mShareButton = null;
         // Add Favorite button
-        public Button mAddFavButton;
+        public Button mAddFavButton = null;
         // Remove Favorite button
-        public Button mRemoveFavButton;
+        public Button mRemoveFavButton = null;
 
         private ExerciseViewHolder(View itemView) {
             // initialize the views inside the view holder
@@ -252,6 +258,7 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
             mLoadImageError = (TextView) itemView.findViewById(R.id.loading_error_text);
 
             if (mIsAllExercise) {
+                Log.e(TAG, "=========== ExerciseViewHolder: init Add Favorite button! =============");
                 mAddFavButton = (Button) itemView.findViewById(R.id.add_fav_btn);
                 if (mAddFavButton != null) {
                     mAddFavButton.setOnClickListener(new View.OnClickListener() {
@@ -260,14 +267,8 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
 
                             if (exerciseItemOnClickHandler != null) {
                                 int adapterPosition = getAdapterPosition();
-                                // mCursor.moveToPosition(adapterPosition);
                                 Cursor cursor = mCursor;
                                 cursor.moveToPosition(adapterPosition);
-                                //int id_index = mCursor.getColumnIndex(ExerciseContract.ExerciseEntry._ID)
-                                //int _id = mCursor.getInt(id_index);
-                                //long dateInMillis = mCursor.getLong(MainActivity.INDEX_WEATHER_DATE);
-                                //mClickHandler.onClick(dateInMillis);
-
                                 boolean addFavorite = exerciseItemOnClickHandler.onAddFavClick(cursor);
                                 Log.d(TAG, "setOnClickListener - addFavorite flag: " + addFavorite);
                                 toggleButtonDisable(addFavorite);
@@ -278,6 +279,7 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
                 }
             }
             else {
+                Log.e(TAG, "================== ExerciseViewHolder: init Remove Favorite button! =================");
                 mRemoveFavButton = (Button) itemView.findViewById(R.id.remove_fav_btn);
                 if (mRemoveFavButton != null) {
                     mRemoveFavButton.setOnClickListener(new View.OnClickListener() {
@@ -295,6 +297,7 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
                         }
                     });
                 }
+
             }
 
             // TODO: add onClickListener to the Fav Button to trigger the callback?
@@ -321,27 +324,27 @@ public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapte
             int adapterPosition = getAdapterPosition();
             Log.d(TAG, "onClick Method to call the call back method on position:" + adapterPosition);
             mCursor.moveToPosition(adapterPosition);
-            // Use Call back to pass information back to the activity
-            //long dateInMillis = mCursor.getLong(MainActivity.INDEX_WEATHER_DATE);
-            // mClickHandler.onClick(dateInMillis);
+            // Use Call back to pass cursor data back to the activity
             exerciseItemOnClickHandler.onClickExercise(mCursor);
         }
 
         public void toggleButtonDisable(boolean disable) {
             Log.d("ExerciseListAdapter", "toogleButtonDisable method is called");
             Log.d("ExerciseListAdapter", "Disable Flag is?" + disable);
-            if (disable) {
-                Log.d("ExerciseListAdapter", "disable the Add Button by:" + !disable);
-                mAddFavButton.setAlpha(0.5f);
-                mAddFavButton.setEnabled(!disable);
+            if (mAddFavButton!=null && mIsAllExercise == true) {
+                if (disable) {
+                    Log.d("ExerciseListAdapter", "disable the Add Button by:" + !disable);
+                    mAddFavButton.setAlpha(0.5f);
+                    mAddFavButton.setEnabled(!disable);
 
-                Log.d("ExerciseListAdapter", "isEnabled() check:" + mAddFavButton.isEnabled());
-            } else {
-                Log.d(TAG, "Enable the Add Button!");
-                Log.d(TAG, "===========================================================");
-                mAddFavButton.setAlpha(1f);
-                mAddFavButton.setEnabled(!disable);
-                Log.d("ExerciseListAdapter", "isEnabled() check:" + mAddFavButton.isEnabled());
+                    Log.d("ExerciseListAdapter", "isEnabled() check:" + mAddFavButton.isEnabled());
+                } else {
+                    Log.d(TAG, "Enable the Add Button!");
+                    Log.d(TAG, "===========================================================");
+                    mAddFavButton.setAlpha(1f);
+                    mAddFavButton.setEnabled(!disable);
+                    Log.d("ExerciseListAdapter", "isEnabled() check:" + mAddFavButton.isEnabled());
+                }
             }
         }
 

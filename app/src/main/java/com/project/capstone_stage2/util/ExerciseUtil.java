@@ -27,18 +27,12 @@ public class ExerciseUtil {
     public final static String YOUTUBE_URL_PREFIX = "https://www.youtube.com/watch?v=";
 
     // public void updateAllExerciseFavoriteCol(Uri updateURI,String exerciseID, ContentValues contentValues){
-    public static void updateAllExerciseFavoriteCol(Fragment fragment, Uri updateURI, ContentValues contentValues, String exeID, String category) {
-        // TODO: need to refresh the list after a list is deleted
-        //Log.e(TAG, "reload the list after removal of the item!");
-        // Uri updateURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
-        //String whereClause = ExerciseContract.ExerciseEntry._ID + " = ?";
+    public static int updateAllExerciseFavoriteCol(Fragment fragment, Uri updateURI, ContentValues contentValues, String exeID, String category) {
+        Log.e(TAG, "Update exercise's Favorite column!");
         String whereClause = ExerciseContract.ExerciseEntry.EXERCISE_ID + " = ? AND " + ExerciseContract.ExerciseEntry.CATEGORY + " = ?";
-        //String whereClause = ExerciseContract.ExerciseEntry.EXERCISE_ID + " = ?";
-        //int updateRow = getActivity().getContentResolver().update(updateURI, contentValues, whereClause, new String[]{id});
-        //int updateRow = getActivity().getContentResolver().update(updateURI, contentValues, whereClause, new String[]{exeID});
-
         int updateRow = fragment.getActivity().getContentResolver().update(updateURI, contentValues, whereClause, new String[]{exeID, category});
         Log.e(fragment.getTag(), "updateAllExerciseFavoriteCol #of row:" + updateRow);
+        return updateRow;
     }
 
     public static void toggleButtonDisable(boolean disable, Button favButton) {

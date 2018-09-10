@@ -55,6 +55,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     private ExerciseListAdapter mAdapter;
     private Cursor mCursor = null;
     private boolean mTwoPane = false;
+    private boolean mIsAllExercise = true; // by default it is for all exercise
     private Tracker mTracker;
 
 
@@ -87,7 +88,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
      * @return A new instance of fragment AllExerciseFragment.
      */
     // TODO: Rename and change types and number of parameter
-    public static AllExerciseFragment newInstance(int page, String title, boolean twoPane) {
+    public static AllExerciseFragment newInstance(int page, String title, boolean twoPane, boolean isAllExercise) {
         Log.d(TAG, "AllExerciseFragement newInstance is created, what is the paneMode?" + twoPane);
         AllExerciseFragment fragment = new AllExerciseFragment();
         Bundle args = new Bundle();
@@ -95,6 +96,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         args.putString(ARG_TITLE, title);
         fragment.setArguments(args);
         fragment.setPaneMode(twoPane);
+        fragment.setAllListType(isAllExercise);
         return fragment;
     }
 
@@ -126,21 +128,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
 
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_all_exercise, container, false);
-
         initViewsLayout(rootView);
-//        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.all_execise_recyclerview);
-//        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-//        mRecyclerView.setHasFixedSize(true);
-//        Log.d(TAG, "onCreateView:-create new instance for Recycler Adapter");
-//        // THINK ABOUT if we need to have 2 fragment
-//        // actually the only difference is the adapter, do you think we need seperate Fragment class?
-//        boolean isAllFragment = true;
-//        Log.d(TAG, "DEBUG::: onCreateView: mAdapter is created!");
-//        mAdapter = new ExerciseListAdapter(getContext(), this, isAllFragment);
-//        mRecyclerView.setAdapter(mAdapter);
-//        mNoDataText = (TextView) rootView.findViewById(R.id.all_exercise_no_data_error_text);
-//        mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.all_exercise_loading_indicator);
-
         mProgressIndicator.setVisibility(View.VISIBLE); // show loading indicator until lo
 
         if (savedInstanceState != null) {
@@ -166,11 +154,8 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setHasFixedSize(true);
         Log.d(TAG, "onCreateView:-create new instance for Recycler Adapter");
-        // THINK ABOUT if we need to have 2 fragment
-        // actually the only difference is the adapter, do you think we need seperate Fragment class?
-        boolean isAllFragment = true;
         Log.d(TAG, "DEBUG::: onCreateView: mAdapter is created!");
-        mAdapter = new ExerciseListAdapter(getContext(), this, isAllFragment);
+        mAdapter = new ExerciseListAdapter(getContext(), this, mIsAllExercise);
         mRecyclerView.setAdapter(mAdapter);
         mNoDataText = (TextView) rootView.findViewById(R.id.all_exercise_no_data_error_text);
         mProgressIndicator = (ProgressBar) rootView.findViewById(R.id.all_exercise_loading_indicator);
@@ -180,8 +165,6 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
     }
-
-
 
     public void showData(boolean hasData) {
         if (hasData) {
@@ -204,7 +187,6 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
             if (mRecyclerView !=null) {
                 mRecyclerView.setVisibility(View.INVISIBLE);
             }
-//            mRecyclerView.setVisibility(View.INVISIBLE);
             mHasData = false;
         }
     }
@@ -224,12 +206,8 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
                 if (mAdapter != null) {
                     mCursor = cursor;
                     mAdapter.setAdapterData(mCursor);
-                    // mHasData = true;
                     // Show the Recycler view
                     showData(true);
-                    // Set the Add Favorite button state
-                    // checkIsFavorite(cursor);
-
                 } else {
                     Log.e(TAG, "Error:Adapter is null ? why?");
                     // showData(false);
@@ -252,6 +230,10 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     public void setPaneMode(boolean mode) {
         Log.d(TAG, ">>>> DEBUG::: setPaneMode:" + mode);
         mTwoPane = mode;
+    }
+
+    public void setAllListType(boolean isAllExercise) {
+        mIsAllExercise = isAllExercise;
     }
 
     @Override
@@ -285,10 +267,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     @Override
     public void onClickExercise(Cursor cursor) {
         Log.d(TAG, "onClickExercise: what is the pane mode?" + mTwoPane);
-        //Toast.makeText(getContext(), "navigate to Detail view", Toast.LENGTH_LONG).show();
         Log.d(TAG, "onClickExercise:check 2 Pane mode is:" + mTwoPane);
-        // FOR DEBUG
-        //Toast.makeText(getContext(), "2 pane mode:" + mTwoPane, Toast.LENGTH_LONG).show();
         String exeCategory = null;
         String exeCategoryDesc = null;
         String exeName = null;
@@ -329,10 +308,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         } else {
             // when in Two pane!
             // Activity need to implement the Fragment listener to pass back the information to show the video
-            // show the video on the right pane
-            // Pass the information back to the Parent Activity to play the video on the Right pane.
-            // but now we cannot play this because we dont know when it is a 2 pane mode!
-            //Toast.makeText(getContext(), "Two Pane - OnClick exercise", Toast.LENGTH_LONG).show();
+            // show the video on the right pane - Pass the information back to the Parent Activity to play the video on the Right pane.
             mListener.twoPaneModeOnClick(exeID, exeSteps, exeVideoURL);
         }
     }
@@ -367,8 +343,78 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     }
 
     // Call back method for ExerciseListAdapter to pass in the cursor
+    // When Add Favorite button is click - Set the Favorite flag as favorite
+//    @Override
+//    public boolean onAddFavClick(Cursor cursor) {
+//        // https://developer.android.com/guide/topics/providers/content-provider-basics.html
+//        // select the row from All Exercise and add the parameter to Favorite Exercise
+//        int id = cursor.getColumnIndex(ExerciseContract.ExerciseEntry._ID);
+//        int name_index = cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME);
+//        String exeID = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID));
+//        String exeName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
+//        String category = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.CATEGORY));
+//
+//        // Add analytics to track which exercise is add as favorite
+//        mTracker.send(new HitBuilders.EventBuilder()
+//                .setCategory("Exercise Name:" + exeName)
+//                .setAction("Add Exercise as favorite")
+//                .build());
+//
+//
+//        Log.d(TAG, "insert favorite index0: " + cursor.getString(0));
+//        Log.d(TAG, "insert favorite index1: " + cursor.getString(1));
+//        Log.d(TAG, "insert favorite index2: " + cursor.getString(2));
+//        Log.d(TAG, "insert favorite index3: " + cursor.getString(3));
+//        Log.d(TAG, "insert favorite index4: " + cursor.getString(4));
+//        Log.d(TAG, "insert favorite index5: " + cursor.getString(5));
+//        Log.d(TAG, "insert favorite index6: " + cursor.getString(6));
+//        Log.d(TAG, "insert favorite index0: " + cursor.getString(7));
+//        Log.d(TAG, "insert favorite index0: " + cursor.getString(8));
+//
+//        Toast.makeText(getContext(), getString(R.string.toast_add_exercise), Toast.LENGTH_LONG).show();
+//
+//        if (cursor != null || !cursor.isClosed()) {
+//            // Defines an object to contain the new values to insert
+//            ContentValues mNewValues = new ContentValues();
+//            mNewValues.put(ExerciseContract.ExerciseEntry.CATEGORY, cursor.getString(1));
+//            mNewValues.put(ExerciseContract.ExerciseEntry.CATEGORY_DESC, cursor.getString(2));
+//            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_ID, cursor.getString(3));
+//            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_NAME, cursor.getString(4));
+//            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION, cursor.getString(5));
+//            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_STEPS, cursor.getString(6));
+//            //mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_STEPS, "no steps");
+//            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE, cursor.getString(7));
+//            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO, cursor.getString(8));
+//
+//            Uri insertUri = getActivity().getContentResolver()
+//                    .insert(ExerciseContract.ExerciseEntry.CONTENT_URI_FAV, mNewValues);
+//            Log.d(TAG, "insert favorite exercise result uri: " + insertUri);
+//        } else {
+//            Log.e(TAG, "Error:Cursor is not valid! ");
+//        }
+//
+//        if (checkAlreadyInsertAsFavorite(exeID)) {
+//            // TODO: disable the ADD Favorite button!
+//            ContentValues contentValues = new ContentValues();
+//            // set the favorite flag = 1
+//            contentValues.put(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE, 1);
+//            // TODO: update the AllExercise table's favorite flag
+//            Uri uri = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
+//           // updateAllExerciseFavoriteCol(uri, contentValues, exeID, category);
+//            return true;
+//        }
+//
+//        return false;
+//    }
+
+    // call back method when "Add Favorite" button is added
     @Override
     public boolean onAddFavClick(Cursor cursor) {
+        Log.d(TAG, "callback onAddFavClick");
+        if (cursor == null || cursor.isClosed()) {
+            Log.d(TAG, "Cursor is null ? why");
+            return false;
+        }
         // https://developer.android.com/guide/topics/providers/content-provider-basics.html
         // select the row from All Exercise and add the parameter to Favorite Exercise
         int id = cursor.getColumnIndex(ExerciseContract.ExerciseEntry._ID);
@@ -383,57 +429,50 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
                 .setAction("Add Exercise as favorite")
                 .build());
 
-
-        Log.d(TAG, "insert favorite index0: " + cursor.getString(0));
-        Log.d(TAG, "insert favorite index1: " + cursor.getString(1));
-        Log.d(TAG, "insert favorite index2: " + cursor.getString(2));
-        Log.d(TAG, "insert favorite index3: " + cursor.getString(3));
-        Log.d(TAG, "insert favorite index4: " + cursor.getString(4));
-        Log.d(TAG, "insert favorite index5: " + cursor.getString(5));
-        Log.d(TAG, "insert favorite index6: " + cursor.getString(6));
-        Log.d(TAG, "insert favorite index0: " + cursor.getString(7));
-        Log.d(TAG, "insert favorite index0: " + cursor.getString(8));
-
         Toast.makeText(getContext(), getString(R.string.toast_add_exercise), Toast.LENGTH_LONG).show();
 
         if (cursor != null || !cursor.isClosed()) {
             // Defines an object to contain the new values to insert
             ContentValues mNewValues = new ContentValues();
-            mNewValues.put(ExerciseContract.ExerciseEntry.CATEGORY, cursor.getString(1));
-            mNewValues.put(ExerciseContract.ExerciseEntry.CATEGORY_DESC, cursor.getString(2));
-            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_ID, cursor.getString(3));
-            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_NAME, cursor.getString(4));
-            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION, cursor.getString(5));
-            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_STEPS, cursor.getString(6));
-            //mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_STEPS, "no steps");
-            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE, cursor.getString(7));
-            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO, cursor.getString(8));
-
-            Uri insertUri = getActivity().getContentResolver()
-                    .insert(ExerciseContract.ExerciseEntry.CONTENT_URI_FAV, mNewValues);
-            Log.d(TAG, "insert favorite exercise result uri: " + insertUri);
+            mNewValues.put(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE, 1);
+            String whereClause = ExerciseContract.ExerciseEntry.EXERCISE_ID + " = ?" ;
+            Uri queryUri = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
+            // return the number of rows updated
+            int result = getActivity().getContentResolver().update(queryUri, mNewValues, whereClause, new String[]{exeID});
+            Log.d(TAG, "onAddFavorite button is clicked - Update favorited exercise flag result: " + result);
+            if(result > 0) {
+                return true;
+            } else {
+                return false;
+            }
         } else {
             Log.e(TAG, "Error:Cursor is not valid! ");
+            return false;
         }
 
-        if (checkAlreadyInsertAsFavorite(exeID)) {
-            // TODO: disable the ADD Favorite button!
-            ContentValues contentValues = new ContentValues();
-            // set the favorite flag = 1
-            contentValues.put(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE, 1);
-            // TODO: update the AllExercise table's favorite flag
-            Uri uri = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
-            updateAllExerciseFavoriteCol(uri, contentValues, exeID, category);
-            return true;
-        }
-
-        return false;
     }
 
     @Override
     public boolean onRemoveFavClick(Cursor cursor) {
-        return false;
+        Log.d(TAG, "callback onRemoveFavClick");
+        // cursor is stale and could cause StaleDataException
+        String id = cursor.getString(cursor.getColumnIndex("_id"));
+        String exeID = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_ID));
+        String exeName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
+        String catName = cursor.getString(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.CATEGORY));
+        Log.e(TAG, "update the favorite flag in the All table!");
+        // update All Exercise table's favorite flag to 0
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE, 0);
+        Uri updateALlExerciseURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
+        ExerciseUtil.updateAllExerciseFavoriteCol(this, updateALlExerciseURI, contentValues, exeID, catName);
+
+        // reload the favorite list
+        reloadDataFavoriteList(catName);
+        return true;
     }
+
+
 
     // LoaderManager's Callback methods
     // TODO: 1) add back the login to get the data from backend API!
@@ -465,24 +504,21 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     }
 
     public boolean checkAlreadyInsertAsFavorite(String exerciseID) {
-        Uri uri = ExerciseContract.ExerciseEntry.CONTENT_URI_FAV;
-        String[] projections = {ExerciseContract.ExerciseEntry.EXERCISE_ID, ExerciseContract.ExerciseEntry.EXERCISE_NAME};
+        Log.d(TAG, "callback onRemoveFavClick");
+        Uri uri = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
+        String[] projections = {ExerciseContract.ExerciseEntry.EXERCISE_ID, ExerciseContract.ExerciseEntry.EXERCISE_NAME,ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE};
         String selection = ExerciseContract.ExerciseEntry.EXERCISE_ID + "=?";
         String[] selectionArgs = {exerciseID};
-        try {
-            Cursor cursor = getActivity().getContentResolver().query(uri, projections, selection, selectionArgs, null);
-            //if (cursor.getCount() == 1) {
-            if (cursor.getCount() > 0) {
-                Log.d(TAG, "Assert if favorite is added ::: checkAlreadyInsertAsFavorite:" + cursor.getCount());
-                return true;
-            } else {
-                Log.e(TAG, "Error:::unable to query the added favorite exercise!");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e(TAG, "checkAlreadyInsert:Unable to query the inserted data using id:");
+
+        Cursor cursor = getActivity().getContentResolver().query(uri, projections, selection, selectionArgs, null);
+        if (cursor.getCount() > 0) {
+            Log.d(TAG, "Assert if favorite is added ::: checkAlreadyInsertAsFavorite:" +
+                    cursor.getColumnName(cursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE)));
+            return true;
+        } else {
+            Log.e(TAG, "Error:::unable to query the added favorite exercise!");
+            return false;
         }
-        return false;
     }
 
     @Override
@@ -490,23 +526,6 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         super.onSaveInstanceState(outState);
         outState.putBoolean(HAS_DATA_KEY, mHasData);
 
-    }
-
-    // TODO: should we move to an Util class
-    // public void updateAllExerciseFavoriteCol(Uri updateURI,String exerciseID, ContentValues contentValues){
-    public void updateAllExerciseFavoriteCol(Uri updateURI, ContentValues contentValues, String exeID, String category) {
-        // TODO: need to refresh the list after a list is deleted
-        Log.d(TAG, "update AllExercise Table's favorite flag!");
-        Log.d(TAG, "ContentValues:" + contentValues);
-        // Uri updateURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
-        //String whereClause = ExerciseContract.ExerciseEntry._ID + " = ?";
-        String whereClause = ExerciseContract.ExerciseEntry.EXERCISE_ID + " = ? AND " + ExerciseContract.ExerciseEntry.CATEGORY + " = ?";
-        //String whereClause = ExerciseContract.ExerciseEntry.EXERCISE_ID + " = ?";
-        //int updateRow = getActivity().getContentResolver().update(updateURI, contentValues, whereClause, new String[]{id});
-        //int updateRow = getActivity().getContentResolver().update(updateURI, contentValues, whereClause, new String[]{exeID});
-
-        int updateRow = getActivity().getContentResolver().update(updateURI, contentValues, whereClause, new String[]{exeID, category});
-        Log.d(TAG, "updateAllExerciseFavoriteCol #of row:" + updateRow);
     }
 
     public ExerciseListAdapter getAdapter() {
@@ -563,6 +582,35 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
     }
 
 
+    public void checkIsFavoriteFromExerciseTable(String catName) {
+        Log.d(TAG, "========checkIsFavoriteFromExerciseTable========");
+        Uri queryURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
+                /* Sort order: Ascending by exercise id */
+        String sortOrder = ExerciseContract.ExerciseEntry.EXERCISE_ID + " ASC";
+        String selectionByCategoryName = ExerciseContract.ExerciseEntry.CATEGORY + " = ?";
+        String selectionByFavorite = ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE + " = ?";
+        String multiSelection = selectionByCategoryName + " and " + selectionByFavorite;
+        if (getActivity() != null && getActivity().getContentResolver() != null) {
+            Cursor favCursor = getActivity().getContentResolver().query(queryURI, ExerciseSwipeViewActivity.EXERCISE_PROJECTION, multiSelection, new String[]{catName,"1"}, sortOrder);
+            if (favCursor != null && favCursor.getCount() > 0) {
+                while (favCursor.moveToNext()) {
+
+                    String exeName = favCursor.getString(favCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
+                    // int favorite = favCursor.getInt(favCursor.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE));
+                    Log.e(TAG, "Favorited exercise name: " + exeName);
+                    if (exeName != null) {
+                        Log.e(TAG, "Toggle the Add Exercise button to disable!!");
+                        updateButtonState(true, exeName);
+                    }
+                }
+            } else {
+                // Reset all the button to enable state
+                resetButtonStateToEnabled();
+            }
+        }
+
+    }
+
     private void resetButtonStateToEnabled() {
         if (mRecyclerView != null && mRecyclerView.getAdapter() != null) {
             Log.e(TAG, "updateButtonState() is called!");
@@ -612,10 +660,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
                         Button addFavoriteBtn = vh.mAddFavButton;
                         if (addFavoriteBtn != null) {
                             Log.e(TAG, ">>>>> UpdateButtonState:" + toggle);
-                            //ExerciseUtil.toggleButtonDisable(toggle, addFavoriteBtn);
-                            //mRecyclerView.getAdapter().to
                             vh.toggleButtonDisable(toggle);
-                            //found = true;
                         } else {
 
                             Log.e(TAG, "ERROR:::UpdateButtonState:" + "unable to get the addFavoriteButton?");
@@ -631,7 +676,7 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
         }
     }
 
-    public void reloadData(String catName) {
+    public void reloadDataAllList(String catName) {
 
         // TODO: need to refresh the list after a list is deleted
         Log.e(TAG, "reload the list!");
@@ -655,6 +700,40 @@ public class AllExerciseFragment extends Fragment implements ExerciseListAdapter
                 Log.e(TAG, "ERROR:::unable to get the cursor!");
             }
         } else {
+            Log.e(TAG, "ERROR::: Why unable to get ContentResolver!");
+        }
+    }
+
+    // After data changes, we need to reload the list
+    public void reloadDataFavoriteList(String catName) {
+
+        // TODO: need to refresh the list after a list is deleted
+        Log.e(TAG, "====================Reload the favorite list================");
+        Uri queryURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
+                /* Sort order: Ascending by exercise id */
+        String favSortOrder = ExerciseContract.ExerciseEntry.EXERCISE_ID + " ASC";
+        String selectionByCategoryName = ExerciseContract.ExerciseEntry.CATEGORY + " = ?";
+        String selectionByFavorite = ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE + " = ?";
+        String multiSelection = selectionByCategoryName + " and " + selectionByFavorite;
+
+        if (getActivity() != null && getActivity().getContentResolver() != null) {
+            //if (getContext() !=null && getContext().getContentResolver()!=null) {
+            Cursor newCursor = getActivity().getContentResolver().query(queryURI, ExerciseSwipeViewActivity.EXERCISE_PROJECTION, multiSelection, new String[]{catName,"1"}, favSortOrder);
+            if (newCursor != null) {
+                Log.d(TAG, "Assert latest data count:" + newCursor.getCount());
+                mAdapter.swapCursor(newCursor);
+                if (newCursor.getCount() == 0) {
+                    // TODO: show no data
+                    showData(false);
+                } else {
+                    showData(true);
+                }
+            } else {
+
+                Log.e(TAG, "unable to get the cursor!");
+            }
+        } else {
+            // TODO:- Need to show Error Message!
             Log.e(TAG, "ERROR::: Why unable to get ContentResolver!");
         }
     }

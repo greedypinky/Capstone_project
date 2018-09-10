@@ -21,6 +21,11 @@ import com.firebase.jobdispatcher.RetryStrategy;
 import com.firebase.jobdispatcher.Trigger;
 import com.project.capstone_stage2.dbUtility.ExerciseContract;
 import com.project.capstone_stage2.util.RemoteEndPointUtil;
+
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 public class ExerciseDataSyncTask {
@@ -45,22 +50,42 @@ public class ExerciseDataSyncTask {
             // 2. Parse the JSON data and put them into ContentValues[]
             // 3. So the bulk insert into the database
             ContentValues[] contentValues = RemoteEndPointUtil.fetchJSONData(exerciseJSON);
+
             if (contentValues != null && contentValues.length > 0) {
 
                 // Then we update the database
                 ContentResolver contentResolver = context.getContentResolver();
-                // delete all the old data in DB first
-                //contentResolver.delete(ExerciseContract.ExerciseEntry.CONTENT_URI_ALL, null,null);
+                // TODO: do we need to delete all the old data in DB first?
+                // contentResolver.delete(ExerciseContract.ExerciseEntry.CONTENT_URI_ALL, null,null);
                 // bulk insert again with the latest data from server
                 contentResolver.bulkInsert(ExerciseContract.ExerciseEntry.CONTENT_URI_ALL, contentValues);
 
             }
         } catch (Exception e) {
-
             e.printStackTrace();
+            Log.e(TAG, e.getMessage());
         }
 
     }
+
+    synchronized public static void syncJobScheduleData(Context context, String exerciseJSON) {
+        try {
+            // TODO: add back the logic
+            // 1. Use the EndPointSyncTask.execute to get the JSON data
+            // 2. Parse the JSON data and put them into ContentValues[]
+            // 3. Insert the new data into local db (we do not delete the db)
+            ContentValues[] contentValues = RemoteEndPointUtil.fetchJSONData(exerciseJSON);
+
+            if (contentValues != null && contentValues.length > 0) {
+                RemoteEndPointUtil.insertNewExerciseToDB(context, contentValues);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
+        }
+
+    }
+
 
     /**
      * Schedules a repeating sync up data by FirebaseJobDispatcher.
@@ -72,8 +97,10 @@ public class ExerciseDataSyncTask {
 
         Driver driver = new GooglePlayDriver(context);
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(driver);
-        Long duration = TimeUnit.DAYS.toSeconds(7);
+        Long duration = TimeUnit.DAYS.toSeconds(30);
         int oneWeekDuration = duration.intValue();
+        long monthFromNowInMillis = getMonthFromNowInMillis(1);
+
         // Create the Job to periodically sync the exercise data from the endpoint server
         Job syncExerciseDataJob = dispatcher.newJobBuilder()
                 .setService(ExerciseFireBaseJobservice.class) // use the JobService to sync the data
@@ -88,11 +115,10 @@ public class ExerciseDataSyncTask {
                  * which the data should be synced. Please note that this end time is not
                  * guaranteed, but is more of a guideline for FirebaseJobDispatcher to go off of.
                  */
-//                .setTrigger(Trigger.executionWindow(
-//                        10,
-//                        30))
-
-                .setTrigger(Trigger.executionWindow(0, oneWeekDuration))
+                .setTrigger(Trigger.executionWindow(
+                        0,
+                        60))
+                //.setTrigger(Trigger.executionWindow(0, monthFromNowInMillis))
                 .setRetryStrategy(RetryStrategy.DEFAULT_LINEAR)
                 .setReplaceCurrent(true) // replace the job if one already exists.
                 .setConstraints(Constraint.ON_ANY_NETWORK)  //Run this job only when the network is avaiable.
@@ -121,7 +147,7 @@ public class ExerciseDataSyncTask {
         sInitialized = true;
 
         /*
-         * This method call triggers Sunshine to create its task to synchronize weather data
+         * This method call triggers the apps to create its task to synchronize db data
          * periodically.
          */
         Log.d(TAG, "scheduleFirebaseJobDispatcherSync!");
@@ -137,10 +163,22 @@ public class ExerciseDataSyncTask {
         Thread checkForEmpty = new Thread(new Runnable() {
             @Override
             public void run() {
+                if (!isDatabaseHasData(context)) {
+                    // this will start the Intent Service to sync the data the first time
+                    startImmediateSync(context, exerciseData);
+                }
+            }
+        });
 
-                /* URI for every row of weather data in our weather table*/
-                //Uri forecastQueryUri = WeatherContract.WeatherEntry.CONTENT_URI;
-                Uri allExerciseURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
+        // start the thread is prepared to check if the database is empty
+        checkForEmpty.start();
+    }
+
+    public static boolean isDatabaseHasData(Context context) {
+
+        /* URI for every row of weather data in our weather table*/
+        //Uri forecastQueryUri = WeatherContract.WeatherEntry.CONTENT_URI;
+        Uri allExerciseURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
 
                 /*
                  * Since this query is going to be used only as a check to see if we have any
@@ -148,31 +186,27 @@ public class ExerciseDataSyncTask {
                  * row. In our queries where we display data, we need to PROJECT more columns
                  * to determine what weather details need to be displayed.
                  */
-                String[] projectionColumns = {ExerciseContract.ExerciseEntry._ID};
+        String[] projectionColumns = {ExerciseContract.ExerciseEntry._ID};
 
                 /* Here, we perform the query to check to see if we have any weather data */
-                Cursor cursor = context.getContentResolver().query(
-                        allExerciseURI,
-                        projectionColumns,
-                        null,
-                        null,
-                        null);
+        Cursor cursor = context.getContentResolver().query(
+                allExerciseURI,
+                projectionColumns,
+                null,
+                null,
+                null);
 
-                // if unable to get data from the existing database, sync the data immediately (not by the scheduling job)
-                if (null == cursor || cursor.getCount() == 0) {
-                    // this will start the Intent Service to sync the data the first time
-                    startImmediateSync(context, exerciseData);
-                } else {
-                    // close the Cursor to avoid memory leaks!
-                    cursor.close();
-                }
+        // if unable to get data from the existing database, sync the data immediately (not by the scheduling job)
+        if (null == cursor || cursor.getCount() == 0) {
+            // this will start the Intent Service to sync the data the first time
+            //startImmediateSync(context, exerciseData);
+            return false;
+        } else {
+            // close the Cursor to avoid memory leaks!
+            cursor.close();
+            return true;
+        }
 
-
-            }
-        });
-
-        // start the thread is prepared to check if the database is empty
-        checkForEmpty.start();
     }
 
     /**
@@ -191,4 +225,11 @@ public class ExerciseDataSyncTask {
         context.startService(intentToSyncByIntentService);
     }
 
+    private static long getMonthFromNowInMillis(int numOfMonth) {
+        Calendar cal = Calendar.getInstance();
+        if (numOfMonth > 0) {
+            cal.add(Calendar.MONTH, numOfMonth);
+        }
+        return cal.getTimeInMillis();
+    }
 }
