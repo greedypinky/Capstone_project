@@ -96,7 +96,7 @@ public class ExerciseDataSyncTask {
 
                 ContentValues[] contentValues = RemoteEndPointUtil.fetchJSONData(exerciseJSON);
                 if (contentValues != null && contentValues.length > 0) {
-                    RemoteEndPointUtil.insertNewExerciseToDB(context, contentValues);
+                  RemoteEndPointUtil.insertNewExerciseToDB(context, contentValues);
                 }
             }
 

@@ -134,27 +134,28 @@ public class RemoteEndPointUtil {
 
     public static boolean insertNewExerciseToDB(Context context, ContentValues[] values) {
         Cursor existingDbCursor = null;
-        boolean result = true;
+        boolean result = false;
         try {
             Uri queryURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
             /* Sort order: Ascending by exercise id */
             String sortOrder = ExerciseContract.ExerciseEntry.EXERCISE_ID + " ASC";
             String selectionByExerciseID = ExerciseContract.ExerciseEntry.EXERCISE_ID + " = ?";
-            String selectionByFavorite = ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE + " = ?";
+            String selectionByExerciseName = ExerciseContract.ExerciseEntry.EXERCISE_NAME + " = ?";
+            String multiSelection = selectionByExerciseID + " and " + selectionByExerciseName;
 
             for (int i=0; i<values.length; i++) {
                 String exerciseID  = values[i].getAsString(ExerciseContract.ExerciseEntry.EXERCISE_ID);
                 String exerciseName  = values[i].getAsString(ExerciseContract.ExerciseEntry.EXERCISE_NAME);
-                existingDbCursor = context.getContentResolver().query(queryURI, ExerciseSwipeViewActivity.EXERCISE_PROJECTION, selectionByFavorite, new String[]{exerciseID}, sortOrder);
+                existingDbCursor = context.getContentResolver().query(queryURI, ExerciseSwipeViewActivity.EXERCISE_PROJECTION, selectionByExerciseID, new String[]{exerciseID}, sortOrder);
                     if (existingDbCursor.getCount() == 0) {
 
                         //TODO: insert data into DB
                         Uri insertUri = context.getContentResolver()
                                     .insert(ExerciseContract.ExerciseEntry.CONTENT_URI_ALL, values[i]);
                         Log.d(TAG, "=============Insert new exercise's result uri: " + insertUri + "=============");
-                        if (insertUri == null) {
-                            result = false;
-                            break;
+                        if (insertUri != null) {
+                            result = true; // as long as one inserted
+                            // break; // should not put a break
                         }
                     } else {
                         Log.e(TAG, String.format("Exercise %s with exerciseID %s is already existed in the local database!", exerciseName, exerciseID));

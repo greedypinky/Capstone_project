@@ -51,6 +51,7 @@ public class ListViewWidgetService extends RemoteViewsService {
                 mExercisesData = (ArrayList<HashMap<String, String>>) bundle.getSerializable(MyExerciseAppWidget.WIDGET_EXERCISE_DATA);
                 int widgetID = bundle.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
                 Log.d(TAG, "widget id is:" + widgetID);
+                Log.d(TAG, "what is the size of exercise data?:" + mExercisesData.size());
 
             }
 
@@ -77,7 +78,7 @@ public class ListViewWidgetService extends RemoteViewsService {
 
         public RemoteViews getViewAt(int position) {
 
-            Log.d(TAG, "getViewAt position:" + position);
+            Log.d(TAG, "======== getViewAt position:" + position + "========");
 
             // position will always range from 0 to getCount() - 1.
 
@@ -92,13 +93,13 @@ public class ListViewWidgetService extends RemoteViewsService {
             String desc = "";
             String imageurl = "";
 
-            for (int i = 0; i < hmap.size(); i++) {
+
                 name = hmap.get("name");
                 desc = hmap.get("desc");
                 imageurl = hmap.get("imageurl");
-                Log.d(TAG, String.format("name %s, desc %s, imageURL %s", name, desc, imageurl));
+                Log.d(TAG, String.format(" name [%s], desc [%s], imageURL [%s]   ", name, desc, imageurl));
 
-            }
+
 
             // get the row data at position
             //Exercise data = mExercisesData.get(position);
@@ -116,9 +117,9 @@ public class ListViewWidgetService extends RemoteViewsService {
                 // TODO : in real, we get the URI and set the image by PICASSO?
                 // Picasso will handle loading the images on a background thread, image decompression and caching the images.
                 // Bitmap bm = Picasso.with(mContext).load(data.getExerciseImageURI()).get();
-                // Bitmap bm = Picasso.with(mContext).load(imageurl).get();
+                 Bitmap bm = Picasso.with(mContext).load(imageurl).get();
                 // for now, we can use a default icon to set the image
-                Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.nao_squat01);
+                // Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.nao_squat01);
                 //rv.setImageViewResource(R.id.widget_execise_image,bm);
                 rv.setImageViewBitmap(R.id.widget_execise_image, bm);
             } catch (Exception ioe) {
@@ -155,10 +156,10 @@ public class ListViewWidgetService extends RemoteViewsService {
 
         public int getCount() {
 
-            Log.d(TAG, mExercisesData.size() + "");
-            return mExercisesData.size();
-            //return 3;
-
+            if(mExercisesData != null) {
+                Log.d(TAG, mExercisesData.size() + "");
+                return mExercisesData.size();
+            } else return 0;
         }
 
         // when will this be triggered?

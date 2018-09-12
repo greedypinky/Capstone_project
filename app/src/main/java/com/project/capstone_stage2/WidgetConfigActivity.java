@@ -26,7 +26,11 @@ import com.project.capstone_stage2.sync.ExerciseDataSyncTask;
 import com.project.capstone_stage2.util.CategoryListAdapter;
 import com.project.capstone_stage2.util.EndPointsAsyncTask;
 import com.project.capstone_stage2.util.Exercise;
+import com.project.capstone_stage2.util.NetworkUtil;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -88,6 +92,7 @@ public class WidgetConfigActivity extends AppCompatActivity implements LoaderMan
                     if (((RadioButton) mRadioGrp.getChildAt(i)).isChecked()) {
                         String selectedCategory = (String) ((RadioButton) mRadioGrp.getChildAt(i)).getText();
                         mSelectedExceriseCategory = selectedCategory;
+                        Log.d(TAG, "What is the selected Category?" + mSelectedExceriseCategory);
                         break;
                     }
                 }
@@ -114,14 +119,19 @@ public class WidgetConfigActivity extends AppCompatActivity implements LoaderMan
             i++;
         }
 
-        // fetch the JSON data from the API endpoint
-        fetchDataFromEndPoint();
+        // fetch data from the FireBase RealTime db instead
+//        String response = fetchDataFromFirebaseDB();
+//        if (response!=null) {
+//            ExerciseDataSyncTask.initialize(this, response);
+//        }
+
     }
 
     @Override
     public Loader onCreateLoader(int id, Bundle args) {
 
         Log.d(TAG, "onCreateLoader:" + id);
+        Log.d(TAG, "Get the list from Execise Category:" + mSelectedExceriseCategory);
         CursorLoader loader = null;
                 /* URI for all rows of all exercise data in table */
         Uri queryUri = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
@@ -135,7 +145,7 @@ public class WidgetConfigActivity extends AppCompatActivity implements LoaderMan
         // TODO: Selection we need to filter by the Category Name
         // String selection = WeatherContract.WeatherEntry.getSqlSelectForTodayOnwards();
         // SQL's where clause - where category = SQUAT or PULL or PUSH
-        String selectionByCategoryName = ExerciseContract.ExerciseEntry.CATEGORY + "=?";
+        String selectionByCategoryName = ExerciseContract.ExerciseEntry.CATEGORY + " =? ";
 
         loader = new CursorLoader(this,
                 queryUri,
@@ -149,7 +159,10 @@ public class WidgetConfigActivity extends AppCompatActivity implements LoaderMan
 
     @Override
     public void onLoadFinished(Loader loader, Cursor data) {
-
+        Log.d(TAG, "onLoadFinished");
+        if (data!=null) {
+            Log.d(TAG, "onLoadFinished: cursor count:" + data.getCount());
+        }
         addAppWidget(data);
 
     }
@@ -170,22 +183,30 @@ public class WidgetConfigActivity extends AppCompatActivity implements LoaderMan
         ArrayList<HashMap<String, String>> exerciseArrayList = new ArrayList<HashMap<String, String>>();
 
         if (data != null) {
+            // data.moveToFirst();
             while (data.moveToNext()) {
                 String name = data.getString(data.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_NAME));
                 String desc = data.getString(data.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION));
                 String imageURI = data.getString(data.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE));
-                Log.d(TAG, String.format("name %s, desc %s, imageURL %s", name, desc, imageURI));
+                String videoURI = data.getString(data.getColumnIndex(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO));
+                Log.d(TAG, String.format("name [ %s], desc [%s], imageURL [%s]", name, desc, imageURI));
                 //exerciseArrayList.add(new Exercise(name,desc,imageURI));
                 // exerciseArrayList.add(new Exercise(name));
                 HashMap<String, String> hmap = new HashMap<String, String>();
                 hmap.put("name", name);
                 hmap.put("desc", desc);
                 hmap.put("imageuri", imageURI);
+                hmap.put("videouri", videoURI);
+                Log.d(TAG,"Widget - read data from cursor for name:" + name);
+                Log.d(TAG,"Widget - read data from cursor for desc:" + desc);
+                Log.d(TAG,"Widget - read data from cursor for imageurl:" + imageURI);
+                Log.d(TAG,"Widget - read data from cursor for videourl:" + videoURI);
                 exerciseArrayList.add(hmap);
             }
 
         }
 
+        Log.d(TAG, "addAppWidget:how many exercise ? " + exerciseArrayList.size());
         MyExerciseAppWidget.updateExerciseAppWidget(getApplicationContext(), mAppWidgetManager, mAppWidgetId, exerciseArrayList);
 
         Intent intent = new Intent();
@@ -200,6 +221,23 @@ public class WidgetConfigActivity extends AppCompatActivity implements LoaderMan
     private void fetchDataFromEndPoint() {
         // fetch the exercise json data from the endpoint
         new EndPointsAsyncTask(this).execute(new Pair<Context, String>(this, "Manfred"));
+    }
+
+    private String fetchDataFromFirebaseDB() {
+        String response = null;
+        URL mFirebaseDbUrl;
+        try {
+            mFirebaseDbUrl = new URL(getString(R.string.firebaseproject) + getString(R.string.firebaseDbRefJson));
+            Log.d(TAG, "loadInBackground is called!");
+            response = NetworkUtil.getResponseFromHttp(mFirebaseDbUrl);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
+        }  catch (IOException ioe) {
+            ioe.printStackTrace();
+            Log.e(TAG, ioe.getMessage());
+        }
+        return response;
     }
 
     // implement the callback result passed by the EndPoint
