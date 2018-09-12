@@ -63,75 +63,6 @@ public class RemoteEndPointUtil {
     private static final String STEPS = "steps";
     private static final String STEP_DESCRIPTION = "stepDescription";
 
-    /*
-    public static ContentValues[] fetchJSONData2(String json) {
-        ContentValues[] exerciseContentValues = null;
-        JSONArray exercises = null;
-        try {
-
-            Log.e(TAG,"parse the JSON data:" + json);
-            // create the JSON object
-            JSONObject jsonObject = new JSONObject(json);
-            // get the exercises array
-            exercises = jsonObject.getJSONArray(EXERCISES);
-            exerciseContentValues = new ContentValues[exercises.length()];
-
-            for (int i = 0; i < exercises.length(); i++) {
-
-                String category = "";
-                String category_description = "";
-                String id = "";
-                String name = "";
-                String description = "";
-                String image = "";
-                String video = "";
-                String steps = "";
-                String stepDesc = "";
-
-                JSONObject exercise = (JSONObject) exercises.get(i);
-                // get 1 exercise out and get the properties
-                category = exercise.getString(CATEGORY);
-                category_description = exercise.getString(CATEGORY_DESCRIPTION);
-                id = exercise.getString(ID);
-                name = exercise.getString(NAME);
-                description = exercise.getString(DESCRIPTION);
-                image = exercise.getString(IMAGE);
-                video = exercise.getString(VIDEO);
-                JSONArray stepsArray = exercise.getJSONArray(STEPS);
-                //String stepDesc = "";
-                for (int s = 0; s < stepsArray.length(); s++) {
-                    JSONObject step = (JSONObject) stepsArray.get(s);
-                    stepDesc = stepDesc + step.getString(STEP_DESCRIPTION) + "\n";
-                    Log.d(TAG, "Step Description is:" + stepDesc);
-                }
-
-                // from here how can we add the data back to the DB
-                ContentValues exerciseValues = new ContentValues();
-                exerciseValues.put(ExerciseContract.ExerciseEntry.CATEGORY, category);
-                exerciseValues.put(ExerciseContract.ExerciseEntry.CATEGORY_DESC, category_description);
-                exerciseValues.put(ExerciseContract.ExerciseEntry.EXERCISE_ID, id);
-                exerciseValues.put(ExerciseContract.ExerciseEntry.EXERCISE_NAME, name);
-                exerciseValues.put(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION, description);
-                exerciseValues.put(ExerciseContract.ExerciseEntry.EXERCISE_STEPS, stepDesc);
-                exerciseValues.put(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE, image);
-                exerciseValues.put(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO, video);
-
-                // add into the ContentValues array
-                exerciseContentValues[i] = exerciseValues;
-
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e(TAG,"Unable to parse the JSON data:" + e.getMessage());
-        }
-
-        return exerciseContentValues;
-
-    }
-    */
-
-
     public static ContentValues[] fetchJSONData(String json) {
         ContentValues[] exerciseContentValues = null;
         JSONArray exercises = null;
@@ -207,7 +138,7 @@ public class RemoteEndPointUtil {
         try {
             Uri queryURI = ExerciseContract.ExerciseEntry.CONTENT_URI_ALL;
             /* Sort order: Ascending by exercise id */
-            String sortOrder = ExerciseContract.ExerciseEntry.EXERCISE_ID + "ASC";
+            String sortOrder = ExerciseContract.ExerciseEntry.EXERCISE_ID + " ASC";
             String selectionByExerciseID = ExerciseContract.ExerciseEntry.EXERCISE_ID + " = ?";
             String selectionByFavorite = ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE + " = ?";
 
@@ -220,7 +151,7 @@ public class RemoteEndPointUtil {
                         //TODO: insert data into DB
                         Uri insertUri = context.getContentResolver()
                                     .insert(ExerciseContract.ExerciseEntry.CONTENT_URI_ALL, values[i]);
-                        Log.d(TAG, "Insert new exercise's result uri: " + insertUri);
+                        Log.d(TAG, "=============Insert new exercise's result uri: " + insertUri + "=============");
                         if (insertUri == null) {
                             result = false;
                             break;

@@ -146,23 +146,24 @@ public class ExerciseContentProvider extends ContentProvider {
         Log.d(TAG, "matcher: " + match);
 
         switch (match) {
-            case FAV_EXERCISE:
+           // case FAV_EXERCISE:
+            case ALL_EXERCISE:
                 db.beginTransaction();
                 try {
                     // use the insert method to insert
-                    long id = db.insert(ExerciseContract.ExerciseEntry.TABLE_EXERCISE, null,
+                    long id = db.insert(ExerciseContract.ExerciseEntry.TABLE_ALL, null,
                             contentValues);
                     // if id is return
                     if (id > 0) {
                         // build the insert URI with the returned ID
-                        insertUri = ExerciseContract.ExerciseEntry.buildFavoriteExerciseUriWithId(id);
+                        insertUri = ExerciseContract.ExerciseEntry.buildAllExerciseUriWithId(id);
                         db.setTransactionSuccessful();
                         //return insertUri;
                         Log.d(TAG,"insert:notifyChanges!");
                         getContext().getContentResolver().notifyChange(uri,null);
                     } else {
                         throw new android.database.SQLException("unable to insert into table:" +
-                                ExerciseContract.ExerciseEntry.TABLE_EXERCISE);
+                                ExerciseContract.ExerciseEntry.TABLE_ALL);
                     }
 
                 } finally {
@@ -170,7 +171,7 @@ public class ExerciseContentProvider extends ContentProvider {
                 }
                 break;
             default:
-                throw new UnsupportedOperationException("insert fail-unsupported url");
+                throw new UnsupportedOperationException("ERROR:::Insert failed:unsupported url");
         }
 
         return insertUri;

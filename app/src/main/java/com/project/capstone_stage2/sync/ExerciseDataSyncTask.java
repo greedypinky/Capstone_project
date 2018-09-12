@@ -44,13 +44,13 @@ public class ExerciseDataSyncTask {
 
     // Sync data from the Google Cloud Backend's data to the Local Database
     synchronized public static void syncData(Context context, String exerciseJSON) {
+        ContentValues[] contentValues = null;
         try {
             // TODO: add back the logic
             // 1. Use the EndPointSyncTask.execute to get the JSON data
             // 2. Parse the JSON data and put them into ContentValues[]
             // 3. So the bulk insert into the database
-            ContentValues[] contentValues = RemoteEndPointUtil.fetchJSONData(exerciseJSON);
-
+            contentValues = RemoteEndPointUtil.fetchJSONData(exerciseJSON);
             if (contentValues != null && contentValues.length > 0) {
 
                 // Then we update the database
@@ -69,16 +69,43 @@ public class ExerciseDataSyncTask {
     }
 
     synchronized public static void syncJobScheduleData(Context context, String exerciseJSON) {
+        boolean useMockData = false;
+
         try {
             // TODO: add back the logic
             // 1. Use the EndPointSyncTask.execute to get the JSON data
             // 2. Parse the JSON data and put them into ContentValues[]
             // 3. Insert the new data into local db (we do not delete the db)
-            ContentValues[] contentValues = RemoteEndPointUtil.fetchJSONData(exerciseJSON);
+            if (useMockData) {
+                Log.d(TAG,"Insert mock data !");
+                ContentValues[] mockContentValues = new ContentValues[1];
+                ContentValues exerciseMockValues = new ContentValues();
+                exerciseMockValues.put(ExerciseContract.ExerciseEntry.CATEGORY, "Squat");
+                exerciseMockValues.put(ExerciseContract.ExerciseEntry.CATEGORY_DESC, "Squat");
+                exerciseMockValues.put(ExerciseContract.ExerciseEntry.EXERCISE_ID, "9999");
+                exerciseMockValues.put(ExerciseContract.ExerciseEntry.EXERCISE_NAME, "mockup exercise");
+                exerciseMockValues.put(ExerciseContract.ExerciseEntry.EXERCISE_DESCRIPTION, "this is mock-up exercise!");
+                exerciseMockValues.put(ExerciseContract.ExerciseEntry.EXERCISE_STEPS, "steps 9999");
+                exerciseMockValues.put(ExerciseContract.ExerciseEntry.EXERCISE_IMAGE, "exercise image");
+                exerciseMockValues.put(ExerciseContract.ExerciseEntry.EXERCISE_VIDEO, "mockup video");
+                exerciseMockValues.put(ExerciseContract.ExerciseEntry.EXERCISE_FAVORITE, "0");
+                mockContentValues[0] = exerciseMockValues;
+                RemoteEndPointUtil.insertNewExerciseToDB(context, mockContentValues);
 
-            if (contentValues != null && contentValues.length > 0) {
-                RemoteEndPointUtil.insertNewExerciseToDB(context, contentValues);
+            } else {
+
+                ContentValues[] contentValues = RemoteEndPointUtil.fetchJSONData(exerciseJSON);
+                if (contentValues != null && contentValues.length > 0) {
+                    RemoteEndPointUtil.insertNewExerciseToDB(context, contentValues);
+                }
             }
+
+//            ContentValues[] contentValues = RemoteEndPointUtil.fetchJSONData(exerciseJSON);
+//            if (contentValues != null && contentValues.length > 0) {
+//                RemoteEndPointUtil.insertNewExerciseToDB(context, contentValues);
+//            }
+
+
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(TAG, e.getMessage());
