@@ -57,7 +57,7 @@ public class ReminderIntentService extends IntentService {
                 }
 
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this,CHANNEL_ID);
-                builder.setContentTitle(getString(R.string.notification_title))
+                builder.setContentTitle(getString(R.string.app_name))
                         .setContentText(getString(R.string.notification_context))
                         .setSmallIcon(R.drawable.ic_notification)
                         .setChannelId(CHANNEL_ID) // Oreo requires Channel for notification

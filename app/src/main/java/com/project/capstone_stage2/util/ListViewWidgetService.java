@@ -5,13 +5,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import com.project.capstone_stage2.MyExerciseAppWidget;
 import com.project.capstone_stage2.R;
+import com.project.capstone_stage2.WidgetConfigActivity;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -77,39 +80,22 @@ public class ListViewWidgetService extends RemoteViewsService {
         // combination with the app widget item XML file to construct a RemoteViews object.
 
         public RemoteViews getViewAt(int position) {
-
             Log.d(TAG, "======== getViewAt position:" + position + "========");
-
-            // position will always range from 0 to getCount() - 1.
-
             // Construct a RemoteViews item based on the app widget item XML file, and set the
-
-            // text based on the position.
-
             RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.widget_exercise_item);
 
             HashMap<String, String> hmap = mExercisesData.get(position);
             String name = "";
             String desc = "";
             String imageurl = "";
+            String videourl = "";
+            name = hmap.get(WidgetConfigActivity.NAME_KEY);
+            desc = hmap.get(WidgetConfigActivity.DESC_KEY);
+            imageurl = hmap.get(WidgetConfigActivity.IMAGE_KEY);
+            videourl = hmap.get(WidgetConfigActivity.VIDEO_KEY);
+            Log.d(TAG, String.format(" name [%s], desc [%s], imageURL [%s]   ", name, desc, imageurl));
 
-
-                name = hmap.get("name");
-                desc = hmap.get("desc");
-                imageurl = hmap.get("imageurl");
-                Log.d(TAG, String.format(" name [%s], desc [%s], imageURL [%s]   ", name, desc, imageurl));
-
-
-
-            // get the row data at position
-            //Exercise data = mExercisesData.get(position);
-//            Exercise data = new Exercise("Dummy name","Dummy exercise","dummyURL");
-//
-//            rv.setTextViewText(R.id.widget_execise_name, data.getExerciseName());
-//            Log.d(TAG, "remoteview - set exercise name:" + data.getExerciseName());
-//            rv.setTextViewText(R.id.widget_execise_desc, data.getExerciseDesc());
-//            Log.d(TAG, "remoteview - set exercise desc:" + data.getExerciseDesc());
-
+            // set the values for remote views
             rv.setTextViewText(R.id.widget_execise_name, name);
             rv.setTextViewText(R.id.widget_execise_desc, desc);
 
@@ -117,11 +103,26 @@ public class ListViewWidgetService extends RemoteViewsService {
                 // TODO : in real, we get the URI and set the image by PICASSO?
                 // Picasso will handle loading the images on a background thread, image decompression and caching the images.
                 // Bitmap bm = Picasso.with(mContext).load(data.getExerciseImageURI()).get();
-                 Bitmap bm = Picasso.with(mContext).load(imageurl).get();
+                // Bitmap bm = Picasso.with(mContext).load(imageurl).get();
                 // for now, we can use a default icon to set the image
-                // Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.nao_squat01);
+                Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.nao_squat01);
                 //rv.setImageViewResource(R.id.widget_execise_image,bm);
-                rv.setImageViewBitmap(R.id.widget_execise_image, bm);
+                //rv.setImageViewBitmap(R.id.widget_execise_image, bm);
+                if (imageurl != null) {
+                    Log.d(TAG, "try to set the image to remote view");
+                    rv.setImageViewUri(R.id.widget_execise_image, Uri.parse(imageurl));
+                } else {
+                    // set default image
+                    // rv.setImageViewBitmap(R.id.widget_execise_image, bm);
+                    //rv.setViewVisibility();
+                    rv.setViewVisibility(R.id.widget_invalidImageText, View.VISIBLE);
+                    rv.setViewVisibility(R.id.widget_execise_name, View.GONE);
+                }
+                if (videourl !=null) {
+
+                } else {
+
+                }
             } catch (Exception ioe) {
                 ioe.printStackTrace();
             }
@@ -165,7 +166,6 @@ public class ListViewWidgetService extends RemoteViewsService {
         // when will this be triggered?
         public void onDataSetChanged() {
             Log.d(TAG, "onDataSetChanged!");
-            // Fetching JSON data from server and add them to records arraylist
         }
 
         public int getViewTypeCount() {

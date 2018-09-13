@@ -93,7 +93,7 @@ public class ExerciseDetailActivity extends AppCompatActivity {
                         ExerciseUtil.onShareClick(mExerciseCategory, mExerciseName, mExerciseSteps, mExerciseVideoUrl, getApplicationContext(), mDetailFragment);
                     } catch (Exception e) {
                         e.printStackTrace();
-                        Toast.makeText(ExerciseDetailActivity.this,"Error occurs: unable to share!", Toast.LENGTH_LONG);
+                        Toast.makeText(ExerciseDetailActivity.this, getString(R.string.share_error), Toast.LENGTH_LONG);
                         if (BuildConfig.DEBUG) {
                             Toast.makeText(ExerciseDetailActivity.this, e.getMessage(), Toast.LENGTH_LONG);
                         }

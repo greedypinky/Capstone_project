@@ -55,6 +55,10 @@ public class WidgetConfigActivity extends AppCompatActivity implements LoaderMan
 
     private String mSelectedExceriseCategory = null;
     private String mEXERCISE_DATA_FROM_ENDPOINT = null;
+    public static String NAME_KEY = "name";
+    public static String DESC_KEY = "desc";
+    public static String IMAGE_KEY = "image";
+    public static String VIDEO_KEY = "video";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,14 +197,14 @@ public class WidgetConfigActivity extends AppCompatActivity implements LoaderMan
                 //exerciseArrayList.add(new Exercise(name,desc,imageURI));
                 // exerciseArrayList.add(new Exercise(name));
                 HashMap<String, String> hmap = new HashMap<String, String>();
-                hmap.put("name", name);
-                hmap.put("desc", desc);
-                hmap.put("imageuri", imageURI);
-                hmap.put("videouri", videoURI);
-                Log.d(TAG,"Widget - read data from cursor for name:" + name);
-                Log.d(TAG,"Widget - read data from cursor for desc:" + desc);
-                Log.d(TAG,"Widget - read data from cursor for imageurl:" + imageURI);
-                Log.d(TAG,"Widget - read data from cursor for videourl:" + videoURI);
+                hmap.put(NAME_KEY, name);
+                hmap.put(DESC_KEY, desc);
+                hmap.put(IMAGE_KEY, imageURI);
+                hmap.put(VIDEO_KEY, videoURI);
+//                Log.d(TAG,"Widget - read data from cursor for name:" + name);
+//                Log.d(TAG,"Widget - read data from cursor for desc:" + desc);
+//                Log.d(TAG,"Widget - read data from cursor for imageurl:" + imageURI);
+//                Log.d(TAG,"Widget - read data from cursor for videourl:" + videoURI);
                 exerciseArrayList.add(hmap);
             }
 

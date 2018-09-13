@@ -32,6 +32,7 @@
     <string name="no_network_connection">No Network Connection</string>
     <string name="invalid_video_url">No exercise video!</string>
     <string name="invalid_image_url">No exercise image!</string>
+    <string name="share_error">"Sorry, unable to share exercise!"</string>
 
     <!-- Content description String -->
     <string name="content_exerciseImage">Selected Exercise Image</string>

@@ -20,6 +20,16 @@
         android:src="@drawable/nao_squat01"
         />
 
+    <TextView
+        android:id="@+id/widget_invalidImageText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_margin="8dp"
+        android:layout_marginStart="8dp"
+        android:text="@string/invalid_image_url"
+        android:visibility="gone"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
